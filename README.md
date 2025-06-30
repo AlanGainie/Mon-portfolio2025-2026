@@ -1,17 +1,33 @@
-# React + TypeScript + Vite
+# Mon projet de portfolio 2025 - 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Le but de se projet de portfolio est de me permettre par se biai de plus facilement montrer mes compétence sur le marcher de l'emploie et dans mes recherche d'alternance et stage en informatique. Pour ce faire je l'ai débuter après mon premier stage réaliser au prŝ de provectio.
 
-Currently, two official plugins are available:
+Pourquoi je l'ai limiter dans le temps à deux ans ?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Car j'estime quaprès ses deux ans la versions 1.0 serra terminer et qu'il serra temps de le mettre à jour. Avec mon BTS tous d'abord et enfin avec les compétences que j'obtiendrai j'en suis sur.
 
-## Expanding the ESLint configuration
+Mes objectifs principaux:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)  Trouver une alterance
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) Faire en sorte que chacun s'amuse avec ce projet de portfolio
 
-- Configure the top-level `parserOptions` property like this:
+## Sommaire
+
+Afin de réaliser se projet je l'ai découper en plusieurs parties : 
+
+...
+
+## Dévelopement (Programation)
+
+J'ai eut la chance dans se projet de le réaliser sans contraintes extérieur et en autodidact. Avec quelques conseil et l'apprentissage de React octrooyer à Provectio. De fais j'ai pu le réaliser avec les languages suivant :
+
+- Pour la structure de basse du projet, les fondations (le body) `React Native`. Pour ses avantage de performances et l'avantage du responsif.
+- Pour consolider le React j'ai pue utiliser `HTML5`.
+- L’aspect visuel du site repose sur `Tailwind CSS`, un framework CSS utilitaire.
+- Les fonctionnalités ont été développées en `JSX`, la syntaxe utilisée avec React, pour bénéficier d’un code structuré, clair et robuste.
+
+## Exemples de code
+A suivre..
 
 ```js
 export default tseslint.config({
