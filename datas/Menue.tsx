@@ -4,12 +4,10 @@ import CurriculumVitae from '../src/template/pages/CurriculumVitae.tsx';
 import ESMA from '../src/template/pages/ESMA.tsx';
 import ESUP from '../src/template/pages/ESUP.tsx';
 import Gmail from '../src/template/pages/Gmail.tsx';
-import Linkedin from '../src/template/pages/Linkedin.tsx';
 import Introduction from '../src/template/pages/Introduction.tsx';
 import NodeJs from '../src/template/pages/NodeJs.tsx';
 import JavaScript from '../src/template/pages/JavaScript.tsx';
 import Lycee from '../src/template/pages/Lycee.tsx';
-import Telephone from '../src/template/pages/Telephone.tsx';
 import Sommaire from '../src/template/pages/Sommaire.tsx';
 import ReactLg from '../src/template/pages/ReactLg.tsx';
 import Others from '../src/template/pages/Others.tsx';
@@ -17,19 +15,23 @@ import Project1 from '../src/template/pages/Project1.tsx';
 import Project2 from '../src/template/pages/Project2.tsx';
 import LanguageC from '../src/template/pages/C.tsx';
 // Pages
-import MonCV from '../src/template/pages/MonCV.tsx';
 import MesEtudes from '../src/template/pages/MesEtudes.tsx';
-import MesCompetences from '../src/template/pages/MesCompetences.tsx';
 // import ErrorGest from '../src/template/pages/errorGest.tsx';
 import HomePage from '../src/template/pages/HomePage.tsx';
 import Projets from '../src/template/pages/Projets.tsx';
 import Contacts from '../src/template/pages/Contacts.tsx';
+import ErrorGest from '../src/template/pages/errorGest.tsx';
+
+export enum MenueDefinedTypePage {
+    Ancre = "ancre",
+    MultiPages = "multi-pages",
+}
 
 export const OnlyOnedMenue = 
 {
     names: ['Home page', 'À propos de moi/CV', 'Mes Competences', 'Projets', 'Mes Etudes', 'Contact'],
     icones: ["home", "cv", "competence", "projet", "etudes", "contact"],
-    sections:  [<HomePage />, <MonCV />, <MesCompetences />, <Projets />, <MesEtudes />, <Contacts />],
+    sections:  [<HomePage />, <CurriculumVitae />, <AproposDeMoi />, <Projets />, <MesEtudes />, <Contacts />],
     className: ["", "", "", "", ""]
 };
 
@@ -74,7 +76,7 @@ export const MultipliedMenues =
         index: 5,
         names: ["Linkedin", "Gmail", "Téléphone", "..."],
         icones: ["linkedin", "at", "contact", "more"],
-        sections: [<Linkedin />, <Gmail />, <Telephone />, <Others />],
+        sections: [ErrorGest, <Gmail />, ErrorGest, <Others />],
         className: ["", "", "", ""]
     }
 ];

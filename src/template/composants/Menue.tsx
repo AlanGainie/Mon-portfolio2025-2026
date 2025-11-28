@@ -1,9 +1,8 @@
 import BarreMenue from '../organismes/BarreMenue.tsx';
 import { ROOTMENUE, SECONDARYMENUE, PAGESCROLLDOWN, PAGESGLOBAL, TOPPAGESCROLLDOWN } from '../../styles/tw.ts';
-import { useState } from 'react';
 import ErrorGest from '../pages/errorGest.tsx';
 
-import {MultipliedMenues, OnlyOnedMenue} from '../../../datas/Menue.tsx'
+import {OnlyOnedMenue, MenueDefinedTypePage} from '../../../datas/Menue.tsx'
 
 // TODO: Finir les JS doxygene
 
@@ -28,11 +27,11 @@ const handleClick = (tabIndex: number,
  */
 export function ContentDefaultMenue(tab: number, displaysInf: any): React.JSX.Element {
     displaysInf.displayFirstMenuIndex = tab
-    return OnlyOnedMenue.sections[tab] ?? <ErrorGest name="page" />;
+    return OnlyOnedMenue.sections[tab] ?? <ErrorGest name={`Loading page \"{(String)MenueDefinedTypePage}\" fail.`} />;
 }
 
 interface ContentMenuesType {
-    type?: "ancre" | "multi-pages" | undefined;
+    type?: MenueDefinedTypePage;
     actualmenue: number;
 }
 
@@ -48,9 +47,8 @@ export const ContentMenues: React.FC<ContentMenuesType> = ({type, actualmenue}: 
     const displaysInf: { displayFirstMenuIndex: number; displaySecondMenuIndex: number }[] = [
         { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 }
     ];
-
-    return (
-        <>
+    if (type === "multi-pages") {
+        return (
             <div className={PAGESCROLLDOWN}>
                 {/* Définir une taille de fenêtre de + de 2000px pour pouvoir scroll down ou up */}
                 <div className={PAGESGLOBAL}>
@@ -61,8 +59,20 @@ export const ContentMenues: React.FC<ContentMenuesType> = ({type, actualmenue}: 
                     {/* {tab_menue2 && sousMenue({ tab_menue2, displaysInf })} */}
                 </div>
             </div>
-        </>
-    );
+        );
+    } else if (type === undefined || type === "ancre") {
+        return (
+            <div className={PAGESGLOBAL}>
+                {OnlyOnedMenue.sections.map((sectionContent, index) => (
+                    <div key={index} className={TOPPAGESCROLLDOWN}>
+                        {sectionContent}
+                    </div>
+                ))}
+            </div>
+        );
+    } else {
+        return <ErrorGest name="Loading page critical error detected."/>;
+    }
 };
 
 /**
@@ -71,7 +81,7 @@ export const ContentMenues: React.FC<ContentMenuesType> = ({type, actualmenue}: 
  * @param nbr is a number of menue and behind-menue you want
  * @returns One or more menue
  */
-export const Menue = ({ content, nbr, actual_list_menue, setActuallistMenue}:
+export const Menue = ({ content, nbr, actual_list_menue: _actual_list_menue, setActuallistMenue}:
     { content?: any, nbr?: number | undefined, actual_list_menue: number, setActuallistMenue: React.Dispatch<React.SetStateAction<number>>}): (React.ReactNode | string) => {
 
     if (content) return content;

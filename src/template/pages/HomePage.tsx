@@ -1,5 +1,5 @@
 // import { useState } from 'react';
-import { FLEXCOL, FLEXROW } from '../../styles/tw';
+import { FLEXCOL } from '../../styles/tw';
 import identity_picture from '../../assets/picture/IMG_20250129_092536_199.jpg';
 import Crop from '../composants/Crop';
 

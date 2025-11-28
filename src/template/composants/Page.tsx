@@ -10,12 +10,10 @@ import CurriculumVitae from '../../template/pages/CurriculumVitae.tsx';
 import ESMA from '../../template/pages/ESMA.tsx';
 import ESUP from '../../template/pages/ESUP.tsx';
 import Gmail from '../../template/pages/Gmail.tsx';
-import Linkedin from '../../template/pages/Linkedin.tsx';
 import Introduction from '../../template/pages/Introduction.tsx';
 import NodeJs from '../../template/pages/NodeJs.tsx';
 import JavaScript from '../../template/pages/JavaScript.tsx';
 import Lycee from '../../template/pages/Lycee.tsx';
-import Telephone from '../../template/pages/Telephone.tsx';
 import Sommaire from '../../template/pages/Sommaire.tsx';
 import ReactLg from '../../template/pages/ReactLg.tsx';
 import Others from '../../template/pages/Others.tsx';
@@ -32,7 +30,7 @@ const monCVTab = [<AproposDeMoi />, <CurriculumVitae />];
 const mesCompetencesTab = [<JavaScript />, <ReactLg />, <NodeJs />, <LanguageC />];
 const projetsTab = [<Project1 />, <Project2 />];
 const mesEtudesTab = [<Lycee />, <Epitech />, <ESMA />, <ESUP />];
-const contactsTab = [<Linkedin />, <Gmail />, <Telephone />, <Others />];
+const contactsTab = [<ErrorGest name="pages" />, <Gmail />, <ErrorGest name="pages" />, <Others />];
 
 type DisplaysInf = { displayFirstMenuIndex: number; displaySecondMenuIndex: number };
 
@@ -110,7 +108,7 @@ function Page({
   tab_menue1 = 0,
   tab_menue2,
   displaysInf = { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 },
-  type
+  // type
 }: {
   header?: JSX.Element | "none",
   footer?: JSX.Element | "none",

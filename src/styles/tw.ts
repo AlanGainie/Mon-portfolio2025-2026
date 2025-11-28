@@ -1,5 +1,5 @@
 import bgSvg from '../assets/picture/background.svg';
-import bgJpg from '../assets/picture/background.jpg';
+// import bgJpg from '../assets/picture/background.jpg';
 
 // Vue déveloper
 // TODO: HAVE TO FIXED
