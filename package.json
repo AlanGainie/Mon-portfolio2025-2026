@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://alangainie.github.io/Mon-portfolio2025-2026/",
+  "homepage": "https://alangainie.github.io/mon-portfolio2025-2026/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
