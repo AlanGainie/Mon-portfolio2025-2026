@@ -2,6 +2,7 @@
 import { FLEXCOL } from '../../styles/tw';
 import identity_picture from '../../assets/picture/IMG_20250129_092536_199.jpg';
 import Crop from '../composants/Crop';
+import ButtonTypewriter from '../composants/Typewriter';
 
 {/* Drapeau animé */}
 // function Flag() {
@@ -31,7 +32,6 @@ function HomePage() {
 
   return (
     <div className={FLEXCOL}>
-      {/* <Flag/> */}
       < h1 > Bienvennue sur mon portfolio informatique.</h1 >
       <br />
       <Crop
@@ -39,8 +39,8 @@ function HomePage() {
         height={500} width={500}
         errorloadtext="photo d'identité"
         legende="Photo d'identité mai 2025 "/>
-      <br />
-      <p>Bienvennue sur mon portfolio informatique </p>
+      <br /> 
+      {ButtonTypewriter ("Bienvenue sur mon portfolio informatique")}
     </div>
   )
 }
