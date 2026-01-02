@@ -26,10 +26,10 @@ function App() {
             setActuallistMenue={setActuallistMenue}
           />
         </div>
-        <Page
+        {actual_list_menue !== null && <Page
           content={<ContentMenues actualmenue={actual_list_menue}/>}
           type={undefined}
-          />
+          />}
       </div >
     </>
   );

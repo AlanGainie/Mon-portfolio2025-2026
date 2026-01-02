@@ -1,3 +1,4 @@
+// TODO: Suprimer la mise en place en dur des datas
 function Softskills() {
     return (
         <>

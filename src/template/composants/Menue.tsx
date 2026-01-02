@@ -17,6 +17,14 @@ const handleClick = (tabIndex: number,
     return;
 };
 
+interface ContentDefaultMenueProps {
+  tab: number;
+  displaysInf?: {
+    displayFirstMenuIndex: number;
+    displaySecondMenuIndex: number;
+  }[];
+}
+
 /**
  * The goal of this function is to return content when the menus set error
  * when I have no menue : I have default menue. Is better than UX and error
@@ -25,10 +33,13 @@ const handleClick = (tabIndex: number,
  * @param displaysInf
  * @returns React.JSX.Element : The content have to print in page.
  */
-export function ContentDefaultMenue(tab: number, displaysInf: any): React.JSX.Element {
-    displaysInf.displayFirstMenuIndex = tab
-    return OnlyOnedMenue.sections[tab] ?? <ErrorGest name={`Loading page \"{(String)MenueDefinedTypePage}\" fail.`} />;
-}
+export const ContentDefaultMenue: React.FC<ContentDefaultMenueProps> = ({ tab, displaysInf }) => {
+  displaysInf?.[0] && (displaysInf[0].displayFirstMenuIndex = tab);
+  return (
+    OnlyOnedMenue.sections[tab]
+    ?? <ErrorGest name="Loading page failed." />
+  );
+};
 
 interface ContentMenuesType {
     type?: MenueDefinedTypePage;
@@ -54,13 +65,16 @@ export const ContentMenues: React.FC<ContentMenuesType> = ({type, actualmenue}: 
                 <div className={PAGESGLOBAL}>
                     {/* Affiche le résultat des tab de la première barre de menu */}
                     <div className={TOPPAGESCROLLDOWN}>
-                        {ContentDefaultMenue(actualmenue, displaysInf)}
+                        <ContentDefaultMenue tab={actualmenue} displaysInf={displaysInf}/>
                     </div>
                     {/* {tab_menue2 && sousMenue({ tab_menue2, displaysInf })} */}
                 </div>
             </div>
         );
     } else if (type === undefined || type === "ancre") {
+        if (!OnlyOnedMenue?.sections?.length) {
+            return <div>Chargement…</div>;
+        }
         return (
             <div className={PAGESGLOBAL}>
                 {OnlyOnedMenue.sections.map((sectionContent, index) => (
