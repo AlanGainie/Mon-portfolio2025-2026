@@ -113,7 +113,7 @@ export function ButtonLinkwriter({ text = "" }: { text?: string }) {
 }
 
 // Composant principal exporté
-export default function ButtonTypewriter(content?: string) {
+export default function ButtonTypewriter({ content }: { content?: string }) {
   const [start, setStart] = useState(false);
 
   const handleClick = () => {

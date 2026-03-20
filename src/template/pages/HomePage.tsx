@@ -40,7 +40,7 @@ function HomePage() {
         errorloadtext="photo d'identité"
         legende="Photo d'identité mai 2025 "/>
       <br /> 
-      {ButtonTypewriter ("Bienvenue sur mon portfolio informatique")}
+      <ButtonTypewriter content="Bienvenue sur mon portfolio informatique" />
     </div>
   )
 }
