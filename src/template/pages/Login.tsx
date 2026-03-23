@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 
-export default function LoginPanel() {
+type LoginProps = {
+  onLogUpdate?: () => void;
+};
+
+export default function Login({ onLogUpdate }: LoginProps) {
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -13,51 +17,55 @@ export default function LoginPanel() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const success = login(username, password);
+    const result = login(username, password);
 
-    if (!success) {
-      setError("Identifiants incorrects.");
+    if (!result.success) {
+      setError(result.message || "Identifiants incorrects.");
+      onLogUpdate?.();
       return;
     }
 
-    setError("");
-
     const savedUser = JSON.parse(localStorage.getItem("authUser") || "{}");
 
-    if (savedUser.role === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/user");
-    }
+    navigate(savedUser.role === "admin" ? "/admin" : "/user");
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
-      <div>
-        <input
-          placeholder="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+    <div className="container">
+      <div className="font-box">
+        <form onSubmit={handleSubmit}>
+          <h2>Connexion</h2>
+
+          <div className="input-box">
+            <input
+              type="text"
+              placeholder="Nom d'utilisateur"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div className="input-box">
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <button type="submit" style={{ marginTop: "20px" }}>
+            Se connecter
+          </button>
+
+          <div style={{ marginTop: "10px", fontSize: "12px" }}>
+            <p>admin / portfolio2025</p>
+            <p>demo / demo123</p>
+          </div>
+        </form>
       </div>
-
-      <div>
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button type="submit">Se connecter</button>
-
-      <div style={{ marginTop: '10px', fontSize: '12px' }}>
-        <p>admin / portfolio2025</p>
-        <p>demo / demo123</p>
-      </div>
-    </form>
+    </div>
   );
 }
