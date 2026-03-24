@@ -48,6 +48,7 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
 
   return (
     <div
+      className="page-with-toolbar"
       style={{
         background: "black",
         color: "white",
@@ -55,7 +56,6 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: "24px",
       }}
     >
       <AdminPreviewBar
@@ -178,21 +178,13 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
   };
 
   return (
-    <div className={PAGESGLOBAL}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          padding: '24px',
-          color: 'white',
-        }}
-      >
-        <AdminPreviewBar
-          previewRole={previewRole}
-          setPreviewRole={setPreviewRole}
-        />
+    <div className={`${PAGESGLOBAL} page-with-toolbar`}>
+      <AdminPreviewBar
+        previewRole={previewRole}
+        setPreviewRole={setPreviewRole}
+      />
 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '24px' }}>
         <button onClick={handleLogout}>
           Déconnexion
         </button>
@@ -225,21 +217,13 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
   };
 
   return (
-    <div className={PAGESGLOBAL}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          padding: '24px',
-          color: 'white',
-        }}
-      >
-        <AdminPreviewBar
-          previewRole={previewRole}
-          setPreviewRole={setPreviewRole}
-        />
+    <div className={`${PAGESGLOBAL} page-with-toolbar`}>
+      <AdminPreviewBar
+        previewRole={previewRole}
+        setPreviewRole={setPreviewRole}
+      />
 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '24px' }}>
         <button onClick={handleLogout}>
           Déconnexion
         </button>
