@@ -10,10 +10,11 @@ import { useAuth } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Login from './template/pages/Login';
 // Menue
-import { Menue, ContentMenues } from './template/composants/Menue.tsx';
+import { Menue } from './template/composants/Menue.tsx';
+import Page, { FooterPage } from './template/composants/Page.tsx';
 import AdminPreviewBar from './template/composants/AdminPreviewBar';
 // Pages
-import Page from './template/composants/Page.tsx';
+// import Page from './template/composants/Page.tsx';
 import { GLOBALMENUE, PAGESGLOBAL } from './styles/tw.ts';
 
 type PreviewRole = "admin" | "user";
@@ -49,7 +50,7 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
 
   return (
     <div
-      className="page-with-toolbar"
+      className="page-with-toolbar app-page"
       style={{
         background: "black",
         color: "white",
@@ -69,7 +70,7 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
 
       <Login onLogUpdate={() => setLogs(getLogs())} />
 
-      <div style={{ width: "100%", maxWidth: "900px", marginTop: "40px" }}>
+      <div className="page-main-content" style={{ width: "100%", maxWidth: "900px", marginTop: "40px" }}>
         <h2 style={{ fontSize: "28px", marginBottom: "16px" }}>
           Historique des connexions
         </h2>
@@ -164,6 +165,8 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
           </div>
         )}
       </div>
+
+      <FooterPage />
     </div>
   );
 }
@@ -198,7 +201,8 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
         <h1>Page Admin</h1>
       </div>
 
-      <Page tab_menue1={actual_list_menue} />
+      <Page tab_menue1={actual_list_menue} footer="none" />
+      <FooterPage/>
     </div>
   );
 }
@@ -214,7 +218,7 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
   };
 
   return (
-    <div className={`${PAGESGLOBAL} page-with-toolbar`}>
+    <div className={`${PAGESGLOBAL} page-with-toolbar app-page`}>
       <AdminPreviewBar
         previewRole={previewRole}
         setPreviewRole={setPreviewRole}
@@ -233,7 +237,11 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
         <h1>Page User</h1>
       </div>
 
-      <Page tab_menue1={actual_list_menue} />
+      <div className="page-main-content">
+        <Page tab_menue1={actual_list_menue} footer="none" />
+      </div>
+
+      <FooterPage />
     </div>
   );
 }

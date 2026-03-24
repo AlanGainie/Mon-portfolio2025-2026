@@ -60,7 +60,7 @@ const HeaderPage = ({ content }: { content?: JSX.Element }): JSX.Element => {
 }
 
 // Footer
-const FooterPage = ({ content }: { content?: JSX.Element }): JSX.Element => {
+export const FooterPage = ({ content }: { content?: JSX.Element }): JSX.Element => {
   if (content) return content;
 
   return (
