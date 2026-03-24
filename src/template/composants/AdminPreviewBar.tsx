@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 type Props = {
   previewRole: "admin" | "user";
   setPreviewRole: React.Dispatch<React.SetStateAction<"admin" | "user">>;
+  showLogout?: boolean;
+  onLogout?: () => void;
 };
 
 const ADMIN_PREVIEW_CODE = "admin-view";
@@ -12,6 +14,8 @@ type ScreenMode = "desktop" | "mobile" | "projector";
 export default function AdminPreviewBar({
   previewRole,
   setPreviewRole,
+  showLogout = false,
+  onLogout,
 }: Props) {
   const [adminCode, setAdminCode] = useState("");
   const [error, setError] = useState("");
@@ -108,7 +112,7 @@ export default function AdminPreviewBar({
             previewRole === "admin" ? "role-admin" : "role-user"
           }`}
           title={`Mode ${previewRole}`}
-        ></span>
+        />
 
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -125,6 +129,16 @@ export default function AdminPreviewBar({
         >
           {getScreenIcon()}
         </button>
+
+        {showLogout && (
+          <button
+            onClick={onLogout}
+            className="logout-button"
+            title="Se déconnecter"
+          >
+            ⎋
+          </button>
+        )}
       </div>
 
       {error && <p className="admin-preview-error">{error}</p>}

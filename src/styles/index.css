@@ -801,3 +801,19 @@ body[data-theme="light"] .screen-toggle-button {
   color: #111;
   border-color: #999;
 }
+
+.logout-button {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-button:hover {
+  border-color: red;
+  box-shadow: 0 0 6px red;
+  color: #ff4444;
+}

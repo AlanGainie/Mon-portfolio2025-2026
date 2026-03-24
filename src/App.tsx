@@ -11,9 +11,10 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import Login from './template/pages/Login';
 // Menue
 import { Menue, ContentMenues } from './template/composants/Menue.tsx';
-import { GLOBALMENUE, PAGESGLOBAL } from './styles/tw.ts';
-
 import AdminPreviewBar from './template/composants/AdminPreviewBar';
+// Pages
+import Page from './template/composants/Page.tsx';
+import { GLOBALMENUE, PAGESGLOBAL } from './styles/tw.ts';
 
 type PreviewRole = "admin" | "user";
 
@@ -182,13 +183,9 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
       <AdminPreviewBar
         previewRole={previewRole}
         setPreviewRole={setPreviewRole}
+        showLogout={true}
+        onLogout={handleLogout}
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '24px' }}>
-        <button onClick={handleLogout}>
-          Déconnexion
-        </button>
-      </div>
 
       <div className={GLOBALMENUE}>
         <Menue
@@ -201,7 +198,7 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
         <h1>Page Admin</h1>
       </div>
 
-      <ContentMenues actualmenue={actual_list_menue} />
+      <Page tab_menue1={actual_list_menue} />
     </div>
   );
 }
@@ -221,13 +218,9 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
       <AdminPreviewBar
         previewRole={previewRole}
         setPreviewRole={setPreviewRole}
+        showLogout={true}
+        onLogout={handleLogout}
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '24px' }}>
-        <button onClick={handleLogout}>
-          Déconnexion
-        </button>
-      </div>
 
       <div className={GLOBALMENUE}>
         <Menue
@@ -240,7 +233,7 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
         <h1>Page User</h1>
       </div>
 
-      <ContentMenues actualmenue={actual_list_menue} />
+      <Page tab_menue1={actual_list_menue} />
     </div>
   );
 }
