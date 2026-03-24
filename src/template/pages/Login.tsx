@@ -7,7 +7,8 @@ type LoginProps = {
 };
 
 export default function Login({ onLogUpdate }: LoginProps) {
-  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, isBlocked } = useAuth();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -42,21 +43,37 @@ export default function Login({ onLogUpdate }: LoginProps) {
               placeholder="Nom d'utilisateur"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={isBlocked}
             />
+
+            {isBlocked && (
+              <span className="lock-icon">🔒</span>
+            )}
           </div>
 
           <div className="input-box">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isBlocked}
             />
+
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
           </div>
 
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          <button type="submit" style={{ marginTop: "20px" }}>
+          <button
+            type="submit"
+            className={isBlocked ? "login-button blocked" : "login-button"}
+          >
             Se connecter
           </button>
 

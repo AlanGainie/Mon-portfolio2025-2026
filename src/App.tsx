@@ -9,8 +9,20 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Login from './template/pages/Login';
+// Menue
+import { Menue, ContentMenues } from './template/composants/Menue.tsx';
+import { GLOBALMENUE, PAGESGLOBAL } from './styles/tw.ts';
 
-function Home() {
+import AdminPreviewBar from './template/composants/AdminPreviewBar';
+
+type PreviewRole = "admin" | "user";
+
+type PreviewProps = {
+  previewRole: PreviewRole;
+  setPreviewRole: React.Dispatch<React.SetStateAction<PreviewRole>>;
+};
+
+function Home({ previewRole, setPreviewRole }: PreviewProps) {
   const { isAuthenticated, user, getLogs, clearLogs, unblockAccess } = useAuth();
   const [logs, setLogs] = useState(getLogs());
   const [isClearing, setIsClearing] = useState(false);
@@ -27,7 +39,6 @@ function Home() {
   const handleClearLogs = async () => {
     setIsClearing(true);
 
-    // petit délai visuel pour voir le loader
     setTimeout(() => {
       clearLogs();
       setLogs([]);
@@ -47,6 +58,11 @@ function Home() {
         padding: "24px",
       }}
     >
+      <AdminPreviewBar
+        previewRole={previewRole}
+        setPreviewRole={setPreviewRole}
+      />
+
       <h1>Mon Portfolio</h1>
       <p>Bienvenue sur mon portfolio.</p>
 
@@ -84,7 +100,7 @@ function Home() {
                   <li
                     key={log.id}
                     className={`log-item ${
-                        log.action === "blocked"
+                      log.action === "blocked"
                         ? "log-blocked"
                         : log.action === "unblocked"
                         ? "log-unblocked"
@@ -151,9 +167,10 @@ function Home() {
   );
 }
 
-function AdminPage() {
-  const { user, logout } = useAuth();
+function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
+  const [actual_list_menue, setActuallistMenue] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -161,20 +178,46 @@ function AdminPage() {
   };
 
   return (
-    <div style={{ background: '#111', color: 'white', minHeight: '100vh', padding: '24px' }}>
-      <h1>Page Admin</h1>
-      <p>Bienvenue {user?.username}</p>
+    <div className={PAGESGLOBAL}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          padding: '24px',
+          color: 'white',
+        }}
+      >
+        <AdminPreviewBar
+          previewRole={previewRole}
+          setPreviewRole={setPreviewRole}
+        />
 
-      <button onClick={handleLogout} style={{ marginTop: '16px' }}>
-        Déconnexion
-      </button>
+        <button onClick={handleLogout}>
+          Déconnexion
+        </button>
+      </div>
+
+      <div className={GLOBALMENUE}>
+        <Menue
+          actual_list_menue={actual_list_menue}
+          setActuallistMenue={setActuallistMenue}
+        />
+      </div>
+
+      <div style={{ padding: '24px', color: 'white' }}>
+        <h1>Page Admin</h1>
+      </div>
+
+      <ContentMenues actualmenue={actual_list_menue} />
     </div>
   );
 }
 
-function UserPage() {
-  const { user, logout } = useAuth();
+function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
+  const [actual_list_menue, setActuallistMenue] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -182,27 +225,65 @@ function UserPage() {
   };
 
   return (
-    <div style={{ background: '#1a1a1a', color: 'white', minHeight: '100vh', padding: '24px' }}>
-      <h1>Page User</h1>
-      <p>Bienvenue {user?.username}</p>
+    <div className={PAGESGLOBAL}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          padding: '24px',
+          color: 'white',
+        }}
+      >
+        <AdminPreviewBar
+          previewRole={previewRole}
+          setPreviewRole={setPreviewRole}
+        />
 
-      <button onClick={handleLogout} style={{ marginTop: '16px' }}>
-        Déconnexion
-      </button>
+        <button onClick={handleLogout}>
+          Déconnexion
+        </button>
+      </div>
+
+      <div className={GLOBALMENUE}>
+        <Menue
+          actual_list_menue={actual_list_menue}
+          setActuallistMenue={setActuallistMenue}
+        />
+      </div>
+
+      <div style={{ padding: '24px', color: 'white' }}>
+        <h1>Page User</h1>
+      </div>
+
+      <ContentMenues actualmenue={actual_list_menue} />
     </div>
   );
 }
 
 // Définir une taille de fenêtre de + de 2000px pour pouvoir scroll down ou up
 function App() {
+  const [previewRole, setPreviewRole] = useState<PreviewRole>("user");
+
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route
+        path="/"
+        element={
+          <Home
+            previewRole={previewRole}
+            setPreviewRole={setPreviewRole}
+          />
+        }
+      />
       <Route
         path="/admin"
         element={
           <ProtectedRoute requiredRole="admin">
-            <AdminPage />
+            <AdminPage
+              previewRole={previewRole}
+              setPreviewRole={setPreviewRole}
+            />
           </ProtectedRoute>
         }
       />
@@ -210,7 +291,10 @@ function App() {
         path="/user"
         element={
           <ProtectedRoute requiredRole="user">
-            <UserPage />
+            <UserPage
+              previewRole={previewRole}
+              setPreviewRole={setPreviewRole}
+            />
           </ProtectedRoute>
         }
       />
