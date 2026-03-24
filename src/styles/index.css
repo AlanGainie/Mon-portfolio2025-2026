@@ -393,7 +393,7 @@ button:focus-visible {
   box-shadow: 0 0 10px #e46033;
 }
 
-.log-blocked {
+.log-unblocked {
   border-color: #3b82f6 !important;
   background: #0f172a !important;
   color: #fff;

@@ -84,8 +84,10 @@ function Home() {
                   <li
                     key={log.id}
                     className={`log-item ${
-                      log.action === "blocked"
+                        log.action === "blocked"
                         ? "log-blocked"
+                        : log.action === "unblocked"
+                        ? "log-unblocked"
                         : log.action === "logout"
                         ? "log-logout"
                         : log.action === "error"
@@ -117,6 +119,8 @@ function Home() {
                         <span className="log-icon">
                           {log.action === "blocked"
                             ? "🔒"
+                            : log.action === "unblocked"
+                            ? "🔓"
                             : log.action === "error"
                             ? "⚠️"
                             : log.action === "logout"
