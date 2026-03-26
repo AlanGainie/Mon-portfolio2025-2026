@@ -79,7 +79,7 @@ function SousMenue({ tab_menue1, displaysInf }: { tab_menue1: number, displaysIn
   return (
     <>
       <hr />
-      <div className={DOWNPAGESCROLLDOWN}>
+      <div className={PAGESCROLLDOWN}>
         {displaySousMenue(tab_menue1, displaysInf)}
       </div>
     </>

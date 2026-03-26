@@ -37,8 +37,6 @@ export const DIRECTIONS = (
   position: "top" | "left" | "right" | "bottom" | "center",
   degres?: number | "justify"
 ) => {
-  let base = "";
-
   if (degres !== undefined) {
     if (degres === "justify" || degres >= 100) {
       switch (position) {
