@@ -5,6 +5,7 @@ type Props = {
   setPreviewRole: React.Dispatch<React.SetStateAction<"admin" | "user">>;
   showLogout?: boolean;
   onLogout?: () => void;
+  title?: string;
 };
 
 const ADMIN_PREVIEW_CODE = "admin-view";
@@ -14,8 +15,9 @@ type ScreenMode = "desktop" | "mobile" | "projector";
 export default function AdminPreviewBar({
   previewRole,
   setPreviewRole,
-  showLogout = false,
+  showLogout,
   onLogout,
+  title,
 }: Props) {
   const [adminCode, setAdminCode] = useState("");
   const [error, setError] = useState("");
@@ -94,7 +96,11 @@ export default function AdminPreviewBar({
 
   return (
     <div className="admin-preview-wrapper">
+      <span className="page-title">
+        {title || "Error"}
+      </span>
       <div className="admin-preview-bar">
+
         <input
           type="text"
           placeholder="Identifiant admin"

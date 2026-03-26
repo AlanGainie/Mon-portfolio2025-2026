@@ -63,6 +63,7 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
       <AdminPreviewBar
         previewRole={previewRole}
         setPreviewRole={setPreviewRole}
+        title="Page Login"
       />
 
       <h1>Mon Portfolio</h1>
@@ -188,6 +189,7 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
         setPreviewRole={setPreviewRole}
         showLogout={true}
         onLogout={handleLogout}
+        title="Page Admin"
       />
 
       <div className={GLOBALMENUE}>
@@ -195,10 +197,6 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
           actual_list_menue={actual_list_menue}
           setActuallistMenue={setActuallistMenue}
         />
-      </div>
-
-      <div style={{ padding: '24px', color: 'white' }}>
-        <h1>Page Admin</h1>
       </div>
 
       <Page tab_menue1={actual_list_menue} footer="none" />
@@ -224,6 +222,7 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
         setPreviewRole={setPreviewRole}
         showLogout={true}
         onLogout={handleLogout}
+        title="Page User"
       />
 
       <div className={GLOBALMENUE}>
@@ -231,10 +230,6 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
           actual_list_menue={actual_list_menue}
           setActuallistMenue={setActuallistMenue}
         />
-      </div>
-
-      <div style={{ padding: '24px', color: 'white' }}>
-        <h1>Page User</h1>
       </div>
 
       <div className="page-main-content">

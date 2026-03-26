@@ -33,30 +33,50 @@ export const GRID = `nothing`;
 export const error = "Erreur tailwind pas de mutation disponible";
 
 // Directions
-export const DIRECTIONS = (position: "top" | "left" | "right" | "bottom" | "center", degres?: number | "justify") => {
-    let base = "";
-    if (degres) {
-        if ( degres === "justify" || degres >= 100 ) {
-            switch (position) {
-                case "right": base = "justify-end"; break;
-                case "center": base = "justify-center"; break;
-                case "left": base = "justify-start"; break;
-            }
-        } else {
-            switch (position) {
-                case "top": return `${base} top-[${degres}%]`;
-                case "left": return `${base} left-[${degres}%]`;
-                case "right": return `${base} right-[${degres}%]`;
-                case "bottom": return `${base} bottom-[${degres}%]`;
-            }
-        }
+export const DIRECTIONS = (
+  position: "top" | "left" | "right" | "bottom" | "center",
+  degres?: number | "justify"
+) => {
+  let base = "";
+
+  if (degres !== undefined) {
+    if (degres === "justify" || degres >= 100) {
+      switch (position) {
+        case "right":
+          return "justify-end";
+        case "center":
+          return "justify-center";
+        case "left":
+          return "justify-start";
+        default:
+          return error;
+      }
+    } else {
+      switch (position) {
+        case "top":
+          return `top-[${degres}%]`;
+        case "left":
+          return `left-[${degres}%]`;
+        case "right":
+          return `right-[${degres}%]`;
+        case "bottom":
+          return `bottom-[${degres}%]`;
+        default:
+          return error;
+      }
     }
-    switch (position) {
-        case "right": base = "justify-end"; break;
-        case "center": base = "justify-center"; break;
-        case "left": base = "justify-start"; break;
-    }
-    return error;
+  }
+
+  switch (position) {
+    case "right":
+      return "justify-end";
+    case "center":
+      return "justify-center";
+    case "left":
+      return "justify-start";
+    default:
+      return error;
+  }
 };
 
 // Animation
@@ -101,11 +121,12 @@ export const PAGESGLOBAL =  `w-full min-h-screen h-full ${PAGESGLOBALBG}`;
     // Structure de base menue
     // export const COLORSBARREMENUEV01 = `bg-gray-300 border-yellow-500 border-7`;
     const COLORSBARREMENUE = `nothing`;
+    export const NAVBAR = "relative px-5 py-[15px] rounded-[60px] backdrop-blur-[15px] shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-all duration-300 [&_*]:transition-all [&_*]:duration-300 [&_*:hover]:shadow-[0_8px_20px_rgba(0,0,0,0.35)] [&_*:hover]:-translate-y-[2px]"
     export const BARREMENUE = `gap-4 rounded-xl ${COLORSBARREMENUE}`;
 
     // const BANNIERE = ``;
-    export const GLOBALMENUE = `${DEVELOPERVIEW(developer, 1)} ${FLEXROW} gap-1 p-1 rounded-xl`;
-    export const MENUEBG = `bg-neutral-800 text-green-500 font-semibold transition-colors duration-300 mt-1`
+    export const GLOBALMENUE = `${DEVELOPERVIEW(developer, 1)} ${FLEXROW} ${DIRECTIONS("center")} gap-1 p-1 rounded-xl`;
+    export const MENUEBG = `bg-neutral-800 text-green-500 font-semibold transition-colors duration-300 mt-1 ${NAVBAR}`
         // Root Menue
         export const ROOTMENUE = `${developer ? DEVELOPERVIEW(developer, 2) : `nothing` } ${FLEXROW} ${BARREMENUE} justify-center w-[65%] h-full gap-4 px-4 py-2 rounded-lg ${MENUEBG}`;
         // Secondary Menue
