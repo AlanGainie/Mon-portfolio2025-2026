@@ -22,7 +22,7 @@ import Project2 from '../../template/pages/Project2.tsx';
 import LanguageC from '../../template/pages/C.tsx';
 
 // Styles utilitaires
-import { DOWNPAGESCROLLDOWN, FOOTER } from '../../styles/tw.ts';
+import { PAGESCROLLDOWN, FOOTER } from '../../styles/tw.ts';
 
 // Pages des sous-menus
 const homePageTab = [<Introduction />, <Sommaire />];
@@ -87,18 +87,39 @@ function SousMenue({ tab_menue1, displaysInf }: { tab_menue1: number, displaysIn
 }
 
 // Corps de page
-const BodyPage = ({ content, tab_menue1, tab_menue2, displaysInf }: 
-  { content?: JSX.Element, tab_menue1: number, tab_menue2?: number, displaysInf?: DisplaysInf }): JSX.Element => {
+const BodyPage = ({
+  content,
+  tab_menue1,
+  tab_menue2,
+  displaysInf
+}: {
+  content?: JSX.Element,
+  tab_menue1: number,
+  tab_menue2?: number,
+  displaysInf?: DisplaysInf
+}): JSX.Element => {
 
-  if (content) return content;
-
-  if (tab_menue2 !== undefined && displaysInf) {
-    return <SousMenue tab_menue1={tab_menue1} displaysInf={displaysInf} />;
+  if (content) {
+    return <div className={PAGESCROLLDOWN}>{content}</div>;
   }
 
-  // Fallback si pas de sous-menu
-  return displaySousMenue(tab_menue1, displaysInf ?? { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 });
-}
+  if (tab_menue2 !== undefined && displaysInf) {
+    return (
+      <div className={PAGESCROLLDOWN}>
+        <SousMenue tab_menue1={tab_menue1} displaysInf={displaysInf} />
+      </div>
+    );
+  }
+
+  return (
+    <div className={PAGESCROLLDOWN}>
+      {displaySousMenue(
+        tab_menue1,
+        displaysInf ?? { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 }
+      )}
+    </div>
+  );
+};
 
 // Composant Page principal
 function Page({

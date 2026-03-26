@@ -111,7 +111,7 @@ export const PAGESGLOBAL =  `w-full min-h-screen h-full ${PAGESGLOBALBG}`;
 // Structure style pages
 //___________________________
     const PAGESCROLLDOWNCOLORS = `${DEVELOPERVIEW(developer, 4)} bg-white/80 backdrop-blur-md shadow-2xl`;
-    export const PAGESCROLLDOWN = `${FLEXCOL} justify-center w-[80%] mt-[5%] ml-[10%] mr-[10%] mb-[10%] rounded-2xl gap-6 ${PAGESCROLLDOWNCOLORS}`;
+    export const PAGESCROLLDOWN = `${FLEXCOL} justify-center w-[80%] mt-[5%] ml-[10%] mr-[10%] mb-[10%] rounded-2xl gap-6 px-4 md:px-8 py-4 md:py-6 ${PAGESCROLLDOWNCOLORS}`;
     export const TOPPAGESCROLLDOWN = `${FLEXCOL} bg-gray-200 rounded-lg border-pink-50 border-7`;
     export const DOWNPAGESCROLLDOWN = `${FLEXCOL} rounded-lg border-pink-50 border-7`;
 
