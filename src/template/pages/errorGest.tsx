@@ -9,6 +9,7 @@ type ErrorType =
 type ErrorStateProps = {
   type?: ErrorType;
   target?: string;
+  name?: string;
   customTitle?: string;
   customMessage?: string;
 };
@@ -16,6 +17,7 @@ type ErrorStateProps = {
 function ErrorState({
   type = "unknown",
   target = "élément",
+  name,
   customTitle,
   customMessage,
 }: ErrorStateProps) {
@@ -60,8 +62,7 @@ function ErrorState({
       icon: "⌨️",
       title: "Erreur de saisie",
       message: "Les informations fournies semblent invalides ou incomplètes.",
-      advice:
-        "Corrige la saisie puis essaie à nouveau.",
+      advice: "Corrige la saisie puis essaie à nouveau.",
     },
     unknown: {
       icon: "⚠️",
@@ -73,18 +74,16 @@ function ErrorState({
   };
 
   const currentError = errorMap[type];
+  const displayTitle = customTitle || name || currentError.title;
+  const displayMessage = customMessage || currentError.message;
 
   return (
     <div className="error-state">
       <div className="error-state__icon">{currentError.icon}</div>
 
-      <h2 className="error-state__title">
-        {customTitle || currentError.title}
-      </h2>
+      <h2 className="error-state__title">{displayTitle}</h2>
 
-      <p className="error-state__message">
-        {customMessage || currentError.message}
-      </p>
+      <p className="error-state__message">{displayMessage}</p>
 
       <p className="error-state__advice">{currentError.advice}</p>
 

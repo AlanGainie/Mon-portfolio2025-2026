@@ -33,6 +33,7 @@ type AuthContextType = {
   user: AuthUser | null;
   login: (username: string, password: string) => LoginResult;
   logout: () => void;
+  switchAccountRole: (role: Role) => void;
   getLogs: () => AuthLog[];
   clearLogs: () => void;
   isBlocked: boolean;
@@ -106,6 +107,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
   };
 
+  const switchAccountRole = (role: Role) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      if (prev.role === role) return prev;
+
+      const updatedUser: AuthUser = {
+        ...prev,
+        role,
+      };
+
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updatedUser));
+      addLog(prev.username, role, "login", 0, `Changement de rôle vers ${role}`);
+
+      return updatedUser;
+    });
+  };
+
   const blockAccess = () => {
     setIsBlocked(true);
     localStorage.setItem(IS_BLOCKED_KEY, "true");
@@ -152,7 +170,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (newAttempts >= 10) {
         setIsBlocked(true);
         localStorage.setItem(IS_BLOCKED_KEY, "true");
-        addLog(username || "unknown", "unknown", "blocked", newAttempts, "DDOS accès restricted");
+        addLog(
+          username || "unknown",
+          "unknown",
+          "blocked",
+          newAttempts,
+          "DDOS accès restricted"
+        );
         return { success: false, message: "DDOS accès restricted" };
       }
 
@@ -191,6 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         newAttempts,
         `Point de vigilance ${newAttempts}`
       );
+
       return {
         success: false,
         message: `Identifiants incorrects. Vigilance ${newAttempts}.`,
@@ -232,12 +257,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(AUTH_LOGS_KEY);
   };
 
-  const value = useMemo(
+  const value = useMemo<AuthContextType>(
     () => ({
       isAuthenticated: user !== null,
       user,
       login,
       logout,
+      switchAccountRole,
       getLogs,
       clearLogs,
       isBlocked,
