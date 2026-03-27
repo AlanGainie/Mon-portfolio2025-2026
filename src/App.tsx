@@ -1,30 +1,25 @@
-// Se portfolio est réaliser en React 19 de fais quelques signature classique
-// comme JSX.Element deviennent à présent : React.JSX.Element toutefois je suis
-// en Typescript 5
+// Ce portfolio est réalisé en React 19.
+// Certaines signatures classiques comme JSX.Element deviennent React.JSX.Element.
+// Le projet utilise TypeScript 5.
 
-import './styles/index.css';
+import "./styles/index.css";
 import { useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
 // Connection
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { useAuth } from './auth/AuthContext';
-import ProtectedRoute from './auth/ProtectedRoute';
-import Login from './template/pages/Login';
+import { useAuth } from "./auth/AuthContext";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import Login from "./template/pages/Login";
+
 // Menue
-import { Menue } from './template/composants/Menue.tsx';
-import Page, { FooterPage } from './template/composants/Page.tsx';
-import AdminPreviewBar from './template/composants/AdminPreviewBar';
+import { Menue } from "./template/composants/Menue.tsx";
+import Page, { FooterPage } from "./template/composants/Page.tsx";
+import AdminPreviewBar from "./template/composants/AdminPreviewBar";
+
 // Pages
-// import Page from './template/composants/Page.tsx';
-import { GLOBALMENUE, PAGESGLOBAL } from './styles/tw.ts';
+import { GLOBALMENUE, PAGESGLOBAL } from "./styles/tw.ts";
 
-type PreviewRole = "admin" | "user";
-
-type PreviewProps = {
-  previewRole: PreviewRole;
-  setPreviewRole: React.Dispatch<React.SetStateAction<PreviewRole>>;
-};
-
-function Home({ previewRole, setPreviewRole }: PreviewProps) {
+function Home() {
   const { isAuthenticated, user, getLogs, clearLogs, unblockAccess } = useAuth();
   const [logs, setLogs] = useState(getLogs());
   const [isClearing, setIsClearing] = useState(false);
@@ -38,10 +33,10 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
     setLogs(getLogs());
   };
 
-  const handleClearLogs = async () => {
+  const handleClearLogs = () => {
     setIsClearing(true);
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       clearLogs();
       setLogs([]);
       setIsClearing(false);
@@ -60,18 +55,17 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
         alignItems: "center",
       }}
     >
-      <AdminPreviewBar
-        previewRole={previewRole}
-        setPreviewRole={setPreviewRole}
-        title="Page Login"
-      />
+      <AdminPreviewBar />
 
       <h1>Mon Portfolio</h1>
       <p>Bienvenue sur mon portfolio.</p>
 
       <Login onLogUpdate={() => setLogs(getLogs())} />
 
-      <div className="page-main-content" style={{ width: "100%", maxWidth: "900px", marginTop: "40px" }}>
+      <div
+        className="page-main-content"
+        style={{ width: "100%", maxWidth: "900px", marginTop: "40px" }}
+      >
         <h2 style={{ fontSize: "28px", marginBottom: "16px" }}>
           Historique des connexions
         </h2>
@@ -120,10 +114,8 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
                       <div>
                         <strong>{log.username}</strong> ({log.role}) a effectué{" "}
                         <strong>{log.action}</strong>
-
                         <br />
                         <span>Points : {log.severityPoints}</span>
-
                         <br />
                         <span className="log-date">
                           {new Date(log.timestamp).toLocaleString()}
@@ -172,25 +164,19 @@ function Home({ previewRole, setPreviewRole }: PreviewProps) {
   );
 }
 
-function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
+function AdminPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [actual_list_menue, setActuallistMenue] = useState(0);
 
   const handleLogout = () => {
     logout();
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
-    <div className={`${PAGESGLOBAL} page-with-toolbar`}>
-      <AdminPreviewBar
-        previewRole={previewRole}
-        setPreviewRole={setPreviewRole}
-        showLogout={true}
-        onLogout={handleLogout}
-        title="Page Admin"
-      />
+    <div className={`${PAGESGLOBAL} page-with-toolbar app-page`}>
+      <AdminPreviewBar showLogout={true} onLogout={handleLogout} />
 
       <div className={GLOBALMENUE}>
         <Menue
@@ -200,30 +186,24 @@ function AdminPage({ previewRole, setPreviewRole }: PreviewProps) {
       </div>
 
       <Page tab_menue1={actual_list_menue} footer="none" />
-      <FooterPage/>
+      <FooterPage />
     </div>
   );
 }
 
-function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
+function UserPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [actual_list_menue, setActuallistMenue] = useState(0);
 
   const handleLogout = () => {
     logout();
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
     <div className={`${PAGESGLOBAL} page-with-toolbar app-page`}>
-      <AdminPreviewBar
-        previewRole={previewRole}
-        setPreviewRole={setPreviewRole}
-        showLogout={true}
-        onLogout={handleLogout}
-        title="Page User"
-      />
+      <AdminPreviewBar showLogout={true} onLogout={handleLogout} />
 
       <div className={GLOBALMENUE}>
         <Menue
@@ -241,40 +221,25 @@ function UserPage({ previewRole, setPreviewRole }: PreviewProps) {
   );
 }
 
-// Définir une taille de fenêtre de + de 2000px pour pouvoir scroll down ou up
 function App() {
-  const [previewRole, setPreviewRole] = useState<PreviewRole>("user");
-
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Home
-            previewRole={previewRole}
-            setPreviewRole={setPreviewRole}
-          />
-        }
-      />
+      <Route path="/" element={<Home />} />
+
       <Route
         path="/admin"
         element={
           <ProtectedRoute requiredRole="admin">
-            <AdminPage
-              previewRole={previewRole}
-              setPreviewRole={setPreviewRole}
-            />
+            <AdminPage />
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/user"
         element={
           <ProtectedRoute requiredRole="user">
-            <UserPage
-              previewRole={previewRole}
-              setPreviewRole={setPreviewRole}
-            />
+            <UserPage />
           </ProtectedRoute>
         }
       />

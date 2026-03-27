@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
+
+type Role = "admin" | "user";
+type ScreenMode = "desktop" | "mobile" | "projector";
 
 type Props = {
-  previewRole: "admin" | "user";
-  setPreviewRole: React.Dispatch<React.SetStateAction<"admin" | "user">>;
   showLogout?: boolean;
   onLogout?: () => void;
-  title?: string;
 };
 
 const ADMIN_PREVIEW_CODE = "admin-view";
 
-type ScreenMode = "desktop" | "mobile" | "projector";
-
 export default function AdminPreviewBar({
-  previewRole,
-  setPreviewRole,
   showLogout,
   onLogout,
-  title,
 }: Props) {
   const [adminCode, setAdminCode] = useState("");
   const [error, setError] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { user, switchAccountRole } = useAuth();
+  const currentRole: Role = user?.role ?? "user";
 
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const savedTheme = localStorage.getItem("themeMode");
@@ -39,25 +44,45 @@ export default function AdminPreviewBar({
     return "desktop";
   });
 
-  useEffect(() => {
-    document.body.dataset.theme = theme;
-    localStorage.setItem("themeMode", theme);
-  }, [theme]);
+useEffect(() => {
+  document.body.dataset.role = currentRole;
+}, [currentRole]);
 
   useEffect(() => {
     document.body.dataset.screen = screenMode;
     localStorage.setItem("screenMode", screenMode);
   }, [screenMode]);
 
+  const isSwitchablePage =
+    location.pathname === "/admin" || location.pathname === "/user";
+
+  const canTogglePage = currentRole === "admin" && isSwitchablePage;
+
   const handleValidate = () => {
-    if (adminCode === ADMIN_PREVIEW_CODE) {
-      setPreviewRole("admin");
+    if (adminCode.trim() === ADMIN_PREVIEW_CODE) {
+      switchAccountRole("admin");
       setError("");
       return;
     }
 
-    setPreviewRole("user");
+    switchAccountRole("user");
     setError("Code admin invalide");
+  };
+
+  const handleTitleClick = () => {
+    if (!canTogglePage) return;
+
+    const nextPath = location.pathname === "/admin" ? "/user" : "/admin";
+
+    setIsFlipping(true);
+
+    window.setTimeout(() => {
+      navigate(nextPath);
+    }, 180);
+
+    window.setTimeout(() => {
+      setIsFlipping(false);
+    }, 420);
   };
 
   const handleScreenMode = () => {
@@ -94,41 +119,98 @@ export default function AdminPreviewBar({
     }
   };
 
-  return (
-    <div className="admin-preview-wrapper">
-      <span className="page-title">
-        {title || "Error"}
-      </span>
-      <div className="admin-preview-bar">
+  const pageLabel =
+    location.pathname === "/admin"
+      ? "Page Admin"
+      : location.pathname === "/user"
+      ? "Page User"
+      : "Page Login";
 
+  const nextPageLabel =
+    location.pathname === "/admin"
+      ? "Page User"
+      : location.pathname === "/user"
+      ? "Page Admin"
+      : "Page Login";
+
+  return (
+    <div className={`admin-preview-wrapper ${collapsed ? "collapsed" : ""}`}>
+      <button
+        type="button"
+        className="toggle-admin-bar"
+        onClick={() => setCollapsed((prev) => !prev)}
+        title={collapsed ? "Afficher la barre" : "Réduire la barre"}
+      >
+        ▲
+      </button>
+
+      <button
+        type="button"
+        className={`page-title page-title-button ${
+          canTogglePage ? "page-title-clickable" : ""
+        } ${isFlipping ? "page-title-flipping" : ""}`}
+        onClick={handleTitleClick}
+        title={
+          canTogglePage
+            ? location.pathname === "/admin"
+              ? "Aller vers la page user"
+              : "Aller vers la page admin"
+            : currentRole === "admin"
+            ? "Navigation inactive sur cette page"
+            : "Accès réservé au rôle admin"
+        }
+      >
+        <span className="page-title-inner">
+          <span className="page-title-face page-title-front">{pageLabel}</span>
+          <span className="page-title-face page-title-back">
+            {nextPageLabel}
+          </span>
+        </span>
+      </button>
+
+      <div className="admin-preview-bar">
         <input
           type="text"
           placeholder="Identifiant admin"
           value={adminCode}
-          onChange={(e) => setAdminCode(e.target.value)}
+          onChange={(e) => {
+            setAdminCode(e.target.value);
+            if (error) setError("");
+          }}
           className="admin-preview-input"
         />
 
-        <button onClick={handleValidate} className="admin-preview-button">
+        <button
+          type="button"
+          onClick={handleValidate}
+          className="admin-preview-button"
+          title="Activer le rôle admin"
+        >
           ✔
         </button>
 
         <span
           className={`role-indicator ${
-            previewRole === "admin" ? "role-admin" : "role-user"
+            currentRole === "admin" ? "role-admin" : "role-user"
           }`}
-          title={`Mode ${previewRole}`}
+          title={`Rôle ${currentRole}`}
         />
 
         <button
+          type="button"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="theme-toggle-button"
-          title={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
+          title={
+            theme === "dark"
+              ? "Passer en mode clair"
+              : "Passer en mode sombre"
+          }
         >
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
 
         <button
+          type="button"
           onClick={handleScreenMode}
           className="screen-toggle-button"
           title={getScreenTitle()}
@@ -138,6 +220,7 @@ export default function AdminPreviewBar({
 
         {showLogout && (
           <button
+            type="button"
             onClick={onLogout}
             className="logout-button"
             title="Se déconnecter"

@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 type Role = "admin" | "user";
@@ -11,13 +11,25 @@ export default function ProtectedRoute({
   requiredRole?: Role;
 }) {
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/" replace />;
+  // ✅ LOGIQUE CORRIGÉE
+  const hasAccess =
+    !requiredRole ||
+    user.role === requiredRole ||
+    (user.role === "admin" && requiredRole === "user");
+
+  if (!hasAccess) {
+    return (
+      <Navigate
+        to={user.role === "admin" ? "/admin" : "/user"}
+        replace
+      />
+    );
   }
 
   return <>{children}</>;

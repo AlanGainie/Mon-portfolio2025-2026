@@ -3,7 +3,7 @@ import '../../styles/index.css'
 import '../../styles/tw.ts';
 
 // Pages principales
-import ErrorGest from '../../template/pages/errorGest.tsx';
+import ErrorState from '../../template/pages/errorGest.tsx';
 import Epitech from '../../template/pages/Epitech.tsx';
 import AproposDeMoi from '../../template/pages/AproposDeMoi.tsx';
 import CurriculumVitae from '../../template/pages/CurriculumVitae.tsx';
@@ -30,7 +30,7 @@ const monCVTab = [<AproposDeMoi />, <CurriculumVitae />];
 const mesCompetencesTab = [<JavaScript />, <ReactLg />, <NodeJs />, <LanguageC />];
 const projetsTab = [<Project1 />, <Project2 />];
 const mesEtudesTab = [<Lycee />, <Epitech />, <ESMA />, <ESUP />];
-const contactsTab = [<ErrorGest name="pages" />, <Gmail />, <ErrorGest name="pages" />, <Others />];
+const contactsTab = [<ErrorState type="not_found" target="page" />, <Gmail />, <ErrorState type="not_found" target="page" />, <Others />];
 
 type DisplaysInf = { displayFirstMenuIndex: number; displaySecondMenuIndex: number };
 
@@ -48,7 +48,7 @@ function displaySousMenue(tab: number, displaysInf: DisplaysInf): JSX.Element {
   ];
 
   const selectedArray = pagesArrays[displaysInf.displayFirstMenuIndex] ?? [];
-  return selectedArray[tab] ?? <ErrorGest name="page" />;
+  return selectedArray[tab] ?? <ErrorState type="not_found" target="page" />;
 }
 
 // Header
