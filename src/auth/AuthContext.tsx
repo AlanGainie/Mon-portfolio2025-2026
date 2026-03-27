@@ -33,7 +33,6 @@ type AuthContextType = {
   user: AuthUser | null;
   login: (username: string, password: string) => LoginResult;
   logout: () => void;
-  switchAccountRole: (role: Role) => void;
   getLogs: () => AuthLog[];
   clearLogs: () => void;
   isBlocked: boolean;
@@ -64,14 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedUser = localStorage.getItem(AUTH_USER_KEY);
-
-    if (!savedUser) return;
-
-    try {
-      const parsedUser = JSON.parse(savedUser) as AuthUser;
-      setUser(parsedUser);
-    } catch {
-      localStorage.removeItem(AUTH_USER_KEY);
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser) as AuthUser;
+        setUser(parsedUser);
+      } catch {
+        localStorage.removeItem(AUTH_USER_KEY);
+      }
     }
   }, []);
 
@@ -95,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const logs: AuthLog[] = JSON.parse(localStorage.getItem(AUTH_LOGS_KEY) || "[]");
 
     const newLog: AuthLog = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: Date.now().toString(),
       username,
       role,
       action,
@@ -106,31 +104,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     logs.push(newLog);
     localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
-  };
-
-  const resetSecurityState = () => {
-    setFailedAttempts(0);
-    setLockedUntil(null);
-
-    localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
-    localStorage.removeItem(LOCKED_UNTIL_KEY);
-  };
-
-  const switchAccountRole = (role: Role) => {
-    setUser((prev) => {
-      if (!prev) return prev;
-      if (prev.role === role) return prev;
-
-      const updated: AuthUser = {
-        ...prev,
-        role,
-      };
-
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updated));
-      addLog(prev.username, role, "login", 0, `Changement de rôle vers ${role}`);
-
-      return updated;
-    });
   };
 
   const blockAccess = () => {
@@ -163,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const remaining = Math.ceil((lockedUntil - now) / 1000);
       return {
         success: false,
-        message: `Réessaie dans ${remaining}s`,
+        message: `Trop de tentatives. Réessaie dans ${remaining} seconde(s).`,
       };
     }
 
@@ -176,17 +149,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setFailedAttempts(newAttempts);
       localStorage.setItem(FAILED_ATTEMPTS_KEY, String(newAttempts));
 
+      if (newAttempts >= 10) {
+        setIsBlocked(true);
+        localStorage.setItem(IS_BLOCKED_KEY, "true");
+        addLog(username || "unknown", "unknown", "blocked", newAttempts, "DDOS accès restricted");
+        return { success: false, message: "DDOS accès restricted" };
+      }
+
+      if (newAttempts >= 5) {
+        const nextLock = now + 10000;
+        setLockedUntil(nextLock);
+        localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
+        addLog(
+          username || "unknown",
+          "unknown",
+          "error",
+          newAttempts,
+          "Délai de 10 secondes appliqué"
+        );
+        return { success: false, message: "Trop d'erreurs. Attente de 10 secondes." };
+      }
+
+      if (newAttempts >= 3) {
+        const nextLock = now + 5000;
+        setLockedUntil(nextLock);
+        localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
+        addLog(
+          username || "unknown",
+          "unknown",
+          "error",
+          newAttempts,
+          "Délai de 5 secondes appliqué"
+        );
+        return { success: false, message: "Trop d'erreurs. Attente de 5 secondes." };
+      }
+
       addLog(
         username || "unknown",
         "unknown",
         "error",
         newAttempts,
-        "Identifiants incorrects"
+        `Point de vigilance ${newAttempts}`
       );
-
       return {
         success: false,
-        message: "Identifiants incorrects",
+        message: `Identifiants incorrects. Vigilance ${newAttempts}.`,
       };
     }
 
@@ -198,7 +205,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(authUser);
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(authUser));
 
-    resetSecurityState();
+    setFailedAttempts(0);
+    setLockedUntil(null);
+    localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
+    localStorage.removeItem(LOCKED_UNTIL_KEY);
 
     addLog(foundUser.username, foundUser.role, "login", 0, "Connexion réussie");
 
@@ -222,13 +232,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(AUTH_LOGS_KEY);
   };
 
-  const value = useMemo<AuthContextType>(
+  const value = useMemo(
     () => ({
       isAuthenticated: user !== null,
       user,
       login,
       logout,
-      switchAccountRole,
       getLogs,
       clearLogs,
       isBlocked,

@@ -34,6 +34,7 @@ export default function AdminPreviewBar({
 
   const [screenMode, setScreenMode] = useState<ScreenMode>(() => {
     const savedScreen = localStorage.getItem("screenMode");
+
     if (
       savedScreen === "desktop" ||
       savedScreen === "mobile" ||
@@ -41,17 +42,23 @@ export default function AdminPreviewBar({
     ) {
       return savedScreen;
     }
+
     return "desktop";
   });
 
-useEffect(() => {
-  document.body.dataset.role = currentRole;
-}, [currentRole]);
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+    localStorage.setItem("themeMode", theme);
+  }, [theme]);
 
   useEffect(() => {
     document.body.dataset.screen = screenMode;
     localStorage.setItem("screenMode", screenMode);
   }, [screenMode]);
+
+  useEffect(() => {
+    document.body.dataset.role = currentRole;
+  }, [currentRole]);
 
   const isSwitchablePage =
     location.pathname === "/admin" || location.pathname === "/user";
