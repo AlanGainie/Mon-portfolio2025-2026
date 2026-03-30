@@ -19,6 +19,7 @@ const placeholderImage = 'https://placehold.co/1200x700?text=Chargement...';
 const placeholderPdf = '#';
 const placeholderSlides = '#';
 const placeholderVideo = '#';
+const isMobile = document.body.dataset.screen === "mobile";
 
 const summaryLinks = [
   { id: 'video-intro', label: 'Vidéo explicative' },
@@ -145,7 +146,7 @@ function SectionTitle({
 
 function HomePage() {
   const [isIntroOpen, setIsIntroOpen] = useState(true);
-
+  
   const cvSlides = cvs.map((cv) => (
     <div key={cv.title} className="home-cv-slide">
       <img
@@ -268,8 +269,9 @@ function HomePage() {
           <div className="home-photo-card">
             <Crop
               path={identity_picture}
-              height={500}
-              width={500}
+              height={isMobile ? 425 : 550}
+              width={isMobile ? 425 : 550}
+              className="identite"
               errorloadtext="photo d'identité"
               legende="Photo d'identité mai 2025"
             />

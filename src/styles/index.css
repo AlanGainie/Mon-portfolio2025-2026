@@ -1859,6 +1859,8 @@ body[data-theme="light"] .home-video-overlay:hover {
   scroll-margin-top: 100px;
 }
 
+
+
 html {
   scroll-behavior: smooth;
 }
@@ -2224,4 +2226,61 @@ body[data-screen="mobile"] .buttontrashlogs {
 
 body[data-screen="projector"] .buttontrashlogs {
   transform: translateX(calc(50% - 430px));
+}
+
+body[data-screen="mobile"] .home-profile-content {
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-screen="mobile"] .home-subcard {
+  width: 85%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+body[data-screen="mobile"] .home-paragraph {
+  width: 85%;
+  max-width: 100%;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+body[data-screen="mobile"] .home-highlight-card {
+  width: 85%;
+  max-width: 100%;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+body[data-screen="mobile"] .home-profile-content img {
+  width: 85%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body[data-screen="mobile"] .identite {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body[data-screen="mobile"] .home-photo-card {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body[data-screen="mobile"] .home-video-grid,
+body[data-screen="mobile"] .home-profile-grid,
+body[data-screen="mobile"] .home-summary-grid,
+body[data-screen="mobile"] .home-mini-grid,
+body[data-screen="mobile"] .home-evaluation-grid {
+  grid-template-columns: 1fr;
 }
