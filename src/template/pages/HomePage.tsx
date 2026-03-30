@@ -15,6 +15,9 @@ import cvAlternance2026 from '../../assets/picture/cv/CV-alternance-2026-alan-ga
 import cvRechercheInterim20252026 from '../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png';
 import cvStage2026 from '../../assets/picture/cv/CV-stage-2026-alan-gainie.png';
 
+import e5Image from '../../assets/picture/E5.png';
+// import e6Image from '../../assets/picture/E6.png';
+
 const placeholderImage = 'https://placehold.co/1200x700?text=Chargement...';
 const placeholderPdf = '#';
 const placeholderSlides = '#';
@@ -115,7 +118,8 @@ const evaluations = [
     description:
       'Présentation de l’épreuve E5, des compétences mobilisées, des productions réalisées et des documents associés.',
     pdf: placeholderPdf,
-    slides: placeholderSlides,
+    slides: "https://docs.google.com/presentation/d/1u0ChnZLOcgueSsgz5B9L3QYoJ4WrlFDKDiEni9-Hkdg/edit?usp=sharing",
+    image: e5Image || placeholderImage,
   },
   {
     title: 'Épreuve E6',
@@ -123,6 +127,7 @@ const evaluations = [
       'Présentation de l’épreuve E6, du projet support, des objectifs techniques et des livrables de soutenance.',
     pdf: placeholderPdf,
     slides: placeholderSlides,
+    image: placeholderImage,
   },
 ];
 
@@ -349,7 +354,7 @@ function HomePage() {
             <article key={evaluation.title} className="home-evaluation-card">
               <div className="home-evaluation-image-box">
                 <img
-                  src={placeholderImage}
+                  src={evaluation.image}
                   alt={`Illustration de ${evaluation.title} en chargement`}
                   className="home-evaluation-image"
                 />
@@ -364,9 +369,13 @@ function HomePage() {
                     <FileText className="h-4 w-4" />
                     Télécharger le PDF
                   </a>
-
-                  <a href={evaluation.slides} className="home-action-link home-action-link-primary">
-                    <Presentation className="h-4 w-4" />
+                  <a
+                    href={evaluation.slides}
+                    className={`home-action-link home-action-link-primary ${
+                      evaluation.slides === placeholderSlides ? "disabled-link" : ""
+                    }`}
+                  >
+                  <Presentation className="h-4 w-4" />
                     Voir le diaporama
                   </a>
                 </div>
