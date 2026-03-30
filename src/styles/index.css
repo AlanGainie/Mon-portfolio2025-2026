@@ -2157,29 +2157,41 @@ html {
     display: none;
   }
 
-  .sidebar-shell {
-    position: fixed;
-    top: 50%;
-    left: var(--sidebar-desktop-left);
-    transform: translateY(-50%);
-    z-index: 2;
+  @media (min-width: 1025px) {
+    .sidebar-shell {
+      position: fixed;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
 
-    width: auto;
-    max-height: calc(100vh - var(--previewbar-height) - 32px);
-    padding: 0;
+      width: fit-content;
+      max-width: calc(100vw - 48px);
+      max-height: calc(100vh - var(--previewbar-height) - 32px);
+      padding: 0;
 
-    overflow-y: auto;
-    overflow-x: visible;
+      overflow-y: auto;
+      overflow-x: visible;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
 
-    border-right: none;
-    background: transparent;
-    backdrop-filter: none;
-    box-shadow: none;
+      border-right: none;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    /* On neutralise les widths en % de ROOTMENUE / SECONDARYMENUE
+      uniquement dans le menu desktop centré */
+    .sidebar-shell > :not(.sidebar-shell-header) {
+      width: fit-content !important;
+      max-width: 100%;
+      align-self: center;
+    }
   }
 
   .sidebar-shell-header,
