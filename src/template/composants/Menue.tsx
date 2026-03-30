@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BarreMenue from '../organismes/BarreMenue.tsx';
 import {
   ROOTMENUE,
@@ -11,10 +11,6 @@ import ErrorGest from '../pages/errorGest.tsx';
 
 import { OnlyOnedMenue, MenueDefinedTypePage } from '../../../datas/Menue.tsx';
 
-/**
- * Ids d’ancre utilisés par HomePage.
- * L’ordre doit correspondre à l’ordre des sections affichées dans la page d’accueil.
- */
 const HOME_ANCHOR_IDS = [
   'video-intro',
   'sommaire',
@@ -25,11 +21,6 @@ const HOME_ANCHOR_IDS = [
 
 type SetActualListMenue = React.Dispatch<React.SetStateAction<number>>;
 
-/**
- * Gère le clic sur le menu.
- * - mode "multi-pages" : changement de page classique
- * - mode "ancre" : changement vers HomePage + mise à jour du hash
- */
 const handleClick = (
   tabIndex: number,
   setActuallistMenue: SetActualListMenue,
@@ -73,9 +64,6 @@ interface ContentDefaultMenueProps {
   displaysInf?: DisplayInfo[];
 }
 
-/**
- * Retourne le contenu par défaut quand on utilise le mode "page par page".
- */
 export const ContentDefaultMenue: React.FC<ContentDefaultMenueProps> = ({
   tab,
   displaysInf,
@@ -97,11 +85,6 @@ interface ContentMenuesType {
   actualmenue: number;
 }
 
-/**
- * Retourne le contenu selon le mode :
- * - ancre / undefined : affiche toutes les sections dans une seule page
- * - multi-pages : affiche une seule page à la fois
- */
 export const ContentMenues: React.FC<ContentMenuesType> = ({
   type,
   actualmenue,
@@ -159,9 +142,6 @@ interface MenueProps {
   setActuallistMenue: SetActualListMenue;
 }
 
-/**
- * Affiche un ou plusieurs menus en gardant la feuille de style existante.
- */
 export const Menue: React.FC<MenueProps> = ({
   content,
   nbr,
@@ -169,35 +149,82 @@ export const Menue: React.FC<MenueProps> = ({
   actual_list_menue: _actual_list_menue,
   setActuallistMenue,
 }): React.ReactNode => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   if (content) return content;
 
   const menuNames = OnlyOnedMenue?.names ?? [];
   const menuIcons = OnlyOnedMenue?.icones ?? [];
   const menuSections = OnlyOnedMenue?.sections ?? [];
 
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
+  const onTabClick = (tabIndex: number) => {
+    handleClick(tabIndex, setActuallistMenue, type);
+    closeSidebar();
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
-      {/* Premier menu à gauche */}
-      <BarreMenue
-        className={ROOTMENUE}
-        setTab={(tabIndex: number) =>
-          handleClick(tabIndex, setActuallistMenue, type)
-        }
-        tabs={menuNames}
-        icons={menuIcons}
+      <button
+        type="button"
+        className="sidebar-toggle-button"
+        onClick={() => setIsSidebarOpen((prev) => !prev)}
+        aria-label={isSidebarOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+        aria-expanded={isSidebarOpen}
+      >
+        <span className="sidebar-toggle-line" />
+        <span className="sidebar-toggle-line" />
+        <span className="sidebar-toggle-line" />
+      </button>
+
+      <div
+        className={`sidebar-overlay ${isSidebarOpen ? 'sidebar-overlay-open' : ''}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
       />
 
-      {/* Second menu */}
-      {Number(nbr) > 1 && (
+      <div className={`sidebar-shell ${isSidebarOpen ? 'sidebar-shell-open' : ''}`}>
+        <div className="sidebar-shell-header">
+          <button
+            type="button"
+            className="sidebar-close-button"
+            onClick={closeSidebar}
+            aria-label="Fermer le menu"
+          >
+            ×
+          </button>
+        </div>
+
         <BarreMenue
-          className={SECONDARYMENUE}
-          setTab={(tabIndex: number) =>
-            handleClick(tabIndex, setActuallistMenue, type)
-          }
-          tabs={menuSections.map((_, i) => menuNames[i] ?? `Section ${i + 1}`)}
-          icons={menuSections.map((_, i) => menuIcons[i] ?? null)}
+          className={ROOTMENUE}
+          setTab={(tabIndex: number) => onTabClick(tabIndex)}
+          tabs={menuNames}
+          icons={menuIcons}
         />
-      )}
+
+        {Number(nbr) > 1 && (
+          <BarreMenue
+            className={SECONDARYMENUE}
+            setTab={(tabIndex: number) => onTabClick(tabIndex)}
+            tabs={menuSections.map((_, i) => menuNames[i] ?? `Section ${i + 1}`)}
+            icons={menuSections.map((_, i) => menuIcons[i] ?? null)}
+          />
+        )}
+      </div>
     </>
   );
 };
