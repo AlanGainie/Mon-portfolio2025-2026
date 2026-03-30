@@ -185,7 +185,12 @@ function AdminPage() {
         />
       </div>
 
-      <Page tab_menue1={actual_list_menue} footer="none" />
+      <Page
+        tab_menue1={actual_list_menue}
+        footer="none"
+        enableAnchors={actual_list_menue === 0}
+      />
+
       <FooterPage />
     </div>
   );
@@ -213,7 +218,11 @@ function UserPage() {
       </div>
 
       <div className="page-main-content">
-        <Page tab_menue1={actual_list_menue} footer="none" />
+        <Page
+          tab_menue1={actual_list_menue}
+          footer="none"
+          enableAnchors={actual_list_menue === 0}
+        />
       </div>
 
       <FooterPage />

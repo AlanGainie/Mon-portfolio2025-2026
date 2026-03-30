@@ -1,119 +1,205 @@
+import React from 'react';
 import BarreMenue from '../organismes/BarreMenue.tsx';
-import { ROOTMENUE, SECONDARYMENUE, PAGESCROLLDOWN, PAGESGLOBAL, TOPPAGESCROLLDOWN } from '../../styles/tw.ts';
+import {
+  ROOTMENUE,
+  SECONDARYMENUE,
+  PAGESCROLLDOWN,
+  PAGESGLOBAL,
+  TOPPAGESCROLLDOWN,
+} from '../../styles/tw.ts';
 import ErrorGest from '../pages/errorGest.tsx';
 
-import {OnlyOnedMenue, MenueDefinedTypePage} from '../../../datas/Menue.tsx'
-
-// TODO: Finir les JS doxygene
+import { OnlyOnedMenue, MenueDefinedTypePage } from '../../../datas/Menue.tsx';
 
 /**
- * This var is a hook reaction when used a click in menue
+ * Ids d’ancre utilisés par HomePage.
+ * L’ordre doit correspondre à l’ordre des sections affichées dans la page d’accueil.
  */
-const handleClick = (tabIndex: number,
-    setActuallistMenue: React.Dispatch<React.SetStateAction<number>>
-    ) => {
+const HOME_ANCHOR_IDS = [
+  'video-intro',
+  'sommaire',
+  'presentation-candidat',
+  'cv-carousel',
+  'epreuves-e5-e6',
+] as const;
 
-    setActuallistMenue(tabIndex);
+type SetActualListMenue = React.Dispatch<React.SetStateAction<number>>;
+
+/**
+ * Gère le clic sur le menu.
+ * - mode "multi-pages" : changement de page classique
+ * - mode "ancre" : changement vers HomePage + mise à jour du hash
+ */
+const handleClick = (
+  tabIndex: number,
+  setActuallistMenue: SetActualListMenue,
+  type?: MenueDefinedTypePage
+) => {
+  if (type === 'ancre' || type === undefined) {
+    setActuallistMenue(0);
+
+    const targetAnchor = HOME_ANCHOR_IDS[tabIndex];
+    if (!targetAnchor) return;
+
+    if (window.location.hash === `#${targetAnchor}`) {
+      const target = document.getElementById(targetAnchor);
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+      return;
+    }
+
+    window.location.hash = targetAnchor;
     return;
+  }
+
+  setActuallistMenue(tabIndex);
+
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname);
+  }
 };
+
+interface DisplayInfo {
+  displayFirstMenuIndex: number;
+  displaySecondMenuIndex: number;
+}
 
 interface ContentDefaultMenueProps {
   tab: number;
-  displaysInf?: {
-    displayFirstMenuIndex: number;
-    displaySecondMenuIndex: number;
-  }[];
+  displaysInf?: DisplayInfo[];
 }
 
 /**
- * The goal of this function is to return content when the menus set error
- * when I have no menue : I have default menue. Is better than UX and error
- * gest.
- * @param tab
- * @param displaysInf
- * @returns React.JSX.Element : The content have to print in page.
+ * Retourne le contenu par défaut quand on utilise le mode "page par page".
  */
-export const ContentDefaultMenue: React.FC<ContentDefaultMenueProps> = ({ tab, displaysInf }) => {
-  displaysInf?.[0] && (displaysInf[0].displayFirstMenuIndex = tab);
-  return (
-    OnlyOnedMenue.sections[tab]
-    ?? <ErrorGest name="Loading page failed." />
+export const ContentDefaultMenue: React.FC<ContentDefaultMenueProps> = ({
+  tab,
+  displaysInf,
+}) => {
+  if (displaysInf?.[0]) {
+    displaysInf[0] = {
+      ...displaysInf[0],
+      displayFirstMenuIndex: tab,
+    };
+  }
+
+  return OnlyOnedMenue.sections?.[tab] ?? (
+    <ErrorGest name="Loading page failed." />
   );
 };
 
 interface ContentMenuesType {
-    type?: MenueDefinedTypePage;
-    actualmenue: number;
+  type?: MenueDefinedTypePage;
+  actualmenue: number;
 }
 
 /**
- * The goal of this function is to return content when one or more menues
- * already existe.
- * @param type Is a choice enter differents methodes to read page:
- * - Page by ancre : type = ancre or undefined
- * - Page by page : type = multi-pages
- * @returns React.JSX.Element : The content have to print in page.
+ * Retourne le contenu selon le mode :
+ * - ancre / undefined : affiche toutes les sections dans une seule page
+ * - multi-pages : affiche une seule page à la fois
  */
-export const ContentMenues: React.FC<ContentMenuesType> = ({type, actualmenue}: ContentMenuesType): React.JSX.Element => {
-    const displaysInf: { displayFirstMenuIndex: number; displaySecondMenuIndex: number }[] = [
-        { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 }
-    ];
-    if (type === "multi-pages") {
-        return (
-            <div className={PAGESCROLLDOWN}>
-                {/* Définir une taille de fenêtre de + de 2000px pour pouvoir scroll down ou up */}
-                <div className={PAGESGLOBAL}>
-                    {/* Affiche le résultat des tab de la première barre de menu */}
-                    <div className={TOPPAGESCROLLDOWN}>
-                        <ContentDefaultMenue tab={actualmenue} displaysInf={displaysInf}/>
-                    </div>
-                    {/* {tab_menue2 && sousMenue({ tab_menue2, displaysInf })} */}
-                </div>
-            </div>
-        );
-    } else if (type === undefined || type === "ancre") {
-        if (!OnlyOnedMenue?.sections?.length) {
-            return <div>Chargement…</div>;
-        }
-        return (
-            <div className={PAGESGLOBAL}>
-                {OnlyOnedMenue.sections.map((sectionContent, index) => (
-                    <div key={index} className={TOPPAGESCROLLDOWN}>
-                        {sectionContent}
-                    </div>
-                ))}
-            </div>
-        );
-    } else {
-        return <ErrorGest name="Loading page critical error detected."/>;
+export const ContentMenues: React.FC<ContentMenuesType> = ({
+  type,
+  actualmenue,
+}): React.JSX.Element => {
+  const displaysInf: DisplayInfo[] = [
+    { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 },
+  ];
+
+  if (type === 'multi-pages') {
+    return (
+      <div className={PAGESCROLLDOWN}>
+        <div className={PAGESGLOBAL}>
+          <div className={TOPPAGESCROLLDOWN}>
+            <ContentDefaultMenue tab={actualmenue} displaysInf={displaysInf} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === undefined || type === 'ancre') {
+    if (!OnlyOnedMenue?.sections?.length) {
+      return <div>Chargement…</div>;
     }
-};
-
-/**
- * @type React.FC (Fonction React)
- * @param content Is a content replace menue if it enter
- * @param nbr is a number of menue and behind-menue you want
- * @returns One or more menue
- */
-export const Menue = ({ content, nbr, actual_list_menue: _actual_list_menue, setActuallistMenue}:
-    { content?: any, nbr?: number | undefined, actual_list_menue: number, setActuallistMenue: React.Dispatch<React.SetStateAction<number>>}): (React.ReactNode | string) => {
-
-    if (content) return content;
 
     return (
-        <>
-            {/* Premier menu à gauche */}
-            <BarreMenue
-                className={ROOTMENUE}
-                setTab={(tabIndex) => handleClick(tabIndex, setActuallistMenue)}
-                tabs={OnlyOnedMenue.names}
-                icons={OnlyOnedMenue.icones} />
-            {/* Second menu */}
-            {(Number(nbr) > 1) && <BarreMenue
-                className={SECONDARYMENUE}
-                setTab={(tabIndex) => handleClick(tabIndex, setActuallistMenue)}
-                tabs={OnlyOnedMenue.sections.map((_, i) => OnlyOnedMenue.names[i])}
-                icons={OnlyOnedMenue.sections.map((_, i) => OnlyOnedMenue.icones[i])} />}
-        </>
+      <div className={PAGESCROLLDOWN}>
+        <div className={PAGESGLOBAL}>
+          {OnlyOnedMenue.sections.map((sectionContent, index) => {
+            const anchorId = HOME_ANCHOR_IDS[index] ?? `section-${index}`;
+
+            return (
+              <div
+                key={anchorId}
+                id={anchorId}
+                className={TOPPAGESCROLLDOWN}
+              >
+                {sectionContent}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
+  }
+
+  return <ErrorGest name="Loading page critical error detected." />;
 };
+
+interface MenueProps {
+  content?: React.ReactNode;
+  nbr?: number;
+  type?: MenueDefinedTypePage;
+  actual_list_menue: number;
+  setActuallistMenue: SetActualListMenue;
+}
+
+/**
+ * Affiche un ou plusieurs menus en gardant la feuille de style existante.
+ */
+export const Menue: React.FC<MenueProps> = ({
+  content,
+  nbr,
+  type,
+  actual_list_menue: _actual_list_menue,
+  setActuallistMenue,
+}): React.ReactNode => {
+  if (content) return content;
+
+  const menuNames = OnlyOnedMenue?.names ?? [];
+  const menuIcons = OnlyOnedMenue?.icones ?? [];
+  const menuSections = OnlyOnedMenue?.sections ?? [];
+
+  return (
+    <>
+      {/* Premier menu à gauche */}
+      <BarreMenue
+        className={ROOTMENUE}
+        setTab={(tabIndex: number) =>
+          handleClick(tabIndex, setActuallistMenue, type)
+        }
+        tabs={menuNames}
+        icons={menuIcons}
+      />
+
+      {/* Second menu */}
+      {Number(nbr) > 1 && (
+        <BarreMenue
+          className={SECONDARYMENUE}
+          setTab={(tabIndex: number) =>
+            handleClick(tabIndex, setActuallistMenue, type)
+          }
+          tabs={menuSections.map((_, i) => menuNames[i] ?? `Section ${i + 1}`)}
+          icons={menuSections.map((_, i) => menuIcons[i] ?? null)}
+        />
+      )}
+    </>
+  );
+};
+
+export default Menue;
