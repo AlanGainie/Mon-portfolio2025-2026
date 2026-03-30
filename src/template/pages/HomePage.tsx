@@ -22,7 +22,7 @@ const placeholderImage = 'https://placehold.co/1200x700?text=Chargement...';
 const placeholderPdf = '#';
 const placeholderSlides = '#';
 const placeholderVideo = '#';
-const isMobile = document.body.dataset.screen === "mobile";
+const isMobile = document.body.dataset.screen === 'mobile';
 
 const summaryLinks = [
   { id: 'video-intro', label: 'Vidéo explicative' },
@@ -115,19 +115,19 @@ const cvs = [
 const evaluations = [
   {
     title: 'Épreuve E5',
-    description:
-      'Présentation de l’épreuve E5, des compétences mobilisées, des productions réalisées et des documents associés.',
+    description: '...',
     pdf: placeholderPdf,
-    slides: "https://docs.google.com/presentation/d/1u0ChnZLOcgueSsgz5B9L3QYoJ4WrlFDKDiEni9-Hkdg/edit?usp=sharing",
+    slides: '...',
     image: e5Image || placeholderImage,
+    folder: 'https://docs.google.com/document/d/1ipmgqLhD70Hwqf5SAHqn8d6DnIIKaJoxR_Cg7jxdf5o/edit?usp=sharing',
   },
   {
     title: 'Épreuve E6',
-    description:
-      'Présentation de l’épreuve E6, du projet support, des objectifs techniques et des livrables de soutenance.',
+    description: '...',
     pdf: placeholderPdf,
     slides: placeholderSlides,
     image: placeholderImage,
+    folder: 'https://docs.google.com/document/d/1PvUo-bFnqNp4FG34bKa-6kPdfJXWJpPw9go94K8vE1k/edit?usp=sharing',
   },
 ];
 
@@ -151,7 +151,7 @@ function SectionTitle({
 
 function HomePage() {
   const [isIntroOpen, setIsIntroOpen] = useState(true);
-  
+
   const cvSlides = cvs.map((cv) => (
     <div key={cv.title} className="home-cv-slide">
       <img
@@ -350,38 +350,73 @@ function HomePage() {
         />
 
         <div className="home-evaluation-grid">
-          {evaluations.map((evaluation) => (
-            <article key={evaluation.title} className="home-evaluation-card">
-              <div className="home-evaluation-image-box">
-                <img
-                  src={evaluation.image}
-                  alt={`Illustration de ${evaluation.title} en chargement`}
-                  className="home-evaluation-image"
-                />
-              </div>
+          {evaluations.map((evaluation) => {
+            const isPdfDisabled = !evaluation.pdf || evaluation.pdf === '#';
+            const isSlidesDisabled = !evaluation.slides || evaluation.slides === '#';
+            const isFolderDisabled = !evaluation.folder || evaluation.folder === '#';
 
-              <div className="home-evaluation-content">
-                <h3 className="home-evaluation-title">{evaluation.title}</h3>
-                <p className="home-paragraph home-evaluation-text">{evaluation.description}</p>
-
-                <div className="home-evaluation-actions">
-                  <a href={evaluation.pdf} className="home-action-link home-action-link-secondary">
-                    <FileText className="h-4 w-4" />
-                    Télécharger le PDF
-                  </a>
-                  <a
-                    href={evaluation.slides}
-                    className={`home-action-link home-action-link-primary ${
-                      evaluation.slides === placeholderSlides ? "disabled-link" : ""
-                    }`}
-                  >
-                  <Presentation className="h-4 w-4" />
-                    Voir le diaporama
-                  </a>
+            return (
+              <article key={evaluation.title} className="home-evaluation-card">
+                <div className="home-evaluation-image-box">
+                  <img
+                    src={evaluation.image}
+                    alt={`Illustration de ${evaluation.title}`}
+                    className="home-evaluation-image"
+                  />
                 </div>
-              </div>
-            </article>
-          ))}
+
+                <div className="home-evaluation-content">
+                  <h3 className="home-evaluation-title">{evaluation.title}</h3>
+                  <p className="home-paragraph home-evaluation-text">
+                    {evaluation.description}
+                  </p>
+
+                  <div className="home-evaluation-actions">
+                    <a
+                      href={evaluation.pdf}
+                      className={`home-action-link home-action-link-secondary ${
+                        isPdfDisabled ? 'disabled-link' : ''
+                      }`}
+                      onClick={(e) => isPdfDisabled && e.preventDefault()}
+                      target={isPdfDisabled ? undefined : '_blank'}
+                      rel={isPdfDisabled ? undefined : 'noopener noreferrer'}
+                      title={isPdfDisabled ? 'PDF non disponible' : 'Télécharger le PDF'}
+                    >
+                      <FileText className="h-4 w-4" />
+                      Télécharger le PDF
+                    </a>
+
+                    <a
+                      href={evaluation.slides}
+                      className={`home-action-link home-action-link-primary ${
+                        isSlidesDisabled ? 'disabled-link' : ''
+                      }`}
+                      onClick={(e) => isSlidesDisabled && e.preventDefault()}
+                      target={isSlidesDisabled ? undefined : '_blank'}
+                      rel={isSlidesDisabled ? undefined : 'noopener noreferrer'}
+                      title={isSlidesDisabled ? 'Diaporama non disponible' : 'Voir le diaporama'}
+                    >
+                      <Presentation className="h-4 w-4" />
+                      Voir le diaporama
+                    </a>
+
+                    <a
+                      href={evaluation.folder}
+                      className={`home-action-link home-action-link-folder ${
+                        isFolderDisabled ? 'disabled-link' : ''
+                      }`}
+                      onClick={(e) => isFolderDisabled && e.preventDefault()}
+                      target={isFolderDisabled ? undefined : '_blank'}
+                      rel={isFolderDisabled ? undefined : 'noopener noreferrer'}
+                      title={isFolderDisabled ? 'Dossier non disponible' : 'Voir le dossier'}
+                    >
+                      📁 Voir le dossier
+                    </a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
     </div>

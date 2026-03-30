@@ -2294,3 +2294,13 @@ body[data-screen="mobile"] .home-evaluation-grid {
   box-shadow: none !important;
   opacity: 0.7;
 }
+
+.home-action-link-folder {
+  background: var(--bg-soft);
+  border-color: var(--info);
+  color: var(--text-strong);
+}
+
+.home-action-link-folder:hover {
+  box-shadow: 0 0 8px var(--info);
+}
