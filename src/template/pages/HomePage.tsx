@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, FileText, Presentation, PlayCircle } from 'lucide-react';
 import { FLEXCOL } from '../../styles/tw';
 import identity_picture from '../../assets/picture/IMG_20250129_092536_199.jpg';
+import terminal from '../../assets/picture/description.png';
 import Crop from '../composants/Crop';
 import ButtonTypewriter from '../composants/Typewriter';
 import Carrousel from '../composants/Carrousel';
@@ -278,11 +279,11 @@ function HomePage() {
             <div className="home-subcard">
               <h3 className="home-subcard-title">Qui suis-je ?</h3>
               <p className="home-paragraph">
-                Cette zone sert à présenter ton parcours, ton cursus, tes centres d’intérêt
-                techniques, ainsi que tes compétences principales. Elle permet aussi d’ajouter
-                une présentation plus humaine et plus professionnelle que la simple page d’accueil.
+                Étudiant en BTS SIO 2ᵉ année (SLAM) à Rennes, je suis créatif et je me suis fixé comme objectif d’en apprendre toujours plus, jour après jour. Passionné par le développement informatique, je suis curieux et motivé. Je souhaite approfondir mes compétences en développement web et data, et contribuer activement à des projets concrets.
               </p>
             </div>
+
+            <img src={terminal} alt="Terminal de présentation du candidat" />
 
             <div className="home-mini-grid">
               <div className="home-subcard">
@@ -296,8 +297,7 @@ function HomePage() {
               <div className="home-subcard">
                 <h4 className="home-mini-title">Objectifs</h4>
                 <p className="home-mini-text">
-                  Présenter mon profil, valoriser mes projets et faciliter l’accès à mes
-                  supports de candidature et de soutenance.
+                  Je cherche à développer mes compétences afin de devenir développeur et d’étoffer mon apprentissage en milieu professionnel.
                 </p>
               </div>
             </div>
@@ -305,8 +305,7 @@ function HomePage() {
             <div className="home-highlight-card">
               <h4 className="home-highlight-title">Phrase d’accroche</h4>
               <p className="home-highlight-text">
-                Tu pourras ici ajouter une courte phrase pour résumer ta spécialité,
-                ta motivation ou la valeur ajoutée de ton profil.
+                « De futur développeur à magicien du clavier »
               </p>
             </div>
           </div>
