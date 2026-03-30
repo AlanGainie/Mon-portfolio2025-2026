@@ -14,7 +14,7 @@ import Login from "./template/pages/Login";
 // Menue
 import { Menue } from "./template/composants/Menue.tsx";
 import Page, { FooterPage } from "./template/composants/Page.tsx";
-import AdminPreviewBar from "./template/composants/AdminPreviewBar";
+import AdminPreviewBar from "./template/composants/AdminPreviewBar.tsx";
 
 // Pages
 import { GLOBALMENUE, PAGESGLOBAL } from "./styles/tw.ts";
@@ -73,13 +73,7 @@ function Home() {
         <button
           onClick={handleClearLogs}
           disabled={isClearing}
-          style={{
-            marginBottom: "20px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "10px",
-            opacity: isClearing ? 0.8 : 1,
-          }}
+          className={"buttontrashlogs"}
         >
           {isClearing && <span className="loader"></span>}
           {isClearing ? "Vidage..." : "Vider les logs"}
