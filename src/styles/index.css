@@ -2304,3 +2304,15 @@ body[data-screen="mobile"] .home-evaluation-grid {
 .home-action-link-folder:hover {
   box-shadow: 0 0 8px var(--info);
 }
+
+body[data-env="dev"] {
+  border: 4px solid orange;
+}
+
+body[data-env="test"] {
+  border: 4px solid blue;
+}
+
+body[data-env="prod"] {
+  border: 4px solid green;
+}

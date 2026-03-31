@@ -10,6 +10,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Login from "./template/pages/Login";
+import EnvBadge from "./template/composants/EnvBadge";
 
 // Menue
 import { Menue } from "./template/composants/Menue.tsx";
@@ -238,27 +239,31 @@ function UserPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <>
+      <EnvBadge />
 
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminPage />
-          </ProtectedRoute>
-        }
-      />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-      <Route
-        path="/user"
-        element={
-          <ProtectedRoute requiredRole="user">
-            <UserPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <UserPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
