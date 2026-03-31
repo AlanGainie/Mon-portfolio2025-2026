@@ -54,8 +54,11 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const FAKE_USERS: FakeUser[] = [
-  { username: "admin", password: "portfolio2025", role: "admin" },
-  { username: "demo", password: "demo123", role: "user" },
+  { username: "alan", password: "admin_privilege", role: "admin" },
+  { username: "gregory", password: "admin_privilege", role: "admin" },
+  { username: "demo", password: "demo", role: "user" },
+  { username: "test", password: "test", role: "user" },
+  { username: "yaouen", password: "yaouen", role: "user" },
 ];
 
 const AUTH_USER_KEY = "authUser";
