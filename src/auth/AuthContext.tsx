@@ -1,24 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-type Role = "admin" | "user";
-type PreviewRole = "admin" | "user";
+type LoginRole = "admin" | "user";
+type PreviewRole = "viewer" | "superadmin";
 
 type FakeUser = {
   username: string;
   password: string;
-  role: Role;
+  role: LoginRole;
 };
 
 type AuthUser = {
   username: string;
-  role: Role; // rôle de navigation / route
-  isSuperAdmin: boolean; // rôle spécial preview/global
+  role: LoginRole;
 };
 
 type AuthLog = {
   id: string;
   username: string;
-  role: Role | "unknown";
+  role: LoginRole | "unknown";
   action: "login" | "logout" | "error" | "blocked" | "unblocked";
   timestamp: string;
   severityPoints: number;
@@ -33,11 +32,18 @@ type LoginResult = {
 type AuthContextType = {
   isAuthenticated: boolean;
   user: AuthUser | null;
+
+  previewRole: PreviewRole;
+  isSuperAdmin: boolean;
+  setPreviewRole: (role: PreviewRole) => void;
+  switchAccountRole: (role: PreviewRole) => void;
+
   login: (username: string, password: string) => LoginResult;
   logout: () => void;
-  switchAccountRole: (role: PreviewRole, username?: string) => void;
+
   getLogs: () => AuthLog[];
   clearLogs: () => void;
+
   isBlocked: boolean;
   failedAttempts: number;
   lockedUntil: number | null;
@@ -57,9 +63,11 @@ const AUTH_LOGS_KEY = "authLogs";
 const FAILED_ATTEMPTS_KEY = "failedAttempts";
 const LOCKED_UNTIL_KEY = "lockedUntil";
 const IS_BLOCKED_KEY = "isBlocked";
+const PREVIEW_ROLE_KEY = "previewRole";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [previewRole, setPreviewRoleState] = useState<PreviewRole>("viewer");
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
@@ -69,18 +77,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser) as AuthUser;
-
-        const normalizedUser: AuthUser = {
-          username: parsedUser.username,
-          role: parsedUser.role,
-          isSuperAdmin: parsedUser.isSuperAdmin ?? false,
-        };
-
-        setUser(normalizedUser);
-        console.log("🔄 AUTH INIT USER:", normalizedUser);
+        setUser(parsedUser);
+        console.log("🔄 AUTH INIT USER:", parsedUser);
       } catch {
         localStorage.removeItem(AUTH_USER_KEY);
       }
+    }
+
+    const savedPreviewRole = localStorage.getItem(PREVIEW_ROLE_KEY);
+    if (savedPreviewRole === "viewer" || savedPreviewRole === "superadmin") {
+      setPreviewRoleState(savedPreviewRole);
     }
   }, []);
 
@@ -98,9 +104,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log("👤 AUTH USER UPDATED:", user);
   }, [user]);
 
+  useEffect(() => {
+    console.log("🛡️ PREVIEW ROLE UPDATED:", previewRole);
+  }, [previewRole]);
+
   const addLog = (
     username: string,
-    role: Role | "unknown",
+    role: LoginRole | "unknown",
     action: AuthLog["action"],
     severityPoints: number,
     message?: string
@@ -121,56 +131,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
   };
 
-  // Ici, "admin" / "user" ne change plus le rôle de route.
-  // Ça active ou désactive le mode superadmin global.
-  const switchAccountRole = (role: PreviewRole, username?: string) => {
-    setUser((prev) => {
-      const baseUser: AuthUser =
-        prev ?? {
-          username: username ?? "preview-user",
-          role: "user",
-          isSuperAdmin: false,
-        };
+  const setPreviewRole = (role: PreviewRole) => {
+    if (previewRole === role) {
+      console.log("ℹ️ setPreviewRole ignoré : rôle déjà actif", role);
+      return;
+    }
 
-      const nextIsSuperAdmin = role === "admin";
+    setPreviewRoleState(role);
+    localStorage.setItem(PREVIEW_ROLE_KEY, role);
 
-      if (baseUser.isSuperAdmin === nextIsSuperAdmin) {
-        console.log("ℹ️ switchAccountRole ignoré : état preview déjà actif", role);
-        return baseUser;
-      }
-
-      const updatedUser: AuthUser = {
-        ...baseUser,
-        isSuperAdmin: nextIsSuperAdmin,
-      };
-
-      console.log("🔁 SWITCH SUPERADMIN:", {
-        before: baseUser.isSuperAdmin,
-        after: updatedUser.isSuperAdmin,
-        user: updatedUser,
-      });
-
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updatedUser));
-      addLog(
-        updatedUser.username,
-        updatedUser.role,
-        "login",
-        0,
-        `Changement du mode superadmin vers ${role}`
-      );
-
-      return updatedUser;
+    console.log("🔁 PREVIEW ROLE SWITCH:", {
+      before: previewRole,
+      after: role,
     });
+
+    addLog(
+      user?.username ?? "preview-admin",
+      user?.role ?? "unknown",
+      "login",
+      0,
+      `Mode preview ${role === "superadmin" ? "superadmin activé" : "user activé"}`
+    );
+  };
+
+  // Alias pour rester compatible avec ton code existant
+  const switchAccountRole = (role: PreviewRole) => {
+    setPreviewRole(role);
   };
 
   const blockAccess = () => {
+    if (!isSuperAdmin) {
+      console.log("⛔ Blocage refusé : nécessite superadmin");
+      return;
+    }
+
     setIsBlocked(true);
     localStorage.setItem(IS_BLOCKED_KEY, "true");
-    addLog("admin-action", "admin", "blocked", failedAttempts, "Accès bloqué manuellement");
-    console.log("⛔ Accès bloqué");
+
+    addLog(
+      user?.username ?? "admin-action",
+      user?.role ?? "unknown",
+      "blocked",
+      failedAttempts,
+      "Accès bloqué manuellement"
+    );
+
+    console.log("⛔ Accès bloqué (superadmin)");
   };
 
   const unblockAccess = () => {
+    if (!isSuperAdmin) {
+      console.log("⛔ Accès refusé : nécessite superadmin");
+      return;
+    }
+
     setIsBlocked(false);
     setFailedAttempts(0);
     setLockedUntil(null);
@@ -179,8 +193,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
     localStorage.removeItem(LOCKED_UNTIL_KEY);
 
-    addLog("admin-action", "admin", "unblocked", 0, "Accès débloqué manuellement");
-    console.log("✅ Accès débloqué");
+    addLog(
+      user?.username ?? "admin-action",
+      user?.role ?? "unknown",
+      "unblocked",
+      0,
+      "Accès débloqué manuellement"
+    );
+
+    console.log("✅ Accès débloqué (superadmin)");
   };
 
   const login = (username: string, password: string): LoginResult => {
@@ -273,7 +294,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const authUser: AuthUser = {
       username: foundUser.username,
       role: foundUser.role,
-      isSuperAdmin: false,
     };
 
     setUser(authUser);
@@ -314,18 +334,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       isAuthenticated: user !== null,
       user,
+
+      previewRole,
+      isSuperAdmin: previewRole === "superadmin",
+      setPreviewRole,
+      switchAccountRole,
+
       login,
       logout,
-      switchAccountRole,
+
       getLogs,
       clearLogs,
+
       isBlocked,
       failedAttempts,
       lockedUntil,
       blockAccess,
       unblockAccess,
     }),
-    [user, isBlocked, failedAttempts, lockedUntil]
+    [user, previewRole, isBlocked, failedAttempts, lockedUntil]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

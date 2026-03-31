@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 
-type Role = "admin" | "user";
+type PreviewRole = "viewer" | "superadmin";
 type ScreenMode = "desktop" | "mobile" | "projector";
 
 type Props = {
@@ -26,12 +26,14 @@ export default function AdminPreviewBar({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, switchAccountRole } = useAuth();
-  const switchRole = switchAccountRole as (role: Role, username?: string) => void;
+  const { user, previewRole, switchAccountRole } = useAuth();
+  const currentRole: PreviewRole = previewRole;
 
-  const currentRole: Role = user?.isSuperAdmin ? "admin" : "user";
-
-  console.log("🟢 AdminPreviewBar render:", { user, currentRole });
+  console.log("🟢 AdminPreviewBar render:", {
+    user,
+    previewRole: currentRole,
+    loginRole: user?.role ?? "none",
+  });
 
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const savedTheme = localStorage.getItem("themeMode");
@@ -68,45 +70,40 @@ export default function AdminPreviewBar({
   }, [currentRole]);
 
   useEffect(() => {
-    console.log("👤 CURRENT ROLE:", currentRole);
+    console.log("👤 CURRENT PREVIEW ROLE:", currentRole);
   }, [currentRole]);
 
   const isSwitchablePage =
     location.pathname === "/admin" || location.pathname === "/user";
 
-  const canTogglePage = currentRole === "admin" && isSwitchablePage;
+  // IMPORTANT :
+  // le switch de page dépend du rôle de connexion, pas du rôle preview
+  const canTogglePage = user?.role === "admin" && isSwitchablePage;
 
   const handleValidate = () => {
     const trimmedAdminCode = adminCode.trim();
     const trimmedSecondCode = secondCode.trim();
-    const hasUser = !!user;
-
-    if (hasUser) {
-      if (trimmedAdminCode === ADMIN_PREVIEW_CODE) {
-        switchRole("admin");
-        setError("");
-        console.log("✅ Admin activé avec utilisateur déjà connecté");
-        return;
-      }
-
-      switchRole("user");
-      setError("Code admin invalide");
-      console.log("❌ Code admin invalide avec utilisateur connecté");
-      return;
-    }
 
     if (
       trimmedAdminCode === ADMIN_PREVIEW_CODE &&
       trimmedSecondCode === ADMIN_SECOND_CODE
     ) {
-      switchRole("admin", "admin-preview");
+      switchAccountRole("superadmin");
       setError("");
-      console.log("✅ Admin activé sans utilisateur via double authentification");
+      console.log("✅ Mode superadmin activé");
       return;
     }
 
     setError("Double authentification invalide");
     console.log("❌ Double authentification invalide");
+  };
+
+  const handleDisableSuperAdmin = () => {
+    switchAccountRole("viewer");
+    setAdminCode("");
+    setSecondCode("");
+    setError("");
+    console.log("⬇️ Mode superadmin désactivé");
   };
 
   const handleTitleClick = () => {
@@ -195,9 +192,9 @@ export default function AdminPreviewBar({
             ? location.pathname === "/admin"
               ? "Aller vers la page user"
               : "Aller vers la page admin"
-            : currentRole === "admin"
+            : user?.role === "admin"
               ? "Navigation inactive sur cette page"
-              : "Accès réservé au rôle admin"
+              : "Accès réservé au rôle de connexion admin"
         }
       >
         <span className="page-title-inner">
@@ -209,45 +206,58 @@ export default function AdminPreviewBar({
       </button>
 
       <div className="admin-preview-bar">
-        <input
-          type="text"
-          placeholder="Identifiant admin"
-          value={adminCode}
-          onChange={(e) => {
-            setAdminCode(e.target.value);
-            if (error) setError("");
-          }}
-          className="admin-preview-input"
-        />
+        {currentRole !== "superadmin" && (
+          <>
+            <input
+              type="text"
+              placeholder="Identifiant superadmin"
+              value={adminCode}
+              onChange={(e) => {
+                setAdminCode(e.target.value);
+                if (error) setError("");
+              }}
+              className="admin-preview-input"
+            />
 
-        {!user && (
-          <input
-            type="password"
-            placeholder="Code sécurité (4 chiffres)"
-            value={secondCode}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "").slice(0, 4);
-              setSecondCode(value);
-              if (error) setError("");
-            }}
-            className="admin-preview-input"
-          />
+            <input
+              type="password"
+              placeholder="Code sécurité (4 chiffres)"
+              value={secondCode}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "").slice(0, 4);
+                setSecondCode(value);
+                if (error) setError("");
+              }}
+              className="admin-preview-input"
+            />
+
+            <button
+              type="button"
+              onClick={handleValidate}
+              className="admin-preview-button"
+              title="Activer le mode superadmin"
+            >
+              ✔
+            </button>
+          </>
         )}
 
-        <button
-          type="button"
-          onClick={handleValidate}
-          className="admin-preview-button"
-          title="Activer le rôle admin"
-        >
-          ✔
-        </button>
+        {currentRole === "superadmin" && (
+          <button
+            type="button"
+            onClick={handleDisableSuperAdmin}
+            className="admin-preview-button"
+            title="Désactiver le mode superadmin"
+          >
+            ✖
+          </button>
+        )}
 
         <span
           className={`role-indicator ${
-            currentRole === "admin" ? "role-admin" : "role-user"
+            currentRole === "superadmin" ? "role-admin" : "role-user"
           }`}
-          title={`Rôle ${currentRole}`}
+          title={`Rôle preview ${currentRole}`}
         />
 
         <span style={{ fontSize: "12px", color: "var(--text)" }}>

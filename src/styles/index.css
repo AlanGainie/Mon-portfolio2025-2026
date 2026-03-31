@@ -920,28 +920,28 @@ body[data-theme="light"]::after {
 }
 
 /* Admin : hexagones rouges */
-body[data-role="admin"]:not([data-theme="light"])::after {
+body[data-role="superadmin"]:not([data-theme="light"])::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(255,70,70,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(255,70,70,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* User : hexagones verts */
-body[data-role="user"]:not([data-theme="light"])::after {
+body[data-role="viewer"]:not([data-theme="light"])::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(34,197,94,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(34,197,94,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* Admin light : hexagones rouges plus visibles */
-body[data-role="admin"][data-theme="light"]::after {
+body[data-role="superadmin"][data-theme="light"]::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(220,38,38,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(220,38,38,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* User light : hexagones verts plus visibles */
-body[data-role="user"][data-theme="light"]::after {
+body[data-role="viewer"][data-theme="light"]::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(22,163,74,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(22,163,74,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
@@ -1012,28 +1012,28 @@ body[data-theme="light"]::after {
 }
 
 /* Admin : hexagones rouges */
-body[data-role="admin"]:not([data-theme="light"])::after {
+body[data-role="superadmin"]:not([data-theme="light"])::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(255,70,70,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(255,70,70,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* User : hexagones verts */
-body[data-role="user"]:not([data-theme="light"])::after {
+body[data-role="viewer"]:not([data-theme="light"])::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(34,197,94,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(34,197,94,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* Admin light : hexagones rouges plus visibles */
-body[data-role="admin"][data-theme="light"]::after {
+body[data-role="superadmin"][data-theme="light"]::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(220,38,38,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(220,38,38,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
 }
 
 /* User light : hexagones verts plus visibles */
-body[data-role="user"][data-theme="light"]::after {
+body[data-role="viewer"][data-theme="light"]::after {
   background-image:
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(22,163,74,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E'),
     url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="84" viewBox="0 0 96 84"%3E%3Cg fill="none" stroke="rgba(22,163,74,0.22)" stroke-width="1.3"%3E%3Cpolygon points="24,2 72,2 94,42 72,82 24,82 2,42"/%3E%3C/g%3E%3C/svg%3E');
@@ -1346,17 +1346,17 @@ footer,
   transform: rotateX(180deg);
 }
 
-body[data-role="admin"] {
+body[data-role="superadmin"] {
   --hex-stroke-dark: rgba(255, 70, 70, 0.22);
   --hex-stroke-light: rgba(220, 38, 38, 0.22);
 }
 
-body[data-role="user"] {
+body[data-role="viewer"] {
   --hex-stroke-dark: rgba(34, 197, 94, 0.22);
   --hex-stroke-light: rgba(22, 163, 74, 0.22);
 }
 
-body[data-role="admin"] .hex-bg-wave {
+body[data-role="superadmin"] .hex-bg-wave {
   background:
     radial-gradient(circle at 15% 20%, rgba(255, 70, 70, 0.18) 0%, transparent 18%),
     radial-gradient(circle at 75% 30%, rgba(255, 70, 70, 0.14) 0%, transparent 22%),
@@ -1365,7 +1365,7 @@ body[data-role="admin"] .hex-bg-wave {
     radial-gradient(circle at 30% 55%, rgba(255, 70, 70, 0.10) 0%, transparent 24%);
 }
 
-body[data-role="user"] .hex-bg-wave {
+body[data-role="viewer"] .hex-bg-wave {
   background:
     radial-gradient(circle at 15% 20%, rgba(34, 197, 94, 0.18) 0%, transparent 18%),
     radial-gradient(circle at 75% 30%, rgba(34, 197, 94, 0.14) 0%, transparent 22%),

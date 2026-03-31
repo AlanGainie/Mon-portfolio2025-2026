@@ -20,15 +20,27 @@ import AdminPreviewBar from "./template/composants/AdminPreviewBar.tsx";
 import { GLOBALMENUE, PAGESGLOBAL } from "./styles/tw.ts";
 
 function Home() {
-  const { isAuthenticated, user, getLogs, clearLogs, unblockAccess } = useAuth();
+  const {
+    isAuthenticated,
+    user,
+    previewRole,
+    getLogs,
+    clearLogs,
+    unblockAccess,
+  } = useAuth();
+
   const [logs, setLogs] = useState(getLogs());
   const [isClearing, setIsClearing] = useState(false);
+
+  const canManageLogs = previewRole === "superadmin";
 
   if (isAuthenticated && user) {
     return <Navigate to={user.role === "admin" ? "/admin" : "/user"} replace />;
   }
 
   const handleUnblock = () => {
+    if (!canManageLogs) return;
+
     unblockAccess();
     setLogs(getLogs());
   };
@@ -73,7 +85,7 @@ function Home() {
         <button
           onClick={handleClearLogs}
           disabled={isClearing}
-          className={"buttontrashlogs"}
+          className="buttontrashlogs"
         >
           {isClearing && <span className="loader"></span>}
           {isClearing ? "Vidage..." : "Vider les logs"}
@@ -135,7 +147,7 @@ function Home() {
                             : "🟢"}
                         </span>
 
-                        {log.action === "blocked" && (
+                        {log.action === "blocked" && canManageLogs && (
                           <button
                             className="unblock-button"
                             onClick={handleUnblock}
