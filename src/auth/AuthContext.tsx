@@ -160,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const blockAccess = () => {
-    if (!isSuperAdmin) {
+    if (previewRole !== "superadmin") {
       console.log("⛔ Blocage refusé : nécessite superadmin");
       return;
     }
@@ -180,7 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const unblockAccess = () => {
-    if (!isSuperAdmin) {
+    if (previewRole !== "superadmin") {
       console.log("⛔ Accès refusé : nécessite superadmin");
       return;
     }
