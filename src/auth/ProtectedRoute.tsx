@@ -17,19 +17,16 @@ export default function ProtectedRoute({
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  // ✅ LOGIQUE CORRIGÉE
-  const hasAccess =
-    !requiredRole ||
-    user.role === requiredRole ||
-    (user.role === "admin" && requiredRole === "user");
+  if (!requiredRole) {
+    return <>{children}</>;
+  }
 
-  if (!hasAccess) {
-    return (
-      <Navigate
-        to={user.role === "admin" ? "/admin" : "/user"}
-        replace
-      />
-    );
+  if (user.role === "admin") {
+    return <>{children}</>;
+  }
+
+  if (user.role !== requiredRole) {
+    return <Navigate to="/user" replace />;
   }
 
   return <>{children}</>;

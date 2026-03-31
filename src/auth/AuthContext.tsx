@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type Role = "admin" | "user";
+type PreviewRole = "admin" | "user";
 
 type FakeUser = {
   username: string;
@@ -10,7 +11,8 @@ type FakeUser = {
 
 type AuthUser = {
   username: string;
-  role: Role;
+  role: Role; // rôle de navigation / route
+  isSuperAdmin: boolean; // rôle spécial preview/global
 };
 
 type AuthLog = {
@@ -33,7 +35,7 @@ type AuthContextType = {
   user: AuthUser | null;
   login: (username: string, password: string) => LoginResult;
   logout: () => void;
-  switchAccountRole: (role: Role) => void;
+  switchAccountRole: (role: PreviewRole, username?: string) => void;
   getLogs: () => AuthLog[];
   clearLogs: () => void;
   isBlocked: boolean;
@@ -46,8 +48,8 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const FAKE_USERS: FakeUser[] = [
-  { username: "alan", password: "admin_privilege", role: "admin" },
-  { username: "test", password: "test", role: "user" },
+  { username: "admin", password: "portfolio2025", role: "admin" },
+  { username: "demo", password: "demo123", role: "user" },
 ];
 
 const AUTH_USER_KEY = "authUser";
@@ -67,7 +69,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser) as AuthUser;
-        setUser(parsedUser);
+
+        const normalizedUser: AuthUser = {
+          username: parsedUser.username,
+          role: parsedUser.role,
+          isSuperAdmin: parsedUser.isSuperAdmin ?? false,
+        };
+
+        setUser(normalizedUser);
+        console.log("🔄 AUTH INIT USER:", normalizedUser);
       } catch {
         localStorage.removeItem(AUTH_USER_KEY);
       }
@@ -83,6 +93,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedLockedUntil) setLockedUntil(Number(savedLockedUntil));
     if (savedBlocked === "true") setIsBlocked(true);
   }, []);
+
+  useEffect(() => {
+    console.log("👤 AUTH USER UPDATED:", user);
+  }, [user]);
 
   const addLog = (
     username: string,
@@ -107,18 +121,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
   };
 
-  const switchAccountRole = (role: Role) => {
+  // Ici, "admin" / "user" ne change plus le rôle de route.
+  // Ça active ou désactive le mode superadmin global.
+  const switchAccountRole = (role: PreviewRole, username?: string) => {
     setUser((prev) => {
-      if (!prev) return prev;
-      if (prev.role === role) return prev;
+      const baseUser: AuthUser =
+        prev ?? {
+          username: username ?? "preview-user",
+          role: "user",
+          isSuperAdmin: false,
+        };
+
+      const nextIsSuperAdmin = role === "admin";
+
+      if (baseUser.isSuperAdmin === nextIsSuperAdmin) {
+        console.log("ℹ️ switchAccountRole ignoré : état preview déjà actif", role);
+        return baseUser;
+      }
 
       const updatedUser: AuthUser = {
-        ...prev,
-        role,
+        ...baseUser,
+        isSuperAdmin: nextIsSuperAdmin,
       };
 
+      console.log("🔁 SWITCH SUPERADMIN:", {
+        before: baseUser.isSuperAdmin,
+        after: updatedUser.isSuperAdmin,
+        user: updatedUser,
+      });
+
       localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updatedUser));
-      addLog(prev.username, role, "login", 0, `Changement de rôle vers ${role}`);
+      addLog(
+        updatedUser.username,
+        updatedUser.role,
+        "login",
+        0,
+        `Changement du mode superadmin vers ${role}`
+      );
 
       return updatedUser;
     });
@@ -128,6 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsBlocked(true);
     localStorage.setItem(IS_BLOCKED_KEY, "true");
     addLog("admin-action", "admin", "blocked", failedAttempts, "Accès bloqué manuellement");
+    console.log("⛔ Accès bloqué");
   };
 
   const unblockAccess = () => {
@@ -140,6 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(LOCKED_UNTIL_KEY);
 
     addLog("admin-action", "admin", "unblocked", 0, "Accès débloqué manuellement");
+    console.log("✅ Accès débloqué");
   };
 
   const login = (username: string, password: string): LoginResult => {
@@ -147,11 +188,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (isBlocked) {
       addLog(username || "unknown", "unknown", "error", failedAttempts, "DDOS accès restricted");
+      console.log("⛔ Login refusé : accès bloqué");
       return { success: false, message: "DDOS accès restricted" };
     }
 
     if (lockedUntil && now < lockedUntil) {
       const remaining = Math.ceil((lockedUntil - now) / 1000);
+      console.log("⏳ Login refusé : délai actif", remaining);
       return {
         success: false,
         message: `Trop de tentatives. Réessaie dans ${remaining} seconde(s).`,
@@ -166,6 +209,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const newAttempts = failedAttempts + 1;
       setFailedAttempts(newAttempts);
       localStorage.setItem(FAILED_ATTEMPTS_KEY, String(newAttempts));
+
+      console.log("❌ Login échoué", {
+        username,
+        attempts: newAttempts,
+      });
 
       if (newAttempts >= 10) {
         setIsBlocked(true);
@@ -225,6 +273,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const authUser: AuthUser = {
       username: foundUser.username,
       role: foundUser.role,
+      isSuperAdmin: false,
     };
 
     setUser(authUser);
@@ -237,12 +286,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     addLog(foundUser.username, foundUser.role, "login", 0, "Connexion réussie");
 
+    console.log("✅ LOGIN SUCCESS:", authUser);
+
     return { success: true };
   };
 
   const logout = () => {
     if (user) {
       addLog(user.username, user.role, "logout", 0, "Déconnexion réussie");
+      console.log("🚪 LOGOUT:", user);
     }
 
     setUser(null);
@@ -255,6 +307,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const clearLogs = () => {
     localStorage.removeItem(AUTH_LOGS_KEY);
+    console.log("🧹 Logs supprimés");
   };
 
   const value = useMemo<AuthContextType>(
