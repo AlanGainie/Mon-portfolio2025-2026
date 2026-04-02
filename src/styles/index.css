@@ -2392,3 +2392,25 @@ body[data-role="superadmin"]
   color: #ef4444;
   text-shadow: 0 0 6px #ef4444;
 }
+
+/* =========================
+   DISABLE HOVER SI PAS SUPERADMIN
+   ========================= */
+
+body:not([data-role="superadmin"]) .page-title-clickable {
+  cursor: default;
+}
+
+/* Pas de lift */
+body:not([data-role="superadmin"]) 
+.page-title-clickable:hover .page-title-inner {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+/* Pas de flèche */
+body:not([data-role="superadmin"]) 
+.page-title-inner::after {
+  display: none;
+}

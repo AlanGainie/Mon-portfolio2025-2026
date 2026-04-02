@@ -3,7 +3,7 @@
 // Le projet utilise TypeScript 5.
 
 import "./styles/index.css";
-import { useState } from "react";
+import {  useEffect, useMemo, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // Connection
@@ -171,15 +171,80 @@ function Home() {
   );
 }
 
+type EditableSectionKey = "e5" | "e6" | "administratif";
+
+type EditableSections = Record<EditableSectionKey, string>;
+
 function AdminPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [actual_list_menue, setActuallistMenue] = useState(0);
 
+  const [selectedSection, setSelectedSection] =
+    useState<EditableSectionKey>("e5");
+
+  const [sections, setSections] = useState<EditableSections>({
+    e5: "",
+    e6: "",
+    administratif: "",
+  });
+
+  const [saveMessage, setSaveMessage] = useState("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("admin-editable-sections-v2");
+    if (!saved) return;
+
+    try {
+      const parsed = JSON.parse(saved) as Partial<EditableSections>;
+      setSections({
+        e5: parsed.e5 ?? "",
+        e6: parsed.e6 ?? "",
+        administratif: parsed.administratif ?? "",
+      });
+    } catch (error) {
+      console.error("Erreur lors du chargement des sections admin :", error);
+    }
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate("/", { replace: true });
   };
+
+  const handleChangeSelectedContent = (value: string) => {
+    setSections((prev) => ({
+      ...prev,
+      [selectedSection]: value,
+    }));
+    setSaveMessage("");
+  };
+
+  const handleSaveSections = () => {
+    try {
+      localStorage.setItem(
+        "admin-editable-sections-v2",
+        JSON.stringify(sections)
+      );
+      setSaveMessage("Modifications sauvegardées localement.");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde :", error);
+      setSaveMessage("Erreur lors de la sauvegarde.");
+    }
+  };
+
+  const selectedLabel = useMemo(() => {
+    switch (selectedSection) {
+      case "e5":
+        return "Dossier E5";
+      case "e6":
+        return "Dossier E6";
+      case "administratif":
+        return "Dossier administratif";
+      default:
+        return "Section";
+    }
+  }, [selectedSection]);
 
   return (
     <div className={`${PAGESGLOBAL} page-with-toolbar app-page`}>
@@ -197,6 +262,188 @@ function AdminPage() {
         footer="none"
         enableAnchors={actual_list_menue === 0}
       />
+
+      {/* SECTION DOSSIER ADMINISTRATIF */}
+      <section
+        style={{
+          width: "min(1100px, 92%)",
+          margin: "24px auto 0 auto",
+          padding: "24px",
+          borderRadius: "24px",
+          border: "1px solid var(--border)",
+          background: "var(--bg-overlay-strong)",
+          boxShadow: "var(--shadow-soft)",
+          backdropFilter: "blur(12px)",
+          color: "var(--text)",
+        }}
+      >
+        <div style={{ marginBottom: "16px" }}>
+          <div
+            style={{
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              marginBottom: "8px",
+            }}
+          >
+            Administration
+          </div>
+
+          <h2
+            style={{
+              margin: 0,
+              textAlign: "left",
+              fontSize: "2rem",
+              color: "var(--text-strong)",
+            }}
+          >
+            Dossier administratif
+          </h2>
+        </div>
+
+        <div
+          style={{
+            padding: "18px",
+            borderRadius: "18px",
+            border: "1px solid var(--border)",
+            background: "var(--bg-card)",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              lineHeight: 1.8,
+              color: "var(--text-soft)",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {sections.administratif ||
+              "Aucun contenu administratif enregistré pour le moment."}
+          </p>
+        </div>
+      </section>
+
+      {/* BLOC UNIQUE D'ÉDITION */}
+      <section
+        style={{
+          width: "min(1100px, 92%)",
+          margin: "24px auto 40px auto",
+          padding: "24px",
+          borderRadius: "24px",
+          border: "1px solid var(--border)",
+          background: "var(--bg-overlay-strong)",
+          boxShadow: "var(--shadow-soft)",
+          backdropFilter: "blur(12px)",
+          color: "var(--text)",
+        }}
+      >
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: "18px",
+            textAlign: "left",
+            color: "var(--text-strong)",
+          }}
+        >
+          Édition des sections
+        </h2>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "12px",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <label
+            htmlFor="admin-section-select"
+            style={{ fontWeight: 700, color: "var(--text-strong)" }}
+          >
+            Section à modifier :
+          </label>
+
+          <select
+            id="admin-section-select"
+            value={selectedSection}
+            onChange={(e) =>
+              setSelectedSection(e.target.value as EditableSectionKey)
+            }
+            style={{
+              padding: "10px 12px",
+              borderRadius: "10px",
+              border: "1px solid var(--border-soft)",
+              background: "var(--bg-elevated)",
+              color: "var(--text)",
+              font: "inherit",
+            }}
+          >
+            <option value="e5">Dossier E5</option>
+            <option value="e6">Dossier E6</option>
+            <option value="administratif">Dossier administratif</option>
+          </select>
+        </div>
+
+        <div
+          style={{
+            marginBottom: "12px",
+            fontWeight: 700,
+            color: "var(--text-strong)",
+          }}
+        >
+          Édition de : {selectedLabel}
+        </div>
+
+        <textarea
+          value={sections[selectedSection]}
+          onChange={(e) => handleChangeSelectedContent(e.target.value)}
+          placeholder={`Modifier le contenu de ${selectedLabel}`}
+          style={{
+            width: "100%",
+            minHeight: "220px",
+            resize: "vertical",
+            padding: "14px",
+            borderRadius: "14px",
+            border: "1px solid var(--border-soft)",
+            background: "var(--bg-elevated)",
+            color: "var(--text)",
+            boxSizing: "border-box",
+            font: "inherit",
+          }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "14px",
+            marginTop: "18px",
+            flexWrap: "wrap",
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleSaveSections}
+            className="admin-preview-button"
+          >
+            Sauvegarder
+          </button>
+
+          {saveMessage && (
+            <span
+              style={{
+                fontSize: "14px",
+                color: "var(--text-soft)",
+              }}
+            >
+              {saveMessage}
+            </span>
+          )}
+        </div>
+      </section>
 
       <FooterPage />
     </div>
