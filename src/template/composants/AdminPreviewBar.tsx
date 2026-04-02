@@ -13,6 +13,45 @@ type Props = {
 const ADMIN_PREVIEW_CODE = "admin-view";
 const ADMIN_SECOND_CODE = "1593";
 
+function isLoginPage(pathname: string): boolean {
+  return pathname === "/";
+}
+
+function isUserPage(pathname: string): boolean {
+  return pathname === "/user" || pathname.startsWith("/user/");
+}
+
+function isAdminPage(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
+function getPageLabel(pathname: string): string {
+  if (isAdminPage(pathname)) return "Page Admin";
+  if (isUserPage(pathname)) return "Page User";
+  return "Page Login";
+}
+
+function getNextPage(pathname: string): string {
+  if (isLoginPage(pathname)) return "/user";
+  if (isUserPage(pathname)) return "/admin";
+  if (isAdminPage(pathname)) return "/";
+  return "/";
+}
+
+function getNextPageLabel(pathname: string): string {
+  if (isLoginPage(pathname)) return "Page User";
+  if (isUserPage(pathname)) return "Page Admin";
+  if (isAdminPage(pathname)) return "Page Login";
+  return "Page Login";
+}
+
+function getPageTitleTooltip(pathname: string): string {
+  if (isLoginPage(pathname)) return "Aller vers la page user";
+  if (isUserPage(pathname)) return "Aller vers la page admin";
+  if (isAdminPage(pathname)) return "Aller vers la page login";
+  return "Changer de page";
+}
+
 export default function AdminPreviewBar({
   showLogout,
   onLogout,
@@ -26,14 +65,8 @@ export default function AdminPreviewBar({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, previewRole, switchAccountRole } = useAuth();
-  const currentRole: PreviewRole = previewRole;
-
-  console.log("🟢 AdminPreviewBar render:", {
-    user,
-    previewRole: currentRole,
-    loginRole: user?.role ?? "none",
-  });
+  const { previewRole, switchAccountRole } = useAuth();
+  const currentRole: PreviewRole = previewRole ?? "viewer";
 
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const savedTheme = localStorage.getItem("themeMode");
@@ -42,140 +75,142 @@ export default function AdminPreviewBar({
 
   const [screenMode, setScreenMode] = useState<ScreenMode>(() => {
     const savedScreen = localStorage.getItem("screenMode");
-
-    if (
-      savedScreen === "desktop" ||
-      savedScreen === "mobile" ||
-      savedScreen === "projector"
-    ) {
-      return savedScreen;
+    if (["desktop", "mobile", "projector"].includes(savedScreen || "")) {
+      return savedScreen as ScreenMode;
     }
-
     return "desktop";
   });
 
   useEffect(() => {
+    console.groupCollapsed("🟢 [AdminPreviewBar] état global");
+    console.log("pathname =", location.pathname);
+    console.log("currentRole =", currentRole);
+    console.log("theme =", theme);
+    console.log("screenMode =", screenMode);
+    console.log("isLoginPage =", isLoginPage(location.pathname));
+    console.log("isUserPage =", isUserPage(location.pathname));
+    console.log("isAdminPage =", isAdminPage(location.pathname));
+    console.log("pageLabel =", getPageLabel(location.pathname));
+    console.log("nextPage =", getNextPage(location.pathname));
+    console.log("nextPageLabel =", getNextPageLabel(location.pathname));
+    console.groupEnd();
+  }, [location.pathname, currentRole, theme, screenMode]);
+
+  useEffect(() => {
     document.body.dataset.theme = theme;
     localStorage.setItem("themeMode", theme);
+    console.log("🎨 theme appliqué =", theme);
   }, [theme]);
 
   useEffect(() => {
     document.body.dataset.screen = screenMode;
     localStorage.setItem("screenMode", screenMode);
+    console.log("📺 screenMode appliqué =", screenMode);
   }, [screenMode]);
 
   useEffect(() => {
     document.body.dataset.role = currentRole;
-    console.log("🎨 DATASET ROLE:", document.body.dataset.role);
-  }, [currentRole]);
-
-  useEffect(() => {
-    console.log("👤 CURRENT PREVIEW ROLE:", currentRole);
+    console.log("👤 role appliqué =", currentRole);
   }, [currentRole]);
 
   const isSwitchablePage =
-    location.pathname === "/admin" || location.pathname === "/user";
+    isAdminPage(location.pathname) ||
+    isUserPage(location.pathname) ||
+    isLoginPage(location.pathname);
 
-  // IMPORTANT :
-  // le switch de page dépend du rôle de connexion, pas du rôle preview
-  const canTogglePage = user?.role === "admin" && isSwitchablePage;
+  const canTogglePage =
+    currentRole === "superadmin" && isSwitchablePage;
 
-  const handleValidate = () => {
-    const trimmedAdminCode = adminCode.trim();
-    const trimmedSecondCode = secondCode.trim();
+  const handleTitleClick = () => {
+    console.group("🔁 [AdminPreviewBar] click titre");
+    console.log("pathname actuel =", location.pathname);
+    console.log("canTogglePage =", canTogglePage);
+    console.log("role =", currentRole);
 
-    if (
-      trimmedAdminCode === ADMIN_PREVIEW_CODE &&
-      trimmedSecondCode === ADMIN_SECOND_CODE
-    ) {
-      switchAccountRole("superadmin");
-      setError("");
-      console.log("✅ Mode superadmin activé");
+    if (!canTogglePage) {
+      console.warn("⛔ navigation bloquée");
+      console.groupEnd();
       return;
     }
 
-    setError("Double authentification invalide");
-    console.log("❌ Double authentification invalide");
-  };
-
-  const handleDisableSuperAdmin = () => {
-    switchAccountRole("viewer");
-    setAdminCode("");
-    setSecondCode("");
-    setError("");
-    console.log("⬇️ Mode superadmin désactivé");
-  };
-
-  const handleTitleClick = () => {
-    if (!canTogglePage) return;
-
-    const nextPath = location.pathname === "/admin" ? "/user" : "/admin";
+    const nextPath = getNextPage(location.pathname);
+    console.log("➡️ prochaine route =", nextPath);
 
     setIsFlipping(true);
+    console.log("animation ON");
 
     window.setTimeout(() => {
+      console.log("🚀 navigate =>", nextPath);
       navigate(nextPath);
     }, 180);
 
     window.setTimeout(() => {
       setIsFlipping(false);
+      console.log("animation OFF");
+      console.groupEnd();
     }, 420);
   };
 
+  const handleValidate = () => {
+    console.group("🔐 [AdminPreviewBar] validation superadmin");
+
+    const trimmedAdminCode = adminCode.trim();
+    const trimmedSecondCode = secondCode.trim();
+
+    console.log("adminCode =", trimmedAdminCode);
+    console.log("secondCode =", trimmedSecondCode);
+
+    if (
+      trimmedAdminCode === ADMIN_PREVIEW_CODE &&
+      trimmedSecondCode === ADMIN_SECOND_CODE
+    ) {
+      console.log("✅ superadmin ACTIVÉ");
+      switchAccountRole("superadmin");
+      setError("");
+      console.groupEnd();
+      return;
+    }
+
+    console.warn("❌ double auth invalide");
+    setError("Double authentification invalide");
+    console.groupEnd();
+  };
+
+  const handleDisableSuperAdmin = () => {
+    console.log("⬇️ superadmin DÉSACTIVÉ");
+    switchAccountRole("viewer");
+    setAdminCode("");
+    setSecondCode("");
+    setError("");
+  };
+
   const handleScreenMode = () => {
+    console.log("🔄 changement screenMode");
     setScreenMode((prev) => {
-      if (prev === "desktop") return "mobile";
-      if (prev === "mobile") return "projector";
-      return "desktop";
+      const next =
+        prev === "desktop"
+          ? "mobile"
+          : prev === "mobile"
+            ? "projector"
+            : "desktop";
+
+      console.log("screenMode:", prev, "➡️", next);
+      return next;
     });
   };
 
-  const getScreenIcon = () => {
-    switch (screenMode) {
-      case "desktop":
-        return "🖥️";
-      case "mobile":
-        return "📱";
-      case "projector":
-        return "📽️";
-      default:
-        return "🖥️";
-    }
-  };
-
-  const getScreenTitle = () => {
-    switch (screenMode) {
-      case "desktop":
-        return "Mode PC";
-      case "mobile":
-        return "Mode téléphone";
-      case "projector":
-        return "Mode projecteur";
-      default:
-        return "Mode PC";
-    }
-  };
-
-  const pageLabel =
-    location.pathname === "/admin"
-      ? "Page Admin"
-      : location.pathname === "/user"
-        ? "Page User"
-        : "Page Login";
-
-  const nextPageLabel =
-    location.pathname === "/admin"
-      ? "Page User"
-      : location.pathname === "/user"
-        ? "Page Admin"
-        : "Page Login";
+  const pageLabel = getPageLabel(location.pathname);
+  const nextPageLabel = getNextPageLabel(location.pathname);
 
   return (
     <div className={`admin-preview-wrapper ${collapsed ? "collapsed" : ""}`}>
       <button
         type="button"
         className="toggle-admin-bar"
-        onClick={() => setCollapsed((prev) => !prev)}
+        onClick={() => {
+          console.log("📦 toggle bar =", !collapsed);
+          setCollapsed((prev) => !prev);
+        }}
         title={collapsed ? "Afficher la barre" : "Réduire la barre"}
       >
         ▲
@@ -183,18 +218,15 @@ export default function AdminPreviewBar({
 
       <button
         type="button"
+        data-next={getNextPage(location.pathname)}
         className={`page-title page-title-button ${
           canTogglePage ? "page-title-clickable" : ""
         } ${isFlipping ? "page-title-flipping" : ""}`}
         onClick={handleTitleClick}
         title={
           canTogglePage
-            ? location.pathname === "/admin"
-              ? "Aller vers la page user"
-              : "Aller vers la page admin"
-            : user?.role === "admin"
-              ? "Navigation inactive sur cette page"
-              : "Accès réservé au rôle de connexion admin"
+            ? getPageTitleTooltip(location.pathname)
+            : "Accès réservé au rôle superadmin"
         }
       >
         <span className="page-title-inner">
@@ -235,7 +267,6 @@ export default function AdminPreviewBar({
               type="button"
               onClick={handleValidate}
               className="admin-preview-button"
-              title="Activer le mode superadmin"
             >
               ✔
             </button>
@@ -247,7 +278,6 @@ export default function AdminPreviewBar({
             type="button"
             onClick={handleDisableSuperAdmin}
             className="admin-preview-button"
-            title="Désactiver le mode superadmin"
           >
             ✖
           </button>
@@ -257,22 +287,17 @@ export default function AdminPreviewBar({
           className={`role-indicator ${
             currentRole === "superadmin" ? "role-admin" : "role-user"
           }`}
-          title={`Rôle preview ${currentRole}`}
         />
 
-        <span style={{ fontSize: "12px", color: "var(--text)" }}>
-          {currentRole}
-        </span>
+        <span>{currentRole}</span>
 
         <button
           type="button"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          onClick={() => {
+            console.log("🎨 toggle theme");
+            setTheme(theme === "dark" ? "light" : "dark");
+          }}
           className="theme-toggle-button"
-          title={
-            theme === "dark"
-              ? "Passer en mode clair"
-              : "Passer en mode sombre"
-          }
         >
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
@@ -281,17 +306,22 @@ export default function AdminPreviewBar({
           type="button"
           onClick={handleScreenMode}
           className="screen-toggle-button"
-          title={getScreenTitle()}
         >
-          {getScreenIcon()}
+          {screenMode === "desktop"
+            ? "🖥️"
+            : screenMode === "mobile"
+              ? "📱"
+              : "📽️"}
         </button>
 
         {showLogout && (
           <button
             type="button"
-            onClick={onLogout}
+            onClick={() => {
+              console.log("🚪 logout");
+              onLogout?.();
+            }}
             className="logout-button"
-            title="Se déconnecter"
           >
             ⎋
           </button>

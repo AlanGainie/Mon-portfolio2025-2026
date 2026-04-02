@@ -2317,3 +2317,78 @@ body[data-env="test"] {
 body[data-env="prod"] {
   border: 4px solid green;
 }
+
+/* =========================
+   HOVER COULEUR PAR PAGE
+   ========================= */
+
+/* LOGIN → bleu */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/user"]:hover .page-title-inner {
+  border-color: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+/* USER → vert */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/admin"]:hover .page-title-inner {
+  border-color: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+/* ADMIN → rouge */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/"]:hover .page-title-inner {
+  border-color: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+/* =========================
+   FLECHE DIRECTIONNELLE HOVER
+   ========================= */
+
+.page-title-inner {
+  position: relative;
+}
+
+/* Flèche cachée par défaut */
+.page-title-inner::after {
+  content: ">";
+  position: absolute;
+  right: -18px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  opacity: 0;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  transition: all 0.25s ease;
+}
+
+/* Apparition au hover */
+.page-title-clickable:hover .page-title-inner::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* LOGIN → bleu */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/"]:hover .page-title-inner::after {
+  color: #3b82f6;
+  text-shadow: 0 0 6px #3b82f6;
+}
+
+/* USER → vert */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/user"]:hover .page-title-inner::after {
+  color: #22c55e;
+  text-shadow: 0 0 6px #22c55e;
+}
+
+/* ADMIN → rouge */
+body[data-role="superadmin"]
+.page-title-clickable[data-next="/admin"]:hover .page-title-inner::after {
+  color: #ef4444;
+  text-shadow: 0 0 6px #ef4444;
+}
