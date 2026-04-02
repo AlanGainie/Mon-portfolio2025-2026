@@ -1,8 +1,17 @@
+import { useAuth } from "../../auth/AuthContext";
+
 export default function EnvBadge() {
+  const { previewRole } = useAuth();
+
   const env =
     import.meta.env.VITE_APP_ENV ||
     import.meta.env.MODE ||
     "dev";
+
+  // ❌ Pas superadmin → on n'affiche rien
+  if (previewRole !== "superadmin") {
+    return null;
+  }
 
   const getColor = () => {
     if (env === "prod" || env === "production") return "green";

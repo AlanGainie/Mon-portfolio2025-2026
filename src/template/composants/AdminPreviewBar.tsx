@@ -216,10 +216,10 @@ export default function AdminPreviewBar({
         ▲
       </button>
 
-      <button
+     <button
         type="button"
         data-next={getNextPage(location.pathname)}
-        className={`page-title page-title-button ${
+        className={`page-title-button ${
           canTogglePage ? "page-title-clickable" : ""
         } ${isFlipping ? "page-title-flipping" : ""}`}
         onClick={handleTitleClick}

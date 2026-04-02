@@ -20,39 +20,71 @@ import Project1 from "../../template/pages/Project1.tsx";
 import Project2 from "../../template/pages/Project2.tsx";
 import LanguageC from "../../template/pages/C.tsx";
 
+// Sous-composants de page
+import PageHome from "./PageHome";
+import PageUser from "./PageUser";
+import PageAdmin from "./PageAdmin";
+
 // Styles utilitaires
 import { PAGESCROLLDOWN, FOOTER } from "../../styles/tw.ts";
 
-// Pages des sous-menus
-const homePageTab = [<HomePage />, <Sommaire />];
-const monCVTab = [<AproposDeMoi />, <ErrorState type="not_found" target="page" />];
-const mesCompetencesTab = [<JavaScript />, <ReactLg />, <NodeJs />, <LanguageC />];
-const projetsTab = [<Project1 />, <Project2 />];
-const mesEtudesTab = [<Lycee />, <Epitech />, <ESMA />, <ESUP />];
-const contactsTab = [
-  <ErrorState type="not_found" target="page" />,
-  <Gmail />,
-  <ErrorState type="not_found" target="page" />,
-  <Others />,
-];
-
-type DisplaysInf = {
+export type DisplaysInf = {
   displayFirstMenuIndex: number;
   displaySecondMenuIndex: number;
 };
 
-type PageProps = {
+export type AdministrativeContent = {
+  description?: string;
+  pdf?: string;
+  slides?: string;
+  image?: string;
+  folder?: string;
+};
+
+export type PageProps = {
   header?: JSX.Element | "none";
   footer?: JSX.Element | "none";
   content?: JSX.Element;
   tab_menue1?: number;
   tab_menue2?: number;
   displaysInf?: DisplaysInf;
-  type?: string;
+  type?: "home" | "user" | "admin";
   enableAnchors?: boolean;
+  showAdministrativeSection?: boolean;
+  administrativeContent?: AdministrativeContent;
 };
 
-function getPagesArrays() {
+function getPagesArrays(): JSX.Element[][] {
+  const homePageTab = [<HomePage key="home" />, <Sommaire key="sommaire" />];
+
+  const monCVTab = [
+    <AproposDeMoi key="apropos" />,
+    <ErrorState key="cv-error" type="not_found" target="page" />,
+  ];
+
+  const mesCompetencesTab = [
+    <JavaScript key="js" />,
+    <ReactLg key="react" />,
+    <NodeJs key="node" />,
+    <LanguageC key="c" />,
+  ];
+
+  const projetsTab = [<Project1 key="project1" />, <Project2 key="project2" />];
+
+  const mesEtudesTab = [
+    <Lycee key="lycee" />,
+    <Epitech key="epitech" />,
+    <ESMA key="esma" />,
+    <ESUP key="esup" />,
+  ];
+
+  const contactsTab = [
+    <ErrorState key="contact-error-1" type="not_found" target="page" />,
+    <Gmail key="gmail" />,
+    <ErrorState key="contact-error-2" type="not_found" target="page" />,
+    <Others key="others" />,
+  ];
+
   return [
     homePageTab,
     monCVTab,
@@ -63,21 +95,29 @@ function getPagesArrays() {
   ];
 }
 
-// Affiche les sous-pages selon le menu sélectionné
-function displaySousMenue(tab: number, displaysInf: DisplaysInf): JSX.Element {
+export function displaySousMenue(
+  tab: number,
+  displaysInf: DisplaysInf
+): JSX.Element {
   const pagesArrays = getPagesArrays();
   const selectedArray = pagesArrays[displaysInf.displayFirstMenuIndex] ?? [];
   return selectedArray[tab] ?? <ErrorState type="not_found" target="page" />;
 }
 
-// Header
-const HeaderPage = ({ content }: { content?: JSX.Element }): JSX.Element => {
+export const HeaderPage = ({
+  content,
+}: {
+  content?: JSX.Element;
+}): JSX.Element => {
   if (content) return content;
   return <header />;
 };
 
-// Footer
-export const FooterPage = ({ content }: { content?: JSX.Element }): JSX.Element => {
+export const FooterPage = ({
+  content,
+}: {
+  content?: JSX.Element;
+}): JSX.Element => {
   if (content) return content;
 
   return (
@@ -91,7 +131,6 @@ export const FooterPage = ({ content }: { content?: JSX.Element }): JSX.Element 
   );
 };
 
-// Sous-menu
 function SousMenue({
   tab_menue1,
   displaysInf,
@@ -107,8 +146,7 @@ function SousMenue({
   );
 }
 
-// Corps de page
-const BodyPage = ({
+export const BodyPage = ({
   content,
   tab_menue1,
   tab_menue2,
@@ -120,10 +158,12 @@ const BodyPage = ({
   tab_menue2?: number;
   displaysInf?: DisplaysInf;
   enableAnchors?: boolean;
+  showAdministrativeSection?: boolean;
+  administrativeContent?: AdministrativeContent;
 }): JSX.Element => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const safeDisplaysInf = displaysInf ?? {
+  const safeDisplaysInf: DisplaysInf = displaysInf ?? {
     displayFirstMenuIndex: 0,
     displaySecondMenuIndex: 0,
   };
@@ -143,7 +183,9 @@ const BodyPage = ({
       let target: HTMLElement | null = null;
 
       try {
-        target = container.querySelector<HTMLElement>(`#${CSS.escape(targetId)}`);
+        target = container.querySelector<HTMLElement>(
+          `#${CSS.escape(targetId)}`
+        );
       } catch {
         target = container.querySelector<HTMLElement>(`#${targetId}`);
       }
@@ -176,7 +218,10 @@ const BodyPage = ({
   if (tab_menue2 !== undefined && displaysInf) {
     return (
       <div ref={scrollContainerRef} className={PAGESCROLLDOWN}>
-        <SousMenue tab_menue1={tab_menue1} displaysInf={displaysInf} />
+        <SousMenue
+          tab_menue1={tab_menue1}
+          displaysInf={displaysInf}
+        />
       </div>
     );
   }
@@ -188,29 +233,18 @@ const BodyPage = ({
   );
 };
 
-// Composant Page principal
-function Page({
-  header,
-  footer,
-  content,
-  tab_menue1 = 0,
-  tab_menue2,
-  displaysInf = { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 },
-  enableAnchors = false,
-}: PageProps): JSX.Element {
-  return (
-    <div>
-      {header !== "none" && <HeaderPage content={header} />}
-      <BodyPage
-        content={content}
-        tab_menue1={tab_menue1}
-        tab_menue2={tab_menue2}
-        displaysInf={displaysInf}
-        enableAnchors={enableAnchors}
-      />
-      {footer !== "none" && <FooterPage content={footer} />}
-    </div>
-  );
+function Page(props: PageProps): JSX.Element {
+  const { type = "user" } = props;
+
+  switch (type) {
+    case "home":
+      return <PageHome {...props} />;
+    case "admin":
+      return <PageAdmin {...props} />;
+    case "user":
+    default:
+      return <PageUser {...props} />;
+  }
 }
 
 export default Page;
