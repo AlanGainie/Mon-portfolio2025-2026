@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Button from "../composants/Button";
+import Button from "../composants/ui/Button";
 
 function TypingEffect({ text = "", speed = 100 }: { text?: string; speed?: number }) {
   const [displayedText, setDisplayedText] = useState("");
