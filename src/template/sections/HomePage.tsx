@@ -3,9 +3,9 @@ import { ChevronDown, ChevronUp, FileText, Presentation, PlayCircle } from 'luci
 import { FLEXCOL } from '../../styles/tw';
 import identity_picture from '../../assets/picture/IMG_20250129_092536_199.jpg';
 import terminal from '../../assets/picture/description.png';
-import Crop from '../composants/Crop';
-import ButtonTypewriter from '../composants/Typewriter';
-import Carrousel from '../composants/Carrousel';
+import Crop from '../composants/effects/Crop';
+import ButtonTypewriter from '../composants/effects/Typewriter';
+import Carrousel from '../composants/ui/Carrousel';
 
 import cvMcdo from '../../assets/picture/cv/cv-mcdo.png';
 import cvRechercheTravail20252026 from '../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png';

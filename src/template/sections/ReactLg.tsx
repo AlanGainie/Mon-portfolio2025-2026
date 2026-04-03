@@ -1,4 +1,4 @@
-import Crop from "../composants/Crop"
+import Crop from "../composants/effects/Crop"
 import provectio from "../../assets/picture/provectio.webp"
 import node from "../../assets/picture/node.jpeg"
 import tailwind from "../../assets/picture/tailwind.png"

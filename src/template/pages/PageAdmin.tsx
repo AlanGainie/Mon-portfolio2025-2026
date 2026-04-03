@@ -7,7 +7,7 @@ import {
   AdministrativeContent,
 } from "./Page";
 
-import AdministrativeEditor from "./AdministrativeEditor";
+import AdministrativeEditor from "../composants/admin/AdministrativeEditor";
 
 export default function PageAdmin({
   header,

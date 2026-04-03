@@ -3,22 +3,22 @@ import "../../styles/index.css";
 import "../../styles/tw.ts";
 
 // Pages principales
-import ErrorState from "../../template/pages/errorGest.tsx";
-import Epitech from "../../template/pages/Epitech.tsx";
-import AproposDeMoi from "../../template/pages/AproposDeMoi.tsx";
-import ESMA from "../../template/pages/ESMA.tsx";
-import ESUP from "../../template/pages/ESUP.tsx";
-import Gmail from "../../template/pages/Gmail.tsx";
-import HomePage from "../../template/pages/HomePage.tsx";
-import NodeJs from "../../template/pages/NodeJs.tsx";
-import JavaScript from "../../template/pages/JavaScript.tsx";
-import Lycee from "../../template/pages/Lycee.tsx";
-import Sommaire from "../../template/pages/Sommaire.tsx";
-import ReactLg from "../../template/pages/ReactLg.tsx";
-import Others from "../../template/pages/Others.tsx";
-import Project1 from "../../template/pages/Project1.tsx";
-import Project2 from "../../template/pages/Project2.tsx";
-import LanguageC from "../../template/pages/C.tsx";
+import ErrorState from "../sections/errorGest.tsx";
+import Epitech from "../sections/Epitech.tsx";
+import AproposDeMoi from "../sections/AproposDeMoi.tsx";
+import ESMA from "../sections/ESMA.tsx";
+import ESUP from "../sections/ESUP.tsx";
+import Gmail from "../sections/Gmail.tsx";
+import HomePage from "../sections/HomePage.tsx";
+import NodeJs from "../sections/NodeJs.tsx";
+import JavaScript from "../sections/JavaScript.tsx";
+import Lycee from "../sections/Lycee.tsx";
+import Sommaire from "../sections/Sommaire.tsx";
+import ReactLg from "../sections/ReactLg.tsx";
+import Others from "../sections/Others.tsx";
+import Project1 from "../sections/Project1.tsx";
+import Project2 from "../sections/Project2.tsx";
+import LanguageC from "../sections/C.tsx";
 
 // Sous-composants de page
 import PageHome from "./PageHome";

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Button from "./Button.tsx";
-import { BUTTONCROLLDOWN } from "../../styles/tw.ts";
+import Button from "../ui/Button.tsx";
+import { BUTTONCROLLDOWN } from "../../../styles/tw.ts";
 
 function Croll({ name }: { name?: string }) {
     const [scrollPosition, setScrollPosition] = useState(0);

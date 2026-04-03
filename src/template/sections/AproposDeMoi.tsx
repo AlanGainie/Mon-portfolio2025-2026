@@ -1,4 +1,4 @@
-import Crop from '../composants/Crop';
+import Crop from '../composants/effects/Crop';
 import description from '../../assets/picture/description.png';
 import { FLEXCOL } from '../../styles/tw';
 

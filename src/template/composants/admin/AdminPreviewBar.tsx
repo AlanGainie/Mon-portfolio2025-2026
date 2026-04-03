@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../../auth/AuthContext";
 
 type PreviewRole = "viewer" | "superadmin";
 type ScreenMode = "desktop" | "mobile" | "projector";

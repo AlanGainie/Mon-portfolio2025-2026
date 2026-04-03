@@ -1,6 +1,6 @@
-import Carrousel from '../composants/Carrousel';
+import Carrousel from '../composants/ui/Carrousel';
 import { FLEXCOL } from '../../styles/tw';
-import Crop from '../composants/Crop';
+import Crop from '../composants/effects/Crop';
 
 function Lycee() {
     const imagePaths = [

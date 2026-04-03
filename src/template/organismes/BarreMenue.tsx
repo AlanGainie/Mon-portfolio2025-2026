@@ -1,4 +1,4 @@
-import Button from '../composants/Button';
+import Button from '../composants/ui/Button';
 
 // TODO: Améliorer le system en définisant un type personnaliser menue
 // Onglets passés en props (dynamique)

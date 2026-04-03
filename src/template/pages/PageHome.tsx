@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import type { AdministrativeContent } from "../composants/Page";
+import type { AdministrativeContent } from "../pages/Page";
 
 type HomePageProps = {
   showAdministrativeSection?: boolean;

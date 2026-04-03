@@ -1,4 +1,4 @@
-import Carrousel from '../composants/Carrousel';
+import Carrousel from '../composants/ui/Carrousel';
 
 function Project2() {
     const slides = [
