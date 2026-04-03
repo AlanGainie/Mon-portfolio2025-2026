@@ -1,5 +1,5 @@
 import { THEMES } from '../../styles/tw';
-import Pastel from '../composants/Pastel';
+import Pastel from '../composants/effects/Pastel.tsx';
 
 export default function Theme({nbr, colors}: {nbr: number, colors?: string[]}) {
 

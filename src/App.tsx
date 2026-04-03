@@ -9,13 +9,13 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 // Connection
 import { useAuth } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import Login from "./template/pages/Login";
+import Login from "./template/pages/PageLogin.tsx";
 import EnvBadge from "./template/composants/EnvBadge";
 
 // Menue
 import { Menue } from "./template/composants/Menue.tsx";
 import Page, { FooterPage } from "./template/composants/Page.tsx";
-import AdminPreviewBar from "./template/composants/AdminPreviewBar.tsx";
+import AdminPreviewBar from "./template/composants/admin/AdminPreviewBar.tsx";
 
 // Pages
 import { GLOBALMENUE, PAGESGLOBAL } from "./styles/tw.ts";
