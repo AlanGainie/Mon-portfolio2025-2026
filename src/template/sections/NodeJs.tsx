@@ -1,4 +1,4 @@
-import Crop from "../composants/Crop"
+import Crop from "../composants/effects/Crop"
 
 function NodeJs() {
     return (

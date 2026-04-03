@@ -1,4 +1,4 @@
-import { PASTEL } from '../../styles/tw';
+import { PASTEL } from '../../../styles/tw';
 
 export default function Pastel({color}: {color: string}) {
 

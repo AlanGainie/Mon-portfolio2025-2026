@@ -4,7 +4,7 @@ import {
     BUTTONCARROUSELLEARROWRIGHT,
     GLOBALCARROUSELLE,
     SLIDECARROUSELLE
-} from '../../styles/tw';
+} from '../../../styles/tw';
 
 interface DownloadItem {
     label: string;

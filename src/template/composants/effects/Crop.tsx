@@ -1,5 +1,5 @@
 import error_picture from '../../assets/icones/errorPicture.svg';
-import { FLEXCOL, TEXTLEGENDE } from '../../styles/tw';
+import { FLEXCOL, TEXTLEGENDE } from '../../../styles/tw';
 
 function Crop({path, height, width, errorloadtext, className, legende}:
   {path: string, height: number, width: number, errorloadtext?: string, className?: string, legende?: string}) {

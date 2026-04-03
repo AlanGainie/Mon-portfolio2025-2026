@@ -1,4 +1,4 @@
-import { BUTTONCOLORS, FLEXROW } from "../../styles/tw"
+import { BUTTONCOLORS, FLEXROW } from "../../../styles/tw"
 
 //gestion d'erreur
 import errorPicture from "../../assets/icones/errorPicture.svg"

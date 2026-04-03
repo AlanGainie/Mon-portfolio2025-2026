@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import BarreMenue from '../organismes/BarreMenue.tsx';
+import BarreMenue from '../../organismes/BarreMenue.tsx';
 import {
   ROOTMENUE,
   SECONDARYMENUE,
   PAGESCROLLDOWN,
   PAGESGLOBAL,
   TOPPAGESCROLLDOWN,
-} from '../../styles/tw.ts';
-import ErrorGest from '../pages/errorGest.tsx';
+} from '../../../styles/tw.ts';
+import ErrorGest from '../../sections/errorGest.tsx';
 
-import { OnlyOnedMenue, MenueDefinedTypePage } from '../../../datas/Menue.tsx';
+import { OnlyOnedMenue, MenueDefinedTypePage } from '../../../../datas/Menue.tsx';
 
 const HOME_ANCHOR_IDS = [
   'video-intro',

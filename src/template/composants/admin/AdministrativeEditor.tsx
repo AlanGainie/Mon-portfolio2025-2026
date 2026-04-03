@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AdministrativeContent } from "./Page";
+import { AdministrativeContent } from "../../pages/Page";
 
 export default function AdministrativeEditor({
   initialContent,
