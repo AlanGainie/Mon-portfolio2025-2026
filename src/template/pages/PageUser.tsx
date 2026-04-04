@@ -9,8 +9,6 @@ export default function PageUser({
   tab_menue2,
   displaysInf = { displayFirstMenuIndex: 0, displaySecondMenuIndex: 0 },
   enableAnchors = false,
-  showAdministrativeSection = false,
-  administrativeContent,
 }: PageProps): JSX.Element {
   return (
     <div>
@@ -22,8 +20,6 @@ export default function PageUser({
         tab_menue2={tab_menue2}
         displaysInf={displaysInf}
         enableAnchors={enableAnchors}
-        showAdministrativeSection={showAdministrativeSection}
-        administrativeContent={administrativeContent}
       />
 
       {footer !== "none" && <FooterPage content={footer} />}
