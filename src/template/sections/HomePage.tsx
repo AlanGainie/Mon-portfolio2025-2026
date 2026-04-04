@@ -1,135 +1,49 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, FileText, Presentation, PlayCircle } from 'lucide-react';
-import { FLEXCOL } from '../../styles/tw';
-import identity_picture from '../../assets/picture/IMG_20250129_092536_199.jpg';
-import terminal from '../../assets/picture/description.png';
-import Crop from '../composants/effects/Crop';
-import ButtonTypewriter from '../composants/effects/Typewriter';
-import Carrousel from '../composants/ui/Carrousel';
+import { useMemo, useState } from "react";
+import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
+import { FLEXCOL } from "../../styles/tw";
+import Crop from "../composants/effects/Crop";
+import ButtonTypewriter from "../composants/effects/Typewriter";
+import Carrousel from "../composants/ui/Carrousel";
+import ExamResourceCard from "../composants/ui/ExamResourceCard";
 
-import cvMcdo from '../../assets/picture/cv/cv-mcdo.png';
-import cvRechercheTravail20252026 from '../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png';
-import cvAlternance2025 from '../../assets/picture/cv/CV-alternance-2025-alan-gainie.png';
-import cvAlternance2025V2 from '../../assets/picture/cv/CV-alternance-2025-alan-gainie(1).png';
-import cvAlternance2026 from '../../assets/picture/cv/CV-alternance-2026-alan-gainie.png';
-import cvRechercheInterim20252026 from '../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png';
-import cvStage2026 from '../../assets/picture/cv/CV-stage-2026-alan-gainie.png';
+import identity_picture from "../../assets/picture/IMG_20250129_092536_199.jpg";
+import terminal from "../../assets/picture/description.png";
 
-import e5Image from '../../assets/picture/E5.png';
-// import e6Image from '../../assets/picture/E6.png';
+import cvMcdo from "../../assets/picture/cv/cv-mcdo.png";
+import cvRechercheTravail20252026 from "../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png";
+import cvAlternance2025 from "../../assets/picture/cv/CV-alternance-2025-alan-gainie.png";
+import cvAlternance2025V2 from "../../assets/picture/cv/CV-alternance-2025-alan-gainie(1).png";
+import cvAlternance2026 from "../../assets/picture/cv/CV-alternance-2026-alan-gainie.png";
+import cvRechercheInterim20252026 from "../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png";
+import cvStage2026 from "../../assets/picture/cv/CV-stage-2026-alan-gainie.png";
 
-const placeholderImage = 'https://placehold.co/1200x700?text=Chargement...';
-const placeholderPdf = '#';
-const placeholderSlides = '#';
-const placeholderVideo = '#';
-const isMobile = document.body.dataset.screen === 'mobile';
+import e5Image from "../../assets/picture/E5.png";
+import e6Image from "../../assets/picture/E6.png";
 
-const summaryLinks = [
-  { id: 'video-intro', label: 'Vidéo explicative' },
-  { id: 'sommaire', label: 'Sommaire' },
-  { id: 'presentation-candidat', label: 'Présentation du candidat' },
-  { id: 'cv-carousel', label: 'CV' },
-  { id: 'epreuves-e5-e6', label: 'Présentation E5 / E6' },
-];
+import type { HomePageData } from "../pages/Page";
 
-const cvs = [
-  {
-    title: 'CV général 2026-2027',
-    image: placeholderImage,
-    alt: 'Aperçu du CV général 2026-2027',
-    description: 'Version générale de mon CV pour les candidatures 2026-2027.',
-    downloads: [{ label: 'Télécharger le PDF', href: '#', download: true }],
-  },
-  {
-    title: 'CV McDo',
-    image: cvMcdo,
-    alt: 'Aperçu du CV McDo',
-    description: 'Version adaptée à une candidature dans la restauration rapide.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvMcdo },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV recherche de travail 2025-2026',
-    image: cvRechercheTravail20252026,
-    alt: 'Aperçu du CV recherche de travail 2025-2026',
-    description: 'Version orientée recherche d’emploi pour 2025-2026.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvRechercheTravail20252026 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV alternance 2025',
-    image: cvAlternance2025,
-    alt: 'Aperçu du CV alternance 2025',
-    description: 'Version orientée alternance pour 2025.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvAlternance2025 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV alternance 2025 - version 2',
-    image: cvAlternance2025V2,
-    alt: 'Aperçu du CV alternance 2025 version 2',
-    description: 'Seconde version du CV alternance 2025.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvAlternance2025V2 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV alternance 2026',
-    image: cvAlternance2026,
-    alt: 'Aperçu du CV alternance 2026',
-    description: 'Version orientée alternance pour 2026.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvAlternance2026 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV recherche intérim 2025-2026',
-    image: cvRechercheInterim20252026,
-    alt: 'Aperçu du CV recherche intérim 2025-2026',
-    description: 'Version destinée à la recherche de missions d’intérim.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvRechercheInterim20252026 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-  {
-    title: 'CV stage 2026',
-    image: cvStage2026,
-    alt: 'Aperçu du CV stage 2026',
-    description: 'Version orientée recherche de stage pour 2026.',
-    downloads: [
-      { label: 'Télécharger le PNG', href: cvStage2026 },
-      { label: 'Télécharger le PDF', href: '#', download: true },
-    ],
-  },
-];
+const fallbackImage = "https://placehold.co/1200x700?text=Chargement...";
+const isMobile = document.body.dataset.screen === "mobile";
 
-const evaluations = [
-  {
-    title: 'Épreuve E5',
-    description: '...',
-    pdf: placeholderPdf,
-    slides: '...',
-    image: e5Image || placeholderImage,
-    folder: 'https://docs.google.com/document/d/1ipmgqLhD70Hwqf5SAHqn8d6DnIIKaJoxR_Cg7jxdf5o/edit?usp=sharing',
-  },
-  {
-    title: 'Épreuve E6',
-    description: '...',
-    pdf: placeholderPdf,
-    slides: placeholderSlides,
-    image: placeholderImage,
-    folder: 'https://docs.google.com/document/d/1PvUo-bFnqNp4FG34bKa-6kPdfJXWJpPw9go94K8vE1k/edit?usp=sharing',
-  },
-];
+const imageMap: Record<string, string> = {
+  placeholder: fallbackImage,
+  identity_picture,
+  terminal,
+  cv_mcdo: cvMcdo,
+  cv_recherche_travail_2025_2026: cvRechercheTravail20252026,
+  cv_alternance_2025: cvAlternance2025,
+  cv_alternance_2025_v2: cvAlternance2025V2,
+  cv_alternance_2026: cvAlternance2026,
+  cv_recherche_interim_2025_2026: cvRechercheInterim20252026,
+  cv_stage_2026: cvStage2026,
+  e5: e5Image,
+  e6: e6Image,
+};
+
+function getImageByKey(key?: string): string {
+  if (!key) return fallbackImage;
+  return imageMap[key] ?? fallbackImage;
+}
 
 function SectionTitle({
   eyebrow,
@@ -149,32 +63,38 @@ function SectionTitle({
   );
 }
 
-function HomePage() {
+function HomePage({ data }: { data: HomePageData }) {
   const [isIntroOpen, setIsIntroOpen] = useState(true);
 
-  const cvSlides = cvs.map((cv) => (
-    <div key={cv.title} className="home-cv-slide">
-      <img
-        src={cv.image || placeholderImage}
-        alt={cv.alt}
-        className="home-cv-slide-image"
-      />
-    </div>
-  ));
+  const cvSlides = useMemo(() => {
+    return (data.cvs ?? []).map((cv) => (
+      <div key={cv.title} className="home-cv-slide">
+        <img
+          src={getImageByKey(cv.imageKey)}
+          alt={cv.alt || cv.title}
+          className="home-cv-slide-image"
+        />
+      </div>
+    ));
+  }, [data.cvs]);
+
+  const examResourcesWithImages = useMemo(() => {
+    return (data.examResources ?? []).map((resource) => ({
+      ...resource,
+      image: getImageByKey(resource.imageKey),
+    }));
+  }, [data.examResources]);
 
   return (
     <div className={`${FLEXCOL} home-page-shell`}>
       <section className="home-panel home-hero-panel">
         <div className="home-hero-content">
-          <p className="home-hero-eyebrow">Portfolio</p>
-          <h1 className="home-hero-title">Bienvenue sur mon portfolio informatique</h1>
-          <p className="home-hero-text">
-            Cette page d’accueil centralise ma présentation, mes différents CV ainsi
-            que les accès rapides vers les documents liés à mes épreuves professionnelles.
-          </p>
+          <p className="home-hero-eyebrow">{data.hero?.eyebrow ?? ""}</p>
+          <h1 className="home-hero-title">{data.hero?.title ?? ""}</h1>
+          <p className="home-hero-text">{data.hero?.text ?? ""}</p>
 
           <div className="home-typewriter-box">
-            <ButtonTypewriter content="Bienvenue sur mon portfolio informatique" />
+            <ButtonTypewriter content={data.hero?.typewriterText ?? ""} />
           </div>
         </div>
       </section>
@@ -183,11 +103,30 @@ function HomePage() {
         <div className="home-media-box">
           <div className="home-video-wrapper">
             <img
-              src={placeholderImage}
-              alt="Miniature vidéo de présentation en chargement"
+              src={getImageByKey(data.videoIntro?.thumbnailKey)}
+              alt="Miniature vidéo de présentation"
               className="home-video-image"
             />
-            <a href={placeholderVideo} className="home-video-overlay">
+
+            <a
+              href={data.videoIntro?.videoUrl || "#"}
+              className="home-video-overlay"
+              target={
+                data.videoIntro?.videoUrl && data.videoIntro.videoUrl !== "#"
+                  ? "_blank"
+                  : undefined
+              }
+              rel={
+                data.videoIntro?.videoUrl && data.videoIntro.videoUrl !== "#"
+                  ? "noopener noreferrer"
+                  : undefined
+              }
+              onClick={(e) => {
+                if (!data.videoIntro?.videoUrl || data.videoIntro.videoUrl === "#") {
+                  e.preventDefault();
+                }
+              }}
+            >
               <span className="home-video-button">
                 <PlayCircle className="h-5 w-5" />
                 Lancer la vidéo
@@ -200,8 +139,12 @@ function HomePage() {
           <div>
             <div className="home-side-card-header">
               <div>
-                <p className="home-section-eyebrow">Introduction</p>
-                <h2 className="home-side-title">Accueil du portfolio</h2>
+                <p className="home-section-eyebrow">
+                  {data.videoIntro?.sectionEyebrow ?? ""}
+                </p>
+                <h2 className="home-side-title">
+                  {data.videoIntro?.sectionTitle ?? ""}
+                </h2>
               </div>
 
               <button
@@ -209,36 +152,38 @@ function HomePage() {
                 onClick={() => setIsIntroOpen((prev) => !prev)}
                 className="home-action-button"
               >
-                {isIntroOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                {isIntroOpen ? 'Replier' : 'Déplier'}
+                {isIntroOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+                {isIntroOpen ? "Replier" : "Déplier"}
               </button>
             </div>
 
             <div
               className={`grid overflow-hidden transition-all duration-300 ${
-                isIntroOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-80'
+                isIntroOpen
+                  ? "grid-rows-[1fr] opacity-100"
+                  : "grid-rows-[0fr] opacity-80"
               }`}
             >
               <div className="overflow-hidden">
-                <p className="home-paragraph">
-                  Cette page d’accueil présente rapidement le projet, son objectif et son contenu.
-                  La vidéo explicative sera remplacée plus tard par la tienne. En attendant,
-                  un visuel de chargement est utilisé comme remplacement.
-                </p>
-                <p className="home-paragraph mt-4">
-                  Le résumé est repliable pour garder une interface propre et permettre à
-                  l’utilisateur de se concentrer sur les sections importantes du portfolio.
-                </p>
+                {(data.videoIntro?.paragraphs ?? []).map((paragraph, index) => (
+                  <p
+                    key={`${paragraph}-${index}`}
+                    className={`home-paragraph ${index > 0 ? "mt-4" : ""}`}
+                  >
+                    {paragraph}
+                  </p>
+                ))}
               </div>
             </div>
           </div>
 
           <div className="home-info-box">
-            <p className="home-info-title">À prévoir</p>
-            <p className="home-info-text">
-              Vidéo finale, miniature personnalisée, texte d’introduction définitif
-              et éventuellement sous-titres.
-            </p>
+            <p className="home-info-title">{data.videoIntro?.todoTitle ?? ""}</p>
+            <p className="home-info-text">{data.videoIntro?.todoText ?? ""}</p>
           </div>
         </div>
       </section>
@@ -251,7 +196,7 @@ function HomePage() {
         />
 
         <div className="home-summary-grid">
-          {summaryLinks.map((item, index) => (
+          {(data.summaryLinks ?? []).map((item, index) => (
             <a key={item.id} href={`#${item.id}`} className="home-summary-card">
               <p className="home-summary-index">Section {index + 1}</p>
               <h3 className="home-summary-title">{item.label}</h3>
@@ -265,55 +210,51 @@ function HomePage() {
 
       <section id="presentation-candidat" className="home-panel">
         <SectionTitle
-          eyebrow="Profil"
-          title="Présentation détaillée du candidat"
-          subtitle="Une section plus complète pour présenter ton parcours, ton profil et ton projet professionnel."
+          eyebrow={data.profile?.eyebrow ?? ""}
+          title={data.profile?.title ?? ""}
+          subtitle={data.profile?.subtitle}
         />
 
         <div className="home-profile-grid">
           <div className="home-photo-card">
             <Crop
-              path={identity_picture}
+              path={getImageByKey(data.profile?.identityPictureKey)}
               height={isMobile ? 425 : 550}
               width={isMobile ? 425 : 550}
               className="identite"
               errorloadtext="photo d'identité"
-              legende="Photo d'identité mai 2025"
+              legende={data.profile?.identityLegend ?? ""}
             />
           </div>
 
           <div className="home-profile-content">
             <div className="home-subcard">
-              <h3 className="home-subcard-title">Qui suis-je ?</h3>
-              <p className="home-paragraph">
-                Étudiant en BTS SIO 2ᵉ année (SLAM) à Rennes, je suis créatif et je me suis fixé comme objectif d’en apprendre toujours plus, jour après jour. Passionné par le développement informatique, je suis curieux et motivé. Je souhaite approfondir mes compétences en développement web et data, et contribuer activement à des projets concrets.
-              </p>
+              <h3 className="home-subcard-title">
+                {data.profile?.whoAmITitle ?? ""}
+              </h3>
+              <p className="home-paragraph">{data.profile?.whoAmIText ?? ""}</p>
             </div>
 
-            <img src={terminal} alt="Terminal de présentation du candidat" />
+            <img
+              src={getImageByKey(data.profile?.terminalImageKey)}
+              alt="Terminal de présentation du candidat"
+            />
 
             <div className="home-mini-grid">
               <div className="home-subcard">
-                <h4 className="home-mini-title">Compétences</h4>
-                <p className="home-mini-text">
-                  Développement web, programmation, gestion de projet, outils collaboratifs,
-                  bases de données et conception.
-                </p>
+                <h4 className="home-mini-title">{data.profile?.skillsTitle ?? ""}</h4>
+                <p className="home-mini-text">{data.profile?.skillsText ?? ""}</p>
               </div>
 
               <div className="home-subcard">
-                <h4 className="home-mini-title">Objectifs</h4>
-                <p className="home-mini-text">
-                  Je cherche à développer mes compétences afin de devenir développeur et d’étoffer mon apprentissage en milieu professionnel.
-                </p>
+                <h4 className="home-mini-title">{data.profile?.goalsTitle ?? ""}</h4>
+                <p className="home-mini-text">{data.profile?.goalsText ?? ""}</p>
               </div>
             </div>
 
             <div className="home-highlight-card">
-              <h4 className="home-highlight-title">Phrase d’accroche</h4>
-              <p className="home-highlight-text">
-                « De futur développeur à magicien du clavier »
-              </p>
+              <h4 className="home-highlight-title">{data.profile?.hookTitle ?? ""}</h4>
+              <p className="home-highlight-text">{data.profile?.hookText ?? ""}</p>
             </div>
           </div>
         </div>
@@ -321,19 +262,19 @@ function HomePage() {
 
       <section id="cv-carousel" className="home-panel">
         <SectionTitle
-          eyebrow="Documents"
-          title="Mes CV"
-          subtitle="Cette section regroupe les différentes versions de mon CV avec aperçu, description et téléchargements."
+          eyebrow={data.cvSection?.eyebrow ?? ""}
+          title={data.cvSection?.title ?? ""}
+          subtitle={data.cvSection?.subtitle}
         />
 
         <div className="w-full">
           <Carrousel
             slides={cvSlides}
-            captions={cvs.map((cv) => cv.title)}
+            captions={(data.cvs ?? []).map((cv) => cv.title)}
             autoScroll={false}
             interval={5000}
             showMenu={true}
-            menuItems={cvs.map((cv) => ({
+            menuItems={(data.cvs ?? []).map((cv) => ({
               title: cv.title,
               description: cv.description,
               downloads: cv.downloads,
@@ -344,79 +285,15 @@ function HomePage() {
 
       <section id="epreuves-e5-e6" className="home-panel">
         <SectionTitle
-          eyebrow="Épreuves"
-          title="Présentation E5 et E6"
-          subtitle="Deux espaces dédiés à tes épreuves avec téléchargement du PDF et accès au diaporama."
+          eyebrow={data.examSection?.eyebrow ?? ""}
+          title={data.examSection?.title ?? ""}
+          subtitle={data.examSection?.subtitle}
         />
 
         <div className="home-evaluation-grid">
-          {evaluations.map((evaluation) => {
-            const isPdfDisabled = !evaluation.pdf || evaluation.pdf === '#';
-            const isSlidesDisabled = !evaluation.slides || evaluation.slides === '#';
-            const isFolderDisabled = !evaluation.folder || evaluation.folder === '#';
-
-            return (
-              <article key={evaluation.title} className="home-evaluation-card">
-                <div className="home-evaluation-image-box">
-                  <img
-                    src={evaluation.image}
-                    alt={`Illustration de ${evaluation.title}`}
-                    className="home-evaluation-image"
-                  />
-                </div>
-
-                <div className="home-evaluation-content">
-                  <h3 className="home-evaluation-title">{evaluation.title}</h3>
-                  <p className="home-paragraph home-evaluation-text">
-                    {evaluation.description}
-                  </p>
-
-                  <div className="home-evaluation-actions">
-                    <a
-                      href={evaluation.pdf}
-                      className={`home-action-link home-action-link-secondary ${
-                        isPdfDisabled ? 'disabled-link' : ''
-                      }`}
-                      onClick={(e) => isPdfDisabled && e.preventDefault()}
-                      target={isPdfDisabled ? undefined : '_blank'}
-                      rel={isPdfDisabled ? undefined : 'noopener noreferrer'}
-                      title={isPdfDisabled ? 'PDF non disponible' : 'Télécharger le PDF'}
-                    >
-                      <FileText className="h-4 w-4" />
-                      Télécharger le PDF
-                    </a>
-
-                    <a
-                      href={evaluation.slides}
-                      className={`home-action-link home-action-link-primary ${
-                        isSlidesDisabled ? 'disabled-link' : ''
-                      }`}
-                      onClick={(e) => isSlidesDisabled && e.preventDefault()}
-                      target={isSlidesDisabled ? undefined : '_blank'}
-                      rel={isSlidesDisabled ? undefined : 'noopener noreferrer'}
-                      title={isSlidesDisabled ? 'Diaporama non disponible' : 'Voir le diaporama'}
-                    >
-                      <Presentation className="h-4 w-4" />
-                      Voir le diaporama
-                    </a>
-
-                    <a
-                      href={evaluation.folder}
-                      className={`home-action-link home-action-link-folder ${
-                        isFolderDisabled ? 'disabled-link' : ''
-                      }`}
-                      onClick={(e) => isFolderDisabled && e.preventDefault()}
-                      target={isFolderDisabled ? undefined : '_blank'}
-                      rel={isFolderDisabled ? undefined : 'noopener noreferrer'}
-                      title={isFolderDisabled ? 'Dossier non disponible' : 'Voir le dossier'}
-                    >
-                      📁 Voir le dossier
-                    </a>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+          {examResourcesWithImages.map((resource) => (
+            <ExamResourceCard key={resource.title} resource={resource} />
+          ))}
         </div>
       </section>
     </div>
