@@ -1,0 +1,6 @@
+{
+  "pageId": "PageUser",
+  "pageDataFile": "PageUser.json",
+  "pageRenderer": "home",
+  "enableAnchors": true
+}
