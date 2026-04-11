@@ -41,6 +41,7 @@ export type DownloadItem = {
   label: string;
   href: string;
   download?: boolean;
+  isAvailable?: boolean;
 };
 
 export type SummaryLink = {
@@ -63,6 +64,10 @@ export type ExamResource = {
   slides?: string;
   imageKey: string;
   folder?: string;
+  image?: string;
+  isPdfAvailable?: boolean;
+  isSlidesAvailable?: boolean;
+  isFolderAvailable?: boolean;
 };
 
 export type AdministrativeContent = {
@@ -150,6 +155,26 @@ const imageMap: Record<string, string> = {
 function getImageByKey(key?: string): string {
   if (!key) return fallbackImage;
   return imageMap[key] ?? fallbackImage;
+}
+
+function isValidLink(link?: string): boolean {
+  if (!link) return false;
+  const value = link.trim();
+  return value !== "" && value !== "#";
+}
+
+function isExternalLink(link: string): boolean {
+  return /^https?:\/\//i.test(link);
+}
+
+function buildPublicUrl(path: string): string {
+  const cleanPath = path.replace(/^\/+/, "");
+  return `${import.meta.env.BASE_URL}${cleanPath}`.replace(/([^:]\/)\/+/g, "$1");
+}
+
+function resolveLink(link?: string): string {
+  if (!isValidLink(link)) return "#";
+  return isExternalLink(link!) ? link! : buildPublicUrl(link!);
 }
 
 function SectionTitle({
@@ -264,8 +289,27 @@ function PortfolioContent({ data }: { data: PageData }) {
   const examSection = data.examSection;
   const examResources = data.examResources ?? [];
 
+  const resolvedVideoUrl = useMemo(() => {
+    return resolveLink(videoIntro?.videoUrl);
+  }, [videoIntro?.videoUrl]);
+
+  const isVideoAvailable = useMemo(() => {
+    return isValidLink(videoIntro?.videoUrl);
+  }, [videoIntro?.videoUrl]);
+
+  const normalizedCvs = useMemo(() => {
+    return cvs.map((cv) => ({
+      ...cv,
+      downloads: (cv.downloads ?? []).map((download) => ({
+        ...download,
+        href: resolveLink(download.href),
+        isAvailable: isValidLink(download.href),
+      })),
+    }));
+  }, [cvs]);
+
   const cvSlides = useMemo(() => {
-    return cvs.map((cv) => (
+    return normalizedCvs.map((cv) => (
       <div key={cv.title} className="home-cv-slide">
         <img
           src={getImageByKey(cv.imageKey)}
@@ -274,12 +318,18 @@ function PortfolioContent({ data }: { data: PageData }) {
         />
       </div>
     ));
-  }, [cvs]);
+  }, [normalizedCvs]);
 
   const examResourcesWithImages = useMemo(() => {
     return examResources.map((resource) => ({
       ...resource,
+      pdf: resolveLink(resource.pdf),
+      slides: resolveLink(resource.slides),
+      folder: resolveLink(resource.folder),
       image: getImageByKey(resource.imageKey),
+      isPdfAvailable: isValidLink(resource.pdf),
+      isSlidesAvailable: isValidLink(resource.slides),
+      isFolderAvailable: isValidLink(resource.folder),
     }));
   }, [examResources]);
 
@@ -308,25 +358,23 @@ function PortfolioContent({ data }: { data: PageData }) {
               />
 
               <a
-                href={videoIntro.videoUrl || "#"}
-                className="home-video-overlay"
-                target={
-                  videoIntro.videoUrl && videoIntro.videoUrl !== "#"
-                    ? "_blank"
-                    : undefined
-                }
-                rel={
-                  videoIntro.videoUrl && videoIntro.videoUrl !== "#"
-                    ? "noopener noreferrer"
-                    : undefined
-                }
+                href={resolvedVideoUrl}
+                className={`home-video-overlay ${
+                  isVideoAvailable ? "home-link-active" : "home-link-disabled"
+                }`}
+                target={isVideoAvailable ? "_blank" : undefined}
+                rel={isVideoAvailable ? "noopener noreferrer" : undefined}
                 onClick={(e) => {
-                  if (!videoIntro.videoUrl || videoIntro.videoUrl === "#") {
+                  if (!isVideoAvailable) {
                     e.preventDefault();
                   }
                 }}
               >
-                <span className="home-video-button">
+                <span
+                  className={`home-video-button ${
+                    isVideoAvailable ? "home-button-red" : ""
+                  }`}
+                >
                   <PlayCircle className="h-5 w-5" />
                   Lancer la vidéo
                 </span>
@@ -462,7 +510,7 @@ function PortfolioContent({ data }: { data: PageData }) {
         </section>
       )}
 
-      {!!cvs.length && cvSection && (
+      {!!normalizedCvs.length && cvSection && (
         <section id="cv-carousel" className="home-panel">
           <SectionTitle
             eyebrow={cvSection.eyebrow}
@@ -473,11 +521,11 @@ function PortfolioContent({ data }: { data: PageData }) {
           <div className="w-full">
             <Carrousel
               slides={cvSlides}
-              captions={cvs.map((cv) => cv.title)}
+              captions={normalizedCvs.map((cv) => cv.title)}
               autoScroll={false}
               interval={5000}
               showMenu={true}
-              menuItems={cvs.map((cv) => ({
+              menuItems={normalizedCvs.map((cv) => ({
                 title: cv.title,
                 description: cv.description,
                 downloads: cv.downloads,
