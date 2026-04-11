@@ -11,7 +11,7 @@ export default function PageUser({
   enableAnchors = false,
 }: PageProps): JSX.Element {
   return (
-    <div>
+    <div className="page-user">
       {header !== "none" && <HeaderPage content={header} />}
 
       <BodyPage
