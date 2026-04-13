@@ -128,13 +128,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ========================= */
 
   useEffect(() => {
-    if (user?.role === "admin" && previewRole === "superadmin") {
-      document.body.dataset.role = "superadmin";
-    } else if (user?.role === "demo") {
-      document.body.dataset.role = "demo";
+    let visualRole: PreviewRole | "demo" = "viewer";
+
+    if (user?.role === "demo") {
+      visualRole = "demo";
+    } else if (user?.role === "admin") {
+      visualRole = previewRole; // "viewer" ou "superadmin"
     } else {
-      document.body.dataset.role = "viewer";
+      visualRole = "viewer"; // user normal
     }
+
+    document.body.dataset.role = visualRole;
 
     return () => {
       delete document.body.dataset.role;
