@@ -1,4 +1,5 @@
 // src/template/routes/RouteOrganizer.tsx
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import ProtectedRoute from "../../auth/ProtectedRoute";
@@ -12,6 +13,32 @@ function LoginRoute() {
   }
 
   return <Home type="login" />;
+}
+
+function DemoRoute() {
+  const { isAuthenticated, user, isBlocked, loginAsDemo } = useAuth();
+
+  useEffect(() => {
+    if (isBlocked) return;
+
+    if (!isAuthenticated || user?.role !== "demo") {
+      loginAsDemo();
+    }
+  }, [isBlocked, isAuthenticated, user, loginAsDemo]);
+
+  if (isBlocked) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (isAuthenticated && user?.role === "demo") {
+    return <Navigate to="/user" replace />;
+  }
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <p>Activation du mode démo...</p>
+    </div>
+  );
 }
 
 function UserRoute() {
@@ -38,6 +65,7 @@ function RouteOrganizer() {
   return (
     <Routes>
       <Route path="/" element={<LoginRoute />} />
+      <Route path="/demo" element={<DemoRoute />} />
       <Route path="/user" element={<UserRoute />} />
       <Route path="/admin" element={<AdminRoute />} />
       <Route path="*" element={<NotFoundRoute />} />

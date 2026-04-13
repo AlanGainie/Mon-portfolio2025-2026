@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-type LoginRole = "admin" | "user";
+type LoginRole = "admin" | "user" | "demo";
 type PreviewRole = "viewer" | "superadmin";
 
 type FakeUser = {
@@ -39,6 +39,7 @@ type AuthContextType = {
   switchAccountRole: (role: PreviewRole) => void;
 
   login: (username: string, password: string) => LoginResult;
+  loginAsDemo: () => LoginResult;
   logout: () => void;
 
   getLogs: () => AuthLog[];
@@ -53,13 +54,21 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/* =========================
+   USERS
+========================= */
+
 const FAKE_USERS: FakeUser[] = [
   { username: "alan", password: "admin_privilege", role: "admin" },
   { username: "gregory", password: "crespin", role: "admin" },
-  { username: "demo", password: "demo", role: "user" },
+  { username: "demo", password: "demo", role: "demo" },
   { username: "test", password: "test", role: "user" },
   { username: "yaouen", password: "ledanvic", role: "user" },
 ];
+
+/* =========================
+   STORAGE KEYS
+========================= */
 
 const AUTH_USER_KEY = "authUser";
 const AUTH_LOGS_KEY = "authLogs";
@@ -68,6 +77,10 @@ const LOCKED_UNTIL_KEY = "lockedUntil";
 const IS_BLOCKED_KEY = "isBlocked";
 const PREVIEW_ROLE_KEY = "previewRole";
 
+/* =========================
+   PROVIDER
+========================= */
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [previewRole, setPreviewRoleState] = useState<PreviewRole>("viewer");
@@ -75,13 +88,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
 
+  /* =========================
+     INIT USER + PREVIEW
+  ========================= */
+
   useEffect(() => {
     const savedUser = localStorage.getItem(AUTH_USER_KEY);
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser) as AuthUser;
         setUser(parsedUser);
-        console.log("🔄 AUTH INIT USER:", parsedUser);
       } catch {
         localStorage.removeItem(AUTH_USER_KEY);
       }
@@ -93,6 +109,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  /* =========================
+     INIT SECURITY
+  ========================= */
+
   useEffect(() => {
     const savedAttempts = localStorage.getItem(FAILED_ATTEMPTS_KEY);
     const savedLockedUntil = localStorage.getItem(LOCKED_UNTIL_KEY);
@@ -103,13 +123,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedBlocked === "true") setIsBlocked(true);
   }, []);
 
-  useEffect(() => {
-    console.log("👤 AUTH USER UPDATED:", user);
-  }, [user]);
+  /* =========================
+     ROLE -> BODY
+  ========================= */
 
   useEffect(() => {
-    console.log("🛡️ PREVIEW ROLE UPDATED:", previewRole);
-  }, [previewRole]);
+    if (user?.role === "admin" && previewRole === "superadmin") {
+      document.body.dataset.role = "superadmin";
+    } else if (user?.role === "demo") {
+      document.body.dataset.role = "demo";
+    } else {
+      document.body.dataset.role = "viewer";
+    }
+
+    return () => {
+      delete document.body.dataset.role;
+    };
+  }, [user, previewRole]);
+
+  /* =========================
+     LOG SYSTEM
+  ========================= */
 
   const addLog = (
     username: string,
@@ -134,19 +168,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
   };
 
+  const persistAuthenticatedUser = (authUser: AuthUser) => {
+    setUser(authUser);
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(authUser));
+
+    setFailedAttempts(0);
+    setLockedUntil(null);
+    localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
+    localStorage.removeItem(LOCKED_UNTIL_KEY);
+  };
+
+  /* =========================
+     PREVIEW ROLE
+  ========================= */
+
   const setPreviewRole = (role: PreviewRole) => {
-    if (previewRole === role) {
-      console.log("ℹ️ setPreviewRole ignoré : rôle déjà actif", role);
-      return;
-    }
+    if (previewRole === role) return;
 
     setPreviewRoleState(role);
     localStorage.setItem(PREVIEW_ROLE_KEY, role);
-
-    console.log("🔁 PREVIEW ROLE SWITCH:", {
-      before: previewRole,
-      after: role,
-    });
 
     addLog(
       user?.username ?? "preview-admin",
@@ -157,16 +197,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // Alias pour rester compatible avec ton code existant
   const switchAccountRole = (role: PreviewRole) => {
     setPreviewRole(role);
   };
 
+  /* =========================
+     SECURITY
+  ========================= */
+
   const blockAccess = () => {
-    if (previewRole !== "superadmin") {
-      console.log("⛔ Blocage refusé : nécessite superadmin");
-      return;
-    }
+    if (previewRole !== "superadmin") return;
 
     setIsBlocked(true);
     localStorage.setItem(IS_BLOCKED_KEY, "true");
@@ -178,15 +218,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       failedAttempts,
       "Accès bloqué manuellement"
     );
-
-    console.log("⛔ Accès bloqué (superadmin)");
   };
 
   const unblockAccess = () => {
-    if (previewRole !== "superadmin") {
-      console.log("⛔ Accès refusé : nécessite superadmin");
-      return;
-    }
+    if (previewRole !== "superadmin") return;
 
     setIsBlocked(false);
     setFailedAttempts(0);
@@ -203,22 +238,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       0,
       "Accès débloqué manuellement"
     );
-
-    console.log("✅ Accès débloqué (superadmin)");
   };
+
+  /* =========================
+     LOGIN
+  ========================= */
 
   const login = (username: string, password: string): LoginResult => {
     const now = Date.now();
 
     if (isBlocked) {
       addLog(username || "unknown", "unknown", "error", failedAttempts, "DDOS accès restricted");
-      console.log("⛔ Login refusé : accès bloqué");
       return { success: false, message: "DDOS accès restricted" };
     }
 
     if (lockedUntil && now < lockedUntil) {
       const remaining = Math.ceil((lockedUntil - now) / 1000);
-      console.log("⏳ Login refusé : délai actif", remaining);
       return {
         success: false,
         message: `Trop de tentatives. Réessaie dans ${remaining} seconde(s).`,
@@ -234,21 +269,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setFailedAttempts(newAttempts);
       localStorage.setItem(FAILED_ATTEMPTS_KEY, String(newAttempts));
 
-      console.log("❌ Login échoué", {
-        username,
-        attempts: newAttempts,
-      });
-
       if (newAttempts >= 10) {
         setIsBlocked(true);
         localStorage.setItem(IS_BLOCKED_KEY, "true");
-        addLog(
-          username || "unknown",
-          "unknown",
-          "blocked",
-          newAttempts,
-          "DDOS accès restricted"
-        );
+        addLog(username || "unknown", "unknown", "blocked", newAttempts, "DDOS accès restricted");
         return { success: false, message: "DDOS accès restricted" };
       }
 
@@ -256,13 +280,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const nextLock = now + 10000;
         setLockedUntil(nextLock);
         localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
-        addLog(
-          username || "unknown",
-          "unknown",
-          "error",
-          newAttempts,
-          "Délai de 10 secondes appliqué"
-        );
+        addLog(username || "unknown", "unknown", "error", newAttempts, "Délai de 10 secondes appliqué");
         return { success: false, message: "Trop d'erreurs. Attente de 10 secondes." };
       }
 
@@ -270,23 +288,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const nextLock = now + 5000;
         setLockedUntil(nextLock);
         localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
-        addLog(
-          username || "unknown",
-          "unknown",
-          "error",
-          newAttempts,
-          "Délai de 5 secondes appliqué"
-        );
+        addLog(username || "unknown", "unknown", "error", newAttempts, "Délai de 5 secondes appliqué");
         return { success: false, message: "Trop d'erreurs. Attente de 5 secondes." };
       }
 
-      addLog(
-        username || "unknown",
-        "unknown",
-        "error",
-        newAttempts,
-        `Point de vigilance ${newAttempts}`
-      );
+      addLog(username || "unknown", "unknown", "error", newAttempts, `Point de vigilance ${newAttempts}`);
 
       return {
         success: false,
@@ -299,30 +305,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role: foundUser.role,
     };
 
-    setUser(authUser);
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(authUser));
-
-    setFailedAttempts(0);
-    setLockedUntil(null);
-    localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
-    localStorage.removeItem(LOCKED_UNTIL_KEY);
-
+    persistAuthenticatedUser(authUser);
     addLog(foundUser.username, foundUser.role, "login", 0, "Connexion réussie");
-
-    console.log("✅ LOGIN SUCCESS:", authUser);
 
     return { success: true };
   };
 
+  const loginAsDemo = (): LoginResult => {
+    if (isBlocked) {
+      addLog("demo", "demo", "error", failedAttempts, "DDOS accès restricted");
+      return { success: false, message: "DDOS accès restricted" };
+    }
+
+    const authUser: AuthUser = {
+      username: "demo",
+      role: "demo",
+    };
+
+    persistAuthenticatedUser(authUser);
+    addLog("demo", "demo", "login", 0, "Connexion mode démo");
+
+    return { success: true };
+  };
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
   const logout = () => {
     if (user) {
       addLog(user.username, user.role, "logout", 0, "Déconnexion réussie");
-      console.log("🚪 LOGOUT:", user);
     }
 
     setUser(null);
     localStorage.removeItem(AUTH_USER_KEY);
   };
+
+  /* =========================
+     LOG ACCESS
+  ========================= */
 
   const getLogs = (): AuthLog[] => {
     return JSON.parse(localStorage.getItem(AUTH_LOGS_KEY) || "[]");
@@ -330,8 +351,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const clearLogs = () => {
     localStorage.removeItem(AUTH_LOGS_KEY);
-    console.log("🧹 Logs supprimés");
   };
+
+  /* =========================
+     VALUE
+  ========================= */
 
   const value = useMemo<AuthContextType>(
     () => ({
@@ -344,6 +368,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       switchAccountRole,
 
       login,
+      loginAsDemo,
       logout,
 
       getLogs,
@@ -360,6 +385,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+/* =========================
+   HOOK
+========================= */
 
 export function useAuth() {
   const context = useContext(AuthContext);
