@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/AuthContext";
 
@@ -65,8 +65,29 @@ export default function AdminPreviewBar({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { previewRole, switchAccountRole } = useAuth();
-  const currentRole: PreviewRole = previewRole ?? "viewer";
+  const { previewRole, switchAccountRole, user } = useAuth();
+
+  const currentPreviewRole: PreviewRole = previewRole ?? "viewer";
+
+  const effectiveRoleLabel = useMemo(() => {
+    if (user?.role === "demo") return "demo";
+    if (user?.role === "admin" && currentPreviewRole === "superadmin") return "superadmin";
+    if (user?.role === "admin") return "admin";
+    if (user?.role === "user") return "user";
+    return currentPreviewRole;
+  }, [user, currentPreviewRole]);
+
+  const indicatorClass = useMemo(() => {
+    if (effectiveRoleLabel === "superadmin" || effectiveRoleLabel === "admin") {
+      return "role-admin";
+    }
+
+    if (effectiveRoleLabel === "demo") {
+      return "role-demo";
+    }
+
+    return "role-user";
+  }, [effectiveRoleLabel]);
 
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const savedTheme = localStorage.getItem("themeMode");
@@ -84,7 +105,9 @@ export default function AdminPreviewBar({
   useEffect(() => {
     console.groupCollapsed("🟢 [AdminPreviewBar] état global");
     console.log("pathname =", location.pathname);
-    console.log("currentRole =", currentRole);
+    console.log("previewRole =", currentPreviewRole);
+    console.log("user =", user);
+    console.log("effectiveRoleLabel =", effectiveRoleLabel);
     console.log("theme =", theme);
     console.log("screenMode =", screenMode);
     console.log("isLoginPage =", isLoginPage(location.pathname));
@@ -94,7 +117,7 @@ export default function AdminPreviewBar({
     console.log("nextPage =", getNextPage(location.pathname));
     console.log("nextPageLabel =", getNextPageLabel(location.pathname));
     console.groupEnd();
-  }, [location.pathname, currentRole, theme, screenMode]);
+  }, [location.pathname, currentPreviewRole, effectiveRoleLabel, theme, screenMode, user]);
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -108,24 +131,19 @@ export default function AdminPreviewBar({
     console.log("📺 screenMode appliqué =", screenMode);
   }, [screenMode]);
 
-  useEffect(() => {
-    document.body.dataset.role = currentRole;
-    console.log("👤 role appliqué =", currentRole);
-  }, [currentRole]);
-
   const isSwitchablePage =
     isAdminPage(location.pathname) ||
     isUserPage(location.pathname) ||
     isLoginPage(location.pathname);
 
   const canTogglePage =
-    currentRole === "superadmin" && isSwitchablePage;
+    currentPreviewRole === "superadmin" && isSwitchablePage;
 
   const handleTitleClick = () => {
     console.group("🔁 [AdminPreviewBar] click titre");
     console.log("pathname actuel =", location.pathname);
     console.log("canTogglePage =", canTogglePage);
-    console.log("role =", currentRole);
+    console.log("previewRole =", currentPreviewRole);
 
     if (!canTogglePage) {
       console.warn("⛔ navigation bloquée");
@@ -216,7 +234,7 @@ export default function AdminPreviewBar({
         ▲
       </button>
 
-     <button
+      <button
         type="button"
         data-next={getNextPage(location.pathname)}
         className={`page-title-button ${
@@ -238,7 +256,7 @@ export default function AdminPreviewBar({
       </button>
 
       <div className="admin-preview-bar">
-        {currentRole !== "superadmin" && (
+        {currentPreviewRole !== "superadmin" && (
           <>
             <input
               type="text"
@@ -273,7 +291,7 @@ export default function AdminPreviewBar({
           </>
         )}
 
-        {currentRole === "superadmin" && (
+        {currentPreviewRole === "superadmin" && (
           <button
             type="button"
             onClick={handleDisableSuperAdmin}
@@ -283,13 +301,8 @@ export default function AdminPreviewBar({
           </button>
         )}
 
-        <span
-          className={`role-indicator ${
-            currentRole === "superadmin" ? "role-admin" : "role-user"
-          }`}
-        />
-
-        <span>{currentRole}</span>
+        <span className={`role-indicator ${indicatorClass}`} />
+        <span>{effectiveRoleLabel}</span>
 
         <button
           type="button"

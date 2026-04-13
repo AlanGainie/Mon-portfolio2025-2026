@@ -1,5 +1,6 @@
 import { JSX, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
+import { useAuth } from "../../auth/AuthContext";
 
 import "../../styles/index.css";
 import "../../styles/tw.ts";
@@ -279,7 +280,10 @@ export const BodyPage = ({
 };
 
 function PortfolioContent({ data }: { data: PageData }) {
+  const { user } = useAuth();
   const [isIntroOpen, setIsIntroOpen] = useState(true);
+
+  const isDemo = user?.role === "demo";
 
   const videoIntro = data.videoIntro;
   const summaryLinks = data.summaryLinks ?? [];
@@ -334,7 +338,21 @@ function PortfolioContent({ data }: { data: PageData }) {
   }, [examResources]);
 
   return (
-    <div className={`${FLEXCOL} home-page-shell`}>
+    <div
+      className={`${FLEXCOL} home-page-shell ${isDemo ? "home-theme-demo" : "home-theme-default"}`}
+    >
+      {isDemo && (
+        <section className="home-demo-banner">
+          <div className="home-demo-badge">
+            <span className="home-demo-dot" />
+            <span>Mode démo</span>
+          </div>
+          <p className="home-demo-text">
+            Vous consultez la version démonstration du portfolio.
+          </p>
+        </section>
+      )}
+
       <section className="home-panel home-hero-panel">
         <div className="home-hero-content">
           <p className="home-hero-eyebrow">{data.hero?.eyebrow ?? ""}</p>
