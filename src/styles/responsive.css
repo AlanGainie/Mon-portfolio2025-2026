@@ -1,0 +1,438 @@
+/* ===================================== */
+/* RESPONSIVE / SCREEN MODES             */
+/* À intégrer à la fin de index.css      */
+/* ===================================== */
+
+/* ------------------------------------- */
+/* Variables responsive                  */
+/* ------------------------------------- */
+
+:root {
+  --sidebar-mobile-width: min(84vw, 360px);
+  --sidebar-mobile-padding: 16px;
+}
+
+/* ------------------------------------- */
+/* Modes simulés via data-screen         */
+/* desktop | mobile | projector          */
+/* ------------------------------------- */
+
+/* Desktop simulé */
+body[data-screen="desktop"] .container {
+  width: 750px;
+  height: 450px;
+}
+
+/* Mobile simulé */
+body[data-screen="mobile"] .container {
+  width: 90%;
+  max-width: 360px;
+  height: auto;
+  min-height: 420px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+body[data-screen="mobile"] h1 {
+  font-size: 2.2rem;
+}
+
+body[data-screen="mobile"] h2 {
+  font-size: 1.8rem;
+}
+
+body[data-screen="mobile"] .logs-container {
+  max-width: 360px;
+  height: 360px;
+  margin: 0 auto;
+}
+
+body[data-screen="mobile"] .buttontrashlogs {
+  transform: translateX(calc(50% - 180px));
+}
+
+body[data-screen="mobile"] .home-profile-content {
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-screen="mobile"] .home-subcard,
+body[data-screen="mobile"] .home-paragraph,
+body[data-screen="mobile"] .home-highlight-card {
+  width: 85%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+body[data-screen="mobile"] .home-profile-content img {
+  width: 85%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body[data-screen="mobile"] .identite,
+body[data-screen="mobile"] .home-photo-card {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body[data-screen="mobile"] .home-video-grid,
+body[data-screen="mobile"] .home-profile-grid,
+body[data-screen="mobile"] .home-summary-grid,
+body[data-screen="mobile"] .home-mini-grid,
+body[data-screen="mobile"] .home-evaluation-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Projecteur simulé */
+body[data-screen="projector"] h1 {
+  font-size: 4rem;
+}
+
+body[data-screen="projector"] h2 {
+  font-size: 3rem;
+}
+
+body[data-screen="projector"] .container {
+  width: 900px;
+  height: 520px;
+}
+
+body[data-screen="projector"] .logs-container {
+  max-width: 1100px;
+  height: 520px;
+  margin: 0 auto;
+}
+
+body[data-screen="projector"] button,
+body[data-screen="projector"] input {
+  font-size: 1.1rem;
+}
+
+body[data-screen="projector"] .buttontrashlogs {
+  transform: translateX(calc(50% - 430px));
+}
+
+/* ------------------------------------- */
+/* Breakpoints réels                     */
+/* ------------------------------------- */
+
+/* Petit mobile */
+@media (max-width: 640px) {
+  :root {
+    --sidebar-mobile-width: min(88vw, 340px);
+    --sidebar-mobile-padding: 14px;
+  }
+
+  .sidebar-toggle-button {
+    top: calc(var(--previewbar-height) + 10px);
+    left: 12px;
+    width: 48px;
+    height: 48px;
+    padding: 9px;
+  }
+
+  .sidebar-shell {
+    gap: 12px;
+  }
+
+  .home-panel {
+    scroll-margin-top: 84px;
+  }
+
+  .container {
+    width: 92%;
+    max-width: 360px;
+    height: auto;
+    min-height: 420px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .logs-container {
+    height: 360px;
+  }
+
+  h1 {
+    font-size: 2.2rem !important;
+  }
+
+  h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .buttontrashlogs {
+    transform: none;
+    justify-content: center;
+  }
+
+  .home-video-grid,
+  .home-profile-grid,
+  .home-summary-grid,
+  .home-mini-grid,
+  .home-evaluation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-profile-content {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .home-subcard,
+  .home-paragraph,
+  .home-highlight-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .home-profile-content img,
+  .identite,
+  .home-photo-card {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+/* Tablette et + */
+@media (min-width: 768px) {
+  .home-page-shell {
+    padding: 2rem;
+  }
+
+  .home-panel {
+    padding: 2rem;
+  }
+}
+
+/* Tablette / petit laptop */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .home-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-evaluation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile + tablette : sidebar en drawer */
+@media (max-width: 1024px) {
+  .sidebar-toggle-button {
+    display: block;
+  }
+
+  .sidebar-shell {
+    position: fixed;
+    top: var(--sidebar-top-offset);
+    left: 0;
+    z-index: var(--sidebar-z-shell);
+
+    width: var(--sidebar-mobile-width);
+    height: calc(100vh - var(--sidebar-top-offset));
+    padding: var(--sidebar-mobile-padding);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transform: translateX(-110%);
+    transition: transform 0.28s ease;
+
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    border-right: 1px solid var(--border);
+    background: var(--bg-overlay-strong);
+    backdrop-filter: blur(12px);
+    box-shadow: 16px 0 40px rgba(0, 0, 0, 0.28);
+    box-sizing: border-box;
+  }
+
+  .sidebar-shell-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-shell-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+    padding: 0;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    background: var(--bg-soft);
+    color: var(--text);
+
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .sidebar-close-button:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .sidebar-shell > * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sidebar-shell nav,
+  .sidebar-shell ul,
+  .sidebar-shell ol,
+  .sidebar-shell .barre-menue,
+  .sidebar-shell .barre-menue-list {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .sidebar-shell li {
+    width: 100%;
+    list-style: none;
+  }
+
+  .sidebar-shell button,
+  .sidebar-shell a {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sidebar-shell [class*="flex-row"] {
+    flex-direction: column !important;
+  }
+
+  .home-panel {
+    scroll-margin-top: 90px;
+  }
+}
+
+/* Grand écran / desktop */
+@media (min-width: 1024px) {
+  .home-video-grid {
+    grid-template-columns: 1.3fr 0.9fr;
+  }
+
+  .home-profile-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+
+  .home-summary-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .home-mini-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-evaluation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-cv-slide {
+    min-height: 620px;
+  }
+}
+
+/* Desktop large : sidebar fixe */
+@media (min-width: 1025px) {
+  .sidebar-toggle-button {
+    display: none;
+  }
+
+  .sidebar-overlay {
+    display: none;
+  }
+
+  .sidebar-shell {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+
+    width: fit-content;
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - var(--previewbar-height) - 32px);
+    padding: 0;
+
+    overflow-y: auto;
+    overflow-x: visible;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+
+    border-right: none;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .sidebar-shell > :not(.sidebar-shell-header) {
+    width: fit-content !important;
+    max-width: 100%;
+    align-self: center;
+  }
+
+  .sidebar-shell-header,
+  .sidebar-close-button {
+    display: none !important;
+  }
+}
+
+/* Très grand écran / projecteur réel */
+@media (min-width: 1440px) {
+  .container {
+    width: 900px;
+    height: 520px;
+  }
+
+  .logs-container {
+    max-width: 1100px;
+    height: 520px;
+  }
+
+  h1 {
+    font-size: 4rem !important;
+  }
+
+  h2 {
+    font-size: 3rem !important;
+  }
+
+  button,
+  input {
+    font-size: 1.1rem;
+  }
+}

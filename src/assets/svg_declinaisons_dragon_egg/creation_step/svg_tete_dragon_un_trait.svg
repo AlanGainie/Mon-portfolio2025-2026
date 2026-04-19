@@ -1,0 +1,39 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix -->
+  <path d="M100,0 C50,50 150,150 100,200"
+        stroke="red" stroke-width="6" fill="none"/>
+  <path d="M0,100 C50,50 150,150 200,100"
+        stroke="blue" stroke-width="6" fill="none"/>
+
+  <!-- Œuf -->
+  <path d="M100,130 C60,130 80,60 100,60
+           C120,60 140,130 100,130 Z"
+        fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Tête du dragon en un seul trait : cou -> yeux -> museau -->
+  <path d="
+    M100,85
+    Q98,66 110,48
+    C112,43 113,39 115,35
+
+    A7,7 0 1,1 122,35
+    A7,7 0 1,1 115,35
+
+    C119,36 123,38 128,43
+
+    A7,7 0 1,1 135,43
+    A7,7 0 1,1 128,43
+
+    C132,47 136,52 139,57
+    C142,62 142,66 138,69
+    C132,72 125,73 120,76
+    C116,79 114,82 114,85
+  "
+  fill="none"
+  stroke="black"
+  stroke-width="3"
+  stroke-linecap="round"
+  stroke-linejoin="round"/>
+
+</svg>
