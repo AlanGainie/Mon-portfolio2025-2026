@@ -1,0 +1,10 @@
+© 2026 Dragon Egg Loader — Tous droits réservés.
+
+Texte éditable.
+Tu peux remplacer la ligne ci-dessus par :
+
+© 2026 [Nom du projet / Nom de l’auteur] — Tous droits réservés.
+Usage, reproduction et diffusion interdits sans autorisation préalable.
+
+Version courte pour footer :
+© 2026 [Nom] — Tous droits réservés.

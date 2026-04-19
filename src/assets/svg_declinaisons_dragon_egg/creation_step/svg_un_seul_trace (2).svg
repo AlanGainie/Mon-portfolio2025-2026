@@ -1,0 +1,37 @@
+<svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Un seul tracé pour tous les traits/contours -->
+  <path
+    d="
+      M100,0 C50,50 150,150 100,200
+      M0,100 C50,50 150,150 200,100
+
+      M100,130 C60,130 80,60 100,60
+      C120,60 140,130 100,130 Z
+
+      M122,35
+      A7,7 0 1,1 108,35
+      A7,7 0 1,1 122,35
+
+      M135,43
+      A7,7 0 1,1 121,43
+      A7,7 0 1,1 135,43
+
+      M100,85
+      Q100,65 115,42
+      Q118,38 122,35
+
+      M114,85
+      C114,78 116,72 119,68
+      C122,65 128,65 134,66
+      C140,68 145,65 142,58
+      C138,50 132,48 128,43
+    "
+    fill="none"
+    stroke="black"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+</svg>

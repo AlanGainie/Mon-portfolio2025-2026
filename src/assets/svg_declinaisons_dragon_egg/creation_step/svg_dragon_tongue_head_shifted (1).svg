@@ -1,0 +1,30 @@
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 200 200" fill="none" stroke="black" stroke-width="4">
+
+  
+  <ns0:path d="     M100,100     L100,30     C100,15 115,10 120,20     C125,30 115,40 105,35      M100,100     L100,170     C100,185 85,190 80,180     C75,170 85,160 95,165   " stroke="black" stroke-width="4" fill="none" stroke-linecap="round" />
+
+  <ns0:path d="     M100,100     L30,100     C15,100 10,115 20,120     C30,125 40,115 35,105      M100,100     L170,100     C185,100 190,85 180,80     C170,75 160,85 165,95   " stroke="black" stroke-width="4" fill="none" stroke-linecap="round" />
+
+  
+  <ns0:path d="   M133,106   C98,106 95,75 110,45   C118,32 125,28 133,28   C141,28 148,32 156,45   C171,75 168,106 133,106 Z   " fill="none" stroke="black" stroke-width="4" />
+
+  
+  <ns0:g transform="rotate(10 155 55)" fill="none" stroke="black" stroke-width="4">
+
+    <ns0:circle cx="155" cy="5" r="7" fill="none" stroke="black" stroke-width="4" />
+    <ns0:circle cx="168" cy="13" r="7" fill="none" stroke="black" stroke-width="4" />
+
+    <ns0:path d="M140,55              Q140,35 155,12              Q158,8 162,5" stroke="black" stroke-width="4" fill="none" />
+
+    <ns0:path d="M154,55              C154,48 156,42 159,38              C162,35 168,35 174,36              C180,38 185,35 182,28              C178,20 172,18 168,13" stroke="black" stroke-width="4" fill="none" />
+
+    
+    <ns0:circle cx="155" cy="5" r="7" fill="none" stroke="black" stroke-width="4" />
+    <ns0:circle cx="168" cy="13" r="7" fill="none" stroke="black" stroke-width="4" />
+
+  </ns0:g>
+
+  
+  <ns0:path d="   M133,106   C98,106 95,75 110,45   C118,32 125,28 133,28   C141,28 148,32 156,45   C171,75 168,106 133,106 Z   " fill="none" stroke="black" stroke-width="4" />
+
+<path d="M170 15 C175 20, 180 25, 175 30 S180 40, 170 45" fill="none" stroke="blue" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M175 15 C170 20, 165 25, 170 30 S165 40, 175 45" fill="none" stroke="blue" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></ns0:svg>
