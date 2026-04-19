@@ -1,0 +1,28 @@
+<svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix -->
+  <path d="M100,0 C50,50 150,150 100,200" stroke="red" stroke-width="6" fill="none"/>
+  <path d="M0,100 C50,50 150,150 200,100" stroke="blue" stroke-width="6" fill="none"/>
+
+  <!-- Œuf -->
+  <path d="M100,130 C60,130 80,60 100,60 C120,60 140,130 100,130 Z"
+        fill="yellow" stroke="orange" stroke-width="3"/>
+
+  <!-- Cercles -->
+  <circle cx="115" cy="35" r="7" fill="green" stroke="black" stroke-width="2"/>
+  <circle cx="128" cy="43" r="7" fill="purple" stroke="black" stroke-width="2"/>
+
+  <!-- Trait noir avec point de rotation remonté -->
+  <path d="M100,85
+           C95,65 110,50 122,35"
+        stroke="black" stroke-width="2" fill="none"/>
+
+  <!-- Courbe marron -->
+  <path d="M114,85
+           C114,78 116,72 119,68
+           C122,65 128,65 134,66
+           C140,68 145,65 142,58
+           C138,50 132,48 128,43"
+        stroke="brown" stroke-width="3" fill="none"/>
+
+</svg>

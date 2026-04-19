@@ -1,0 +1,58 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Verticale avec coupure à la pointe -->
+  <path d="
+    M100,100
+    L100,28
+
+    M100,28
+    C100,12 112,10 118,18
+    C124,26 112,36 100,32
+
+    M100,100
+    L100,172
+
+    M100,172
+    C100,188 88,190 82,182
+    C76,174 88,164 100,168
+  " stroke="red" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Horizontale avec coupure à la pointe -->
+  <path d="
+    M100,100
+    L28,100
+
+    M28,100
+    C12,100 10,112 18,118
+    C26,124 36,112 32,100
+
+    M100,100
+    L172,100
+
+    M172,100
+    C188,100 190,88 182,82
+    C174,76 164,88 168,100
+  " stroke="blue" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Œuf -->
+  <path d="M100,130 C60,130 80,60 100,60
+           C120,60 140,130 100,130 Z"
+        fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Cercles -->
+  <circle cx="115" cy="35" r="7" fill="white" stroke="green" stroke-width="2"/>
+  <circle cx="128" cy="43" r="7" fill="white" stroke="purple" stroke-width="2"/>
+
+  <!-- Cou -->
+  <path d="M100,85 Q100,65 115,42 Q118,38 122,35"
+        stroke="black" stroke-width="2" fill="none"/>
+
+  <!-- Museau -->
+  <path d="M114,85
+           C114,78 116,72 119,68
+           C122,65 128,65 134,66
+           C140,68 145,65 142,58
+           C138,50 132,48 128,43"
+        stroke="brown" stroke-width="3" fill="none"/>
+
+</svg>

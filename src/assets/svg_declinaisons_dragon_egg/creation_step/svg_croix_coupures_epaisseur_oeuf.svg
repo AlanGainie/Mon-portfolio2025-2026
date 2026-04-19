@@ -1,0 +1,65 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix centrée sur le centre de l'œuf, même épaisseur que l'œuf -->
+  <!-- Verticale -->
+  <path d="
+    M100,100
+    L100,24
+    M100,24
+    C100,12 112,10 116,18
+    C120,26 112,34 100,30
+    M100,34
+    L100,100
+
+    M100,100
+    L100,176
+    M100,176
+    C100,188 88,190 84,182
+    C80,174 88,166 100,170
+    M100,166
+    L100,100
+  " stroke="red" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Horizontale -->
+  <path d="
+    M100,100
+    L24,100
+    M24,100
+    C12,100 10,112 18,116
+    C26,120 34,112 30,100
+    M34,100
+    L100,100
+
+    M100,100
+    L176,100
+    M176,100
+    C188,100 190,88 182,84
+    C174,80 166,88 170,100
+    M166,100
+    L100,100
+  " stroke="blue" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Œuf centré -->
+  <path d="M100,130 C60,130 80,60 100,60
+           C120,60 140,130 100,130 Z"
+        fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Cercles -->
+  <circle cx="115" cy="35" r="7" fill="white" stroke="green" stroke-width="2"/>
+  <circle cx="128" cy="43" r="7" fill="white" stroke="purple" stroke-width="2"/>
+
+  <!-- Cou -->
+  <path d="M100,85
+           Q100,65 115,42
+           Q118,38 122,35"
+        stroke="black" stroke-width="2" fill="none"/>
+
+  <!-- Museau -->
+  <path d="M114,85
+           C114,78 116,72 119,68
+           C122,65 128,65 134,66
+           C140,68 145,65 142,58
+           C138,50 132,48 128,43"
+        stroke="brown" stroke-width="3" fill="none"/>
+
+</svg>

@@ -1,0 +1,50 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix -->
+  <path d="
+    M100,100
+    L100,30
+    C100,15 115,10 120,20
+    C125,30 115,40 105,35
+
+    M100,100
+    L100,170
+    C100,185 85,190 80,180
+    C75,170 85,160 95,165
+  " stroke="red" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <path d="
+    M100,100
+    L30,100
+    C15,100 10,115 20,120
+    C30,125 40,115 35,105
+
+    M100,100
+    L170,100
+    C185,100 190,85 180,80
+    C170,75 160,85 165,95
+  " stroke="blue" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Œuf décalé de +2 à droite -->
+  <path d="M127,110 
+           C79,110 97,25 127,25
+           C165,25 185,110 127,110 Z"
+        fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Dragon décalé avec l'œuf -->
+  <circle cx="145" cy="5" r="7" fill="white" stroke="green" stroke-width="2"/>
+  <circle cx="158" cy="13" r="7" fill="white" stroke="purple" stroke-width="2"/>
+
+  <path d="M127,65
+           Q127,40 145,12
+           Q148,8 152,5"
+        stroke="black" stroke-width="2" fill="none"/>
+
+  <path d="M142,65
+           C142,55 145,48 149,44
+           C153,41 158,41 164,42
+           C170,44 176,40 173,32
+           C169,23 163,20 158,13"
+        stroke="brown" stroke-width="3" fill="none"/>
+
+</svg>

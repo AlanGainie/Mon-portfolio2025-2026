@@ -1,0 +1,58 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix -->
+  <path d="
+    M100,100
+    L100,30
+    C100,15 115,10 120,20
+    C125,30 115,40 105,35
+
+    M100,100
+    L100,170
+    C100,185 85,190 80,180
+    C75,170 85,160 95,165
+  " stroke="red" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <path d="
+    M100,100
+    L30,100
+    C15,100 10,115 20,120
+    C30,125 40,115 35,105
+
+    M100,100
+    L170,100
+    C185,100 190,85 180,80
+    C170,75 160,85 165,95
+  " stroke="blue" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Œuf -->
+  <path d="
+  M133,106
+  C98,106 95,75 110,45
+  C118,32 125,28 133,28
+  C141,28 148,32 156,45
+  C171,75 168,106 133,106 Z
+  "
+  fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Dragon déplacé +10 droite / -5 haut -->
+
+  <!-- Yeux -->
+  <circle cx="125" cy="30" r="7" fill="white" stroke="green" stroke-width="2"/>
+  <circle cx="138" cy="38" r="7" fill="white" stroke="purple" stroke-width="2"/>
+
+  <!-- Cou -->
+  <path d="M110,80
+           Q110,60 125,37
+           Q128,33 132,30"
+        stroke="black" stroke-width="2" fill="none"/>
+
+  <!-- Museau -->
+  <path d="M124,80
+           C124,73 126,67 129,63
+           C132,60 138,60 144,61
+           C150,63 155,60 152,53
+           C148,45 142,43 138,38"
+        stroke="brown" stroke-width="3" fill="none"/>
+
+</svg>

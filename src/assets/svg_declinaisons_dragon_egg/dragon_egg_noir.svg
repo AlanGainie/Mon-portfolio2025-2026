@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="420" height="420" viewBox="0 0 200 200">
+<title>Dragon egg logo - Noir</title>
+<desc>Compatibility-normalized SVG with explicit layering and colors.</desc>
+
+<!-- ======================= -->
+<!-- ✝️ CROIX (bleu + rouge) -->
+<!-- ======================= -->
+<g id="cross">
+
+  <!-- Branche verticale (rouge) -->
+  <path d="     M100,100     L100,30     C100,15 115,10 120,20     C125,30 115,40 105,35      M100,100     L100,170     C100,185 85,190 80,180     C75,170 85,160 95,165   "
+        stroke="#000000" stroke-width="3" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Branche horizontale (bleu) -->
+  <path d="     M100,100     L30,100     C15,100 10,115 20,120     C30,125 40,115 35,105      M100,100     L170,100     C185,100 190,85 180,80     C170,75 160,85 165,95   "
+        stroke="#000000" stroke-width="3" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+</g>
+
+<!-- ======================= -->
+<!-- 🥚 OEUF (contour noir) -->
+<!-- ======================= -->
+<g id="egg">
+
+  <!-- Remplissage blanc -->
+  <path d="   M133,106   C98,106 95,75 110,45   C118,32 125,28 133,28   C141,28 148,32 156,45   C171,75 168,106 133,106 Z   "
+        fill="#ffffff" stroke="none" />
+
+  <!-- Contour noir -->
+  <path d="   M133,106   C98,106 95,75 110,45   C118,32 125,28 133,28   C141,28 148,32 156,45   C171,75 168,106 133,106 Z   "
+        fill="none" stroke="#000000" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+</g>
+
+<!-- ======================= -->
+<!-- 🪨 BRISURE (S gris) -->
+<!-- ======================= -->
+<g id="brisure">
+
+  <!-- Fissure de l'œuf -->
+  <path d="M133,106 C147,97 147,82 136,70 C125,58 129,40 142,26 Q150,16 160,6"
+        fill="none" stroke="#000000" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+</g>
+
+<!-- ======================= -->
+<!-- 🐍 LANGUE DE SERPENT (S jaunes) -->
+<!-- ======================= -->
+<g id="langue-serpent">
+
+  <!-- S jaune 1 -->
+  <path d="M188.65,27.67 C193.5,32.5 193.5,38.5 188.5,44.5 C183.5,50.5 183.5,56.5 188.5,62.5"
+        transform="translate(187.65 37.67) scale(0.5) translate(-187.65 -37.67) translate(-1 10) rotate(-5 188.65 27.67)"
+        fill="none" stroke="#000000" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- S jaune 2 -->
+  <path d="M188.65,27.67 C193.5,32.5 193.5,38.5 188.5,44.5 C183.5,50.5 183.5,56.5 188.5,62.5"
+        transform="translate(187.65 37.67) scale(0.5) translate(-187.65 -37.67) translate(-1 10) rotate(-20 188.65 27.67)"
+        fill="none" stroke="#000000" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+</g>
+
+<!-- ======================= -->
+<!-- 🐉 TÊTE DU DRAGON -->
+<!-- ======================= -->
+<g id="dragon">
+
+  <g transform="translate(0 -5) rotate(10 155 55)">
+
+    <!-- ======================= -->
+    <!-- 🟤 COU (marron) -->
+    <!-- ======================= -->
+    <path d="M154,55              C154,48 156,42 159,38              C162,35 168,35 174,36              C180,38 185,35 182,28              C178,20 172,18 168,13"
+          stroke="#000000" stroke-width="3" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- ======================= -->
+    <!-- 👁️ YEUX (vert + violet) -->
+    <!-- ======================= -->
+
+    <!-- Contour œil vert -->
+    <circle cx="155" cy="5" r="7"
+            fill="none" stroke="#000000" stroke-width="3" />
+
+    <!-- Contour œil violet -->
+    <circle cx="168" cy="13" r="7"
+            fill="none" stroke="#000000" stroke-width="3" />
+
+    <!-- Intérieur des yeux -->
+    <circle cx="155" cy="5" r="7" fill="#ffffff" stroke="none" />
+    <circle cx="168" cy="13" r="7" fill="#ffffff" stroke="none" />
+  </g>
+
+</g>
+
+</svg>

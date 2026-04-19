@@ -1,0 +1,58 @@
+<svg width="420" height="420" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Croix -->
+  <path d="
+    M100,100
+    L100,30
+    C100,15 115,10 120,20
+    C125,30 115,40 105,35
+
+    M100,100
+    L100,170
+    C100,185 85,190 80,180
+    C75,170 85,160 95,165
+  " stroke="red" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <path d="
+    M100,100
+    L30,100
+    C15,100 10,115 20,120
+    C30,125 40,115 35,105
+
+    M100,100
+    L170,100
+    C185,100 190,85 180,80
+    C170,75 160,85 165,95
+  " stroke="blue" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Œuf -->
+  <path d="
+  M133,106
+  C98,106 95,75 110,45
+  C118,32 125,28 133,28
+  C141,28 148,32 156,45
+  C171,75 168,106 133,106 Z
+  "
+  fill="white" stroke="black" stroke-width="3"/>
+
+  <!-- Dragon pivoté légèrement (-10°) autour d'un point -->
+  <g transform="rotate(-10 150 50)">
+
+    <circle cx="155" cy="5" r="7" fill="white" stroke="green" stroke-width="2"/>
+    <circle cx="168" cy="13" r="7" fill="white" stroke="purple" stroke-width="2"/>
+
+    <path d="M140,55
+             Q140,35 155,12
+             Q158,8 162,5"
+          stroke="black" stroke-width="2" fill="none"/>
+
+    <path d="M154,55
+             C154,48 156,42 159,38
+             C162,35 168,35 174,36
+             C180,38 185,35 182,28
+             C178,20 172,18 168,13"
+          stroke="brown" stroke-width="3" fill="none"/>
+
+  </g>
+
+</svg>
