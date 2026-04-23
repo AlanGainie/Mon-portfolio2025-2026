@@ -1,0 +1,25 @@
+/* ===================================== */
+/* ROLE INDICATORS                       */
+/* ===================================== */
+
+.role-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.role-admin {
+  background: var(--danger);
+  box-shadow: 0 0 6px var(--danger);
+}
+
+.role-user {
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.role-demo {
+  background: #f97316;
+  box-shadow: 0 0 6px #f97316;
+}
