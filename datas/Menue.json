@@ -1,0 +1,29 @@
+{
+  "sections": [
+    {
+      "id": "video-intro",
+      "label": "Introduction",
+      "style": "style1"
+    },
+    {
+      "id": "sommaire",
+      "label": "Sommaire",
+      "style": "style2"
+    },
+    {
+      "id": "presentation-candidat",
+      "label": "Présentation",
+      "style": "style3"
+    },
+    {
+      "id": "cv-carousel",
+      "label": "CV",
+      "style": "style4"
+    },
+    {
+      "id": "epreuves-e5-e6",
+      "label": "Épreuves",
+      "style": "style5"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+.menu-container {
+  position: absolute; /* Fixe la position du menu à 30px sous la barre de prévisualisation */
+  width: 100%;
+  background-color: var(--bg);
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombre pour rendre le menu visible */
+  z-index: 1300; /* Assurez-vous que le menu soit au-dessus des autres éléments */
+}
+
+.menu-item {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.menu-item button {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 16px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item.active {
+  background-color: var(--primary);
+  color: var(--text-strong);
+}
+
+button:focus {
+  outline: none;
+}

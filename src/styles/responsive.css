@@ -436,3 +436,90 @@ body[data-screen="projector"] .buttontrashlogs {
     font-size: 1.1rem;
   }
 }
+
+/* ===================================== */
+/* RESPONSIVE LOGIN                     */
+/* ===================================== */
+
+@media (max-width: 900px) {
+  .auth-container {
+    width: 85%;
+    min-height: 450px;
+  }
+
+  .auth-info,
+  .auth-form {
+    padding: 30px;
+  }
+
+  .auth-info h2 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-container {
+    flex-direction: column;
+    width: 90%;
+    min-height: auto;
+  }
+
+  .auth-info,
+  .auth-form {
+    padding: 25px;
+  }
+}
+
+/* ===================================== */
+/* RESPONSIVE LOGIN                      */
+/* ===================================== */
+
+/* TABLET + SMALL SCREENS */
+@media (max-width: 900px) {
+
+  /* Stack vertical du layout login */
+  .auth-container,
+  .font-box {
+    flex-direction: column;
+    width: 85%;
+  }
+
+  /* Réduction padding général */
+  .auth-info,
+  .auth-form,
+  .font-box form {
+    padding: 30px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+  .auth-container,
+  .font-box {
+    width: 90%;
+  }
+
+  /* Optionnel (recommandé pour lisibilité mobile) */
+  .input-box {
+    height: 48px;
+    margin-top: 20px;
+  }
+
+  .input-box input {
+    font-size: 15px;
+  }
+
+  .password-toggle {
+    font-size: 14px;
+  }
+
+  .login-page {
+    padding: 30px 0;
+    gap: 20px;
+  }
+
+  .login-header h1 {
+    font-size: 1.6rem;
+  }
+}
