@@ -1,0 +1,110 @@
+/* ===================================== */
+/* SUPER ADMIN                           */
+/* ===================================== */
+
+.admin-section {
+  width: min(1100px, 92%);
+  margin: 24px auto;
+  padding: 24px;
+
+  border-radius: 24px;
+  border: 1px solid var(--border);
+
+  background: var(--bg-overlay-strong);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+
+  color: var(--text);
+}
+
+.admin-card {
+  padding: 18px;
+  border-radius: 18px;
+
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.admin-header {
+  margin-bottom: 16px;
+}
+
+.admin-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.admin-title {
+  margin: 0;
+  text-align: left;
+  font-size: 2rem;
+  color: var(--text-strong);
+}
+
+.admin-text {
+  margin: 0;
+  line-height: 1.8;
+  color: var(--text-soft);
+  white-space: pre-wrap;
+}
+
+/* EDIT SECTION */
+.admin-edit-section {
+  width: min(1100px, 92%);
+  margin: 24px auto 40px auto;
+
+  padding: 24px;
+  border-radius: 24px;
+
+  border: 1px solid var(--border);
+  background: var(--bg-overlay-strong);
+
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+
+  color: var(--text);
+}
+
+.admin-select-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-edit-label {
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.admin-textarea {
+  width: 100%;
+  min-height: 220px;
+
+  resize: vertical;
+
+  padding: 14px;
+  border-radius: 14px;
+
+  border: 1px solid var(--border-soft);
+  background: var(--bg-elevated);
+
+  color: var(--text);
+  box-sizing: border-box;
+
+  font: inherit;
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
