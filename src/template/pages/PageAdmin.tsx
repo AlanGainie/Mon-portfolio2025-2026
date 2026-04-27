@@ -1,11 +1,15 @@
 import { JSX } from "react";
+
 import {
   HeaderPage,
   FooterPage,
   BodyPage,
+} from "./Page";
+
+import type {
   PageProps,
   AdministrativeContent,
-} from "./Page";
+} from "../../types/pageTypes";
 
 type PageAdminProps = PageProps & {
   showAdministrativeSection?: boolean;

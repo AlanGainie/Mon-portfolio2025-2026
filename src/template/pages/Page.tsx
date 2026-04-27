@@ -1,200 +1,20 @@
 import { JSX, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
 import { useAuth } from "../../auth/AuthContext";
 
 import "../../styles/index.css";
 import "../../styles/tw.ts";
 
 import ErrorState from "../sections/errorGest.tsx";
-import Crop from "../composants/effects/Crop";
-import ButtonTypewriter from "../composants/effects/Typewriter";
-import Carrousel from "../composants/ui/Carrousel";
-import ExamResourceCard from "../composants/ui/ExamResourceCard";
+
+import HeaderLayout from "../layouts/HeaderLayout";
+import BodyLayout from "../layouts/BodyLayout";
+// import FooterLayout from "../layouts/FooterLayout";
 
 import { PAGESCROLLDOWN, FOOTER, FLEXCOL } from "../../styles/tw.ts";
 
-import identity_picture from "../../assets/picture/IMG_20250129_092536_199.jpg";
-import terminal from "../../assets/picture/description.png";
-
-import cvMcdo from "../../assets/picture/cv/cv-mcdo.png";
-import cvRechercheTravail20252026 from "../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png";
-import cvAlternance2025 from "../../assets/picture/cv/CV-alternance-2025-alan-gainie.png";
-import cvAlternance2025V2 from "../../assets/picture/cv/CV-alternance-2025-alan-gainie(1).png";
-import cvAlternance2026 from "../../assets/picture/cv/CV-alternance-2026-alan-gainie.png";
-import cvRechercheInterim20252026 from "../../assets/picture/cv/cv-recherche-de-travail-alan-gainie-2025-2026.png";
-import cvStage2026 from "../../assets/picture/cv/CV-stage-2026-alan-gainie.png";
-
-import e5Image from "../../assets/picture/E5.png";
-import e6Image from "../../assets/picture/E6.png";
+import type { DisplaysInf, PageData, PageProps } from "../../types/pageTypes";
 
 const pageModules = import.meta.glob("../../../datas/Pages/*.json");
-const fallbackImage = "https://placehold.co/1200x700?text=Chargement...";
-const isMobile = document.body.dataset.screen === "mobile";
-
-export type PageType = "user" | "admin";
-
-export type DisplaysInf = {
-  displayFirstMenuIndex: number;
-  displaySecondMenuIndex: number;
-};
-
-export type DownloadItem = {
-  label: string;
-  href: string;
-  download?: boolean;
-  isAvailable?: boolean;
-};
-
-export type SummaryLink = {
-  id: string;
-  label: string;
-};
-
-export type CvItem = {
-  title: string;
-  imageKey: string;
-  alt: string;
-  description: string;
-  downloads: DownloadItem[];
-};
-
-export type ExamResource = {
-  title: string;
-  description: string;
-  pdf?: string;
-  slides?: string;
-  imageKey: string;
-  folder?: string;
-  image?: string;
-  isPdfAvailable?: boolean;
-  isSlidesAvailable?: boolean;
-  isFolderAvailable?: boolean;
-};
-
-export type AdministrativeContent = {
-  description?: string;
-  pdf?: string;
-  slides?: string;
-  image?: string;
-  folder?: string;
-};
-
-export type PageData = {
-  hero: {
-    eyebrow: string;
-    title: string;
-    text: string;
-    typewriterText: string;
-  };
-  videoIntro?: {
-    thumbnailKey: string;
-    videoUrl: string;
-    sectionEyebrow: string;
-    sectionTitle: string;
-    paragraphs: string[];
-    todoTitle: string;
-    todoText: string;
-  };
-  summaryLinks?: SummaryLink[];
-  profile?: {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    identityPictureKey: string;
-    identityLegend: string;
-    terminalImageKey: string;
-    whoAmITitle: string;
-    whoAmIText: string;
-    skillsTitle: string;
-    skillsText: string;
-    goalsTitle: string;
-    goalsText: string;
-    hookTitle: string;
-    hookText: string;
-  };
-  cvSection?: {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-  };
-  cvs?: CvItem[];
-  examSection?: {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-  };
-  examResources?: ExamResource[];
-};
-
-export type PageProps = {
-  header?: JSX.Element | "none";
-  footer?: JSX.Element | "none";
-  content?: JSX.Element;
-  tab_menue1?: number;
-  tab_menue2?: number;
-  displaysInf?: DisplaysInf;
-  type?: PageType;
-  pageDataFile?: string;
-  enableAnchors?: boolean;
-};
-
-const imageMap: Record<string, string> = {
-  placeholder: fallbackImage,
-  identity_picture,
-  terminal,
-  cv_mcdo: cvMcdo,
-  cv_recherche_travail_2025_2026: cvRechercheTravail20252026,
-  cv_alternance_2025: cvAlternance2025,
-  cv_alternance_2025_v2: cvAlternance2025V2,
-  cv_alternance_2026: cvAlternance2026,
-  cv_recherche_interim_2025_2026: cvRechercheInterim20252026,
-  cv_stage_2026: cvStage2026,
-  e5: e5Image,
-  e6: e6Image,
-};
-
-function getImageByKey(key?: string): string {
-  if (!key) return fallbackImage;
-  return imageMap[key] ?? fallbackImage;
-}
-
-function isValidLink(link?: string): boolean {
-  if (!link) return false;
-  const value = link.trim();
-  return value !== "" && value !== "#";
-}
-
-function isExternalLink(link: string): boolean {
-  return /^https?:\/\//i.test(link);
-}
-
-function buildPublicUrl(path: string): string {
-  const cleanPath = path.replace(/^\/+/, "");
-  return `${import.meta.env.BASE_URL}${cleanPath}`.replace(/([^:]\/)\/+/g, "$1");
-}
-
-function resolveLink(link?: string): string {
-  if (!isValidLink(link)) return "#";
-  return isExternalLink(link!) ? link! : buildPublicUrl(link!);
-}
-
-function SectionTitle({
-  eyebrow,
-  title,
-  subtitle,
-}: {
-  eyebrow: string;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="home-section-title">
-      <p className="home-section-eyebrow">{eyebrow}</p>
-      <h2 className="home-section-heading">{title}</h2>
-      {subtitle ? <p className="home-section-subtitle">{subtitle}</p> : null}
-    </div>
-  );
-}
 
 export const HeaderPage = ({
   content,
@@ -202,6 +22,7 @@ export const HeaderPage = ({
   content?: JSX.Element;
 }): JSX.Element => {
   if (content) return content;
+
   return <header />;
 };
 
@@ -279,295 +100,19 @@ export const BodyPage = ({
   );
 };
 
-function PortfolioContent({ data }: { data: PageData }) {
+function PortfolioContent({ data }: { data: PageData }): JSX.Element {
   const { user } = useAuth();
-  const [isIntroOpen, setIsIntroOpen] = useState(true);
-
   const isDemo = user?.role === "demo";
-
-  const videoIntro = data.videoIntro;
-  const summaryLinks = data.summaryLinks ?? [];
-  const profile = data.profile;
-  const cvSection = data.cvSection;
-  const cvs = data.cvs ?? [];
-  const examSection = data.examSection;
-  const examResources = data.examResources ?? [];
-
-  const resolvedVideoUrl = useMemo(() => {
-    return resolveLink(videoIntro?.videoUrl);
-  }, [videoIntro?.videoUrl]);
-
-  const isVideoAvailable = useMemo(() => {
-    return isValidLink(videoIntro?.videoUrl);
-  }, [videoIntro?.videoUrl]);
-
-  const normalizedCvs = useMemo(() => {
-    return cvs.map((cv) => ({
-      ...cv,
-      downloads: (cv.downloads ?? []).map((download) => ({
-        ...download,
-        href: resolveLink(download.href),
-        isAvailable: isValidLink(download.href),
-      })),
-    }));
-  }, [cvs]);
-
-  const cvSlides = useMemo(() => {
-    return normalizedCvs.map((cv) => (
-      <div key={cv.title} className="home-cv-slide">
-        <img
-          src={getImageByKey(cv.imageKey)}
-          alt={cv.alt || cv.title}
-          className="home-cv-slide-image"
-        />
-      </div>
-    ));
-  }, [normalizedCvs]);
-
-  const examResourcesWithImages = useMemo(() => {
-    return examResources.map((resource) => ({
-      ...resource,
-      pdf: resolveLink(resource.pdf),
-      slides: resolveLink(resource.slides),
-      folder: resolveLink(resource.folder),
-      image: getImageByKey(resource.imageKey),
-      isPdfAvailable: isValidLink(resource.pdf),
-      isSlidesAvailable: isValidLink(resource.slides),
-      isFolderAvailable: isValidLink(resource.folder),
-    }));
-  }, [examResources]);
 
   return (
     <div
-      className={`${FLEXCOL} home-page-shell ${isDemo ? "home-theme-demo" : "home-theme-default"}`}
+      className={`${FLEXCOL} home-page-shell ${
+        isDemo ? "home-theme-demo" : "home-theme-default"
+      }`}
     >
-      {isDemo && (
-        <section className="home-demo-banner">
-          <div className="home-demo-badge">
-            <span className="home-demo-dot" />
-            <span>Mode démo</span>
-          </div>
-          <p className="home-demo-text">
-            Vous consultez la version démonstration du portfolio.
-          </p>
-        </section>
-      )}
-
-      <section className="home-panel home-hero-panel">
-        <div className="home-hero-content">
-          <p className="home-hero-eyebrow">{data.hero?.eyebrow ?? ""}</p>
-          <h1 className="home-hero-title">{data.hero?.title ?? ""}</h1>
-          <p className="home-hero-text">{data.hero?.text ?? ""}</p>
-
-          <div className="home-typewriter-box">
-            <ButtonTypewriter content={data.hero?.typewriterText ?? ""} />
-          </div>
-        </div>
-      </section>
-
-      {videoIntro && (
-        <section id="video-intro" className="home-panel home-video-grid">
-          <div className="home-media-box">
-            <div className="home-video-wrapper">
-              <img
-                src={getImageByKey(videoIntro.thumbnailKey)}
-                alt="Miniature vidéo de présentation"
-                className="home-video-image"
-              />
-
-              <a
-                href={resolvedVideoUrl}
-                className={`home-video-overlay ${
-                  isVideoAvailable ? "home-link-active" : "home-link-disabled"
-                }`}
-                target={isVideoAvailable ? "_blank" : undefined}
-                rel={isVideoAvailable ? "noopener noreferrer" : undefined}
-                onClick={(e) => {
-                  if (!isVideoAvailable) {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <span
-                  className={`home-video-button ${
-                    isVideoAvailable ? "home-button-red" : ""
-                  }`}
-                >
-                  <PlayCircle className="h-5 w-5" />
-                  Lancer la vidéo
-                </span>
-              </a>
-            </div>
-          </div>
-
-          <div className="home-side-card">
-            <div>
-              <div className="home-side-card-header">
-                <div>
-                  <p className="home-section-eyebrow">
-                    {videoIntro.sectionEyebrow}
-                  </p>
-                  <h2 className="home-side-title">
-                    {videoIntro.sectionTitle}
-                  </h2>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsIntroOpen((prev) => !prev)}
-                  className="home-action-button"
-                >
-                  {isIntroOpen ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                  {isIntroOpen ? "Replier" : "Déplier"}
-                </button>
-              </div>
-
-              <div
-                className={`grid overflow-hidden transition-all duration-300 ${
-                  isIntroOpen
-                    ? "grid-rows-[1fr] opacity-100"
-                    : "grid-rows-[0fr] opacity-80"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  {(videoIntro.paragraphs ?? []).map((paragraph, index) => (
-                    <p
-                      key={`${paragraph}-${index}`}
-                      className={`home-paragraph ${index > 0 ? "mt-4" : ""}`}
-                    >
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="home-info-box">
-              <p className="home-info-title">{videoIntro.todoTitle}</p>
-              <p className="home-info-text">{videoIntro.todoText}</p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {!!summaryLinks.length && (
-        <section id="sommaire" className="home-panel">
-          <SectionTitle
-            eyebrow="Navigation"
-            title="Sommaire du projet"
-            subtitle="Chaque section possède une ancre pour être facilement accessible depuis le menu du portfolio."
-          />
-
-          <div className="home-summary-grid">
-            {summaryLinks.map((item, index) => (
-              <a key={item.id} href={`#${item.id}`} className="home-summary-card">
-                <p className="home-summary-index">Section {index + 1}</p>
-                <h3 className="home-summary-title">{item.label}</h3>
-                <p className="home-summary-text">
-                  Accéder directement à cette partie du portfolio.
-                </p>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {profile && (
-        <section id="presentation-candidat" className="home-panel">
-          <SectionTitle
-            eyebrow={profile.eyebrow}
-            title={profile.title}
-            subtitle={profile.subtitle}
-          />
-
-          <div className="home-profile-grid">
-            <div className="home-photo-card">
-              <Crop
-                path={getImageByKey(profile.identityPictureKey)}
-                height={isMobile ? 425 : 550}
-                width={isMobile ? 425 : 550}
-                className="identite"
-                errorloadtext="photo d'identité"
-                legende={profile.identityLegend}
-              />
-            </div>
-
-            <div className="home-profile-content">
-              <div className="home-subcard">
-                <h3 className="home-subcard-title">{profile.whoAmITitle}</h3>
-                <p className="home-paragraph">{profile.whoAmIText}</p>
-              </div>
-
-              <img
-                src={getImageByKey(profile.terminalImageKey)}
-                alt="Terminal de présentation du candidat"
-              />
-
-              <div className="home-mini-grid">
-                <div className="home-subcard">
-                  <h4 className="home-mini-title">{profile.skillsTitle}</h4>
-                  <p className="home-mini-text">{profile.skillsText}</p>
-                </div>
-
-                <div className="home-subcard">
-                  <h4 className="home-mini-title">{profile.goalsTitle}</h4>
-                  <p className="home-mini-text">{profile.goalsText}</p>
-                </div>
-              </div>
-
-              <div className="home-highlight-card">
-                <h4 className="home-highlight-title">{profile.hookTitle}</h4>
-                <p className="home-highlight-text">{profile.hookText}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {!!normalizedCvs.length && cvSection && (
-        <section id="cv-carousel" className="home-panel">
-          <SectionTitle
-            eyebrow={cvSection.eyebrow}
-            title={cvSection.title}
-            subtitle={cvSection.subtitle}
-          />
-
-          <div className="w-full">
-            <Carrousel
-              slides={cvSlides}
-              captions={normalizedCvs.map((cv) => cv.title)}
-              autoScroll={false}
-              interval={5000}
-              showMenu={true}
-              menuItems={normalizedCvs.map((cv) => ({
-                title: cv.title,
-                description: cv.description,
-                downloads: cv.downloads,
-              }))}
-            />
-          </div>
-        </section>
-      )}
-
-      {!!examResourcesWithImages.length && examSection && (
-        <section id="epreuves-e5-e6" className="home-panel">
-          <SectionTitle
-            eyebrow={examSection.eyebrow}
-            title={examSection.title}
-            subtitle={examSection.subtitle}
-          />
-
-          <div className="home-evaluation-grid">
-            {examResourcesWithImages.map((resource) => (
-              <ExamResourceCard key={resource.title} resource={resource} />
-            ))}
-          </div>
-        </section>
-      )}
+      <HeaderLayout data={data} />
+      <BodyLayout data={data} />
+      {/* <FooterLayout data={data} /> */}
     </div>
   );
 }
@@ -600,11 +145,13 @@ function Page({
 
       try {
         const mod = (await importer()) as { default: PageData };
+
         if (!cancelled) {
           setPageData(mod.default);
         }
       } catch (error) {
         console.error("Erreur chargement page JSON :", error);
+
         if (!cancelled) {
           setLoadingError(`Impossible de charger : ${pageDataFile}`);
         }
@@ -618,9 +165,7 @@ function Page({
     };
   }, [modulePath, pageDataFile]);
 
-  if (content) {
-    return content;
-  }
+  if (content) return content;
 
   if (loadingError) {
     return <ErrorState type="not_found" target="page" />;
