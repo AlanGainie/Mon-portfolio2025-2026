@@ -1,12 +1,6 @@
 import { FOOTER } from "../../styles/tw.ts";
 
-import type { PageData } from "../../types/pageTypes";
-
-type FooterLayoutProps = {
-  data: PageData;
-};
-
-function FooterLayout({ data }: FooterLayoutProps) {
+function FooterLayout() {
   return (
     <footer className={FOOTER}>
       <p>© 2025 Alan Gainie - Tous droits réservés</p>
