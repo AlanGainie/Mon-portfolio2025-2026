@@ -29,20 +29,17 @@ type HomeProps = {
 };
 
 function Home({ type }: HomeProps) {
-  const { previewRole, getLogs, clearLogs, unblockAccess, logout } = useAuth();
+  const { getLogs, clearLogs, logout } = useAuth();
   const navigate = useNavigate();
 
   const [actual_list_menue, setActuallistMenue] = useState(0);
   const [logs, setLogs] = useState(getLogs());
   const [isClearing, setIsClearing] = useState(false);
-  const [selectedSection] = useState<EditableSectionKey>("e5");
-  const [sections, setSections] = useState<EditableSections>({
+  const [, setSections] = useState<EditableSections>({
     e5: "",
     e6: "",
     administratif: "",
   });
-
-  const canManageLogs = previewRole === "superadmin";
 
   useEffect(() => {
     if (type !== "admin") return;
@@ -75,12 +72,6 @@ function Home({ type }: HomeProps) {
       setLogs([]);
       setIsClearing(false);
     }, 600);
-  };
-
-  const handleUnblock = () => {
-    if (!canManageLogs) return;
-    unblockAccess();
-    setLogs(getLogs());
   };
 
   // =========================
