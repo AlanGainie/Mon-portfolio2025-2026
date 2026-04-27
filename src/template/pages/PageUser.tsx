@@ -1,6 +1,9 @@
 import { JSX, useEffect } from "react";
-import { HeaderPage, FooterPage, BodyPage, PageProps } from "./Page";
+
+import { HeaderPage, FooterPage, BodyPage } from "./Page";
 import { useAuth } from "../../auth/AuthContext";
+
+import type { PageProps } from "../../types/pageTypes";
 
 export default function PageUser({
   header,
