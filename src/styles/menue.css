@@ -1,32 +1,100 @@
 .menu-container {
-  position: absolute; /* Fixe la position du menu à 30px sous la barre de prévisualisation */
-  width: 100%;
-  background-color: var(--bg);
-  padding: 10px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombre pour rendre le menu visible */
-  z-index: 1300; /* Assurez-vous que le menu soit au-dessus des autres éléments */
+  position: fixed;
+  top: calc(var(--sidebar-top-offset) + 20px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: min(60%, 900px);
+  max-width: 900px;
+
+  padding: 4px;
+
+  border-radius: 14px;
+
+  /* 🔥 vrai glass effect */
+  background: rgba(25, 25, 25, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  display: flex;
+  gap: 4px;
+
+  z-index: 1300;
+
+  /* 🔥 profondeur preview bar */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .menu-item {
-  padding: 10px;
-  border-bottom: 1px solid var(--border-soft);
+  flex: 1;
+  display: flex;
 }
 
 .menu-item button {
-  background: none;
-  border: none;
+  flex: 1;
+
+  margin: 2px;
+  padding: 8px 10px;
+
+  border-radius: 10px;
+
+  border: 1px solid var(--border);
+  background: transparent;
+
   color: var(--text);
-  font-size: 16px;
-  width: 100%;
-  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
 }
 
-.menu-item.active {
-  background-color: var(--primary);
+/* hover = preview bar feel */
+.menu-item button:hover {
+  transform: translateY(-1px);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+/* actif */
+.menu-item button.active {
+  background: var(--bg-overlay-strong);
+  border-color: var(--primary);
   color: var(--text-strong);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
+/* focus clean */
 button:focus {
   outline: none;
+}
+
+/* ============================ */
+/* MOBILE (inchangé logique)   */
+/* ============================ */
+
+@media (max-width: 768px) {
+  .menu-container {
+    width: 100%;
+    left: 0;
+    transform: none;
+
+    flex-direction: column;
+    border-radius: 0;
+
+    padding: 6px;
+  }
+
+  .menu-item button {
+    justify-content: flex-start;
+    margin: 2px 0;
+  }
 }
