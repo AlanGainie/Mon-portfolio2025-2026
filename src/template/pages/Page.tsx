@@ -8,7 +8,7 @@ import ErrorState from "../sections/errorGest.tsx";
 
 import HeaderLayout from "../layouts/HeaderLayout";
 import BodyLayout from "../layouts/BodyLayout";
-import FooterLayout from "../layouts/FooterLayout";
+// import FooterLayout from "../layouts/FooterLayout";
 
 import { PAGESCROLLDOWN, FOOTER, FLEXCOL } from "../../styles/tw.ts";
 
