@@ -131,6 +131,16 @@ export default function AdminPreviewBar({
     console.log("📺 screenMode appliqué =", screenMode);
   }, [screenMode]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (collapsed) {
+      root.style.setProperty("--sidebar-top-offset", "26px");
+    } else {
+      root.style.setProperty("--sidebar-top-offset", "70px");
+    }
+  }, [collapsed]);
+
   const isSwitchablePage =
     isAdminPage(location.pathname) ||
     isUserPage(location.pathname) ||

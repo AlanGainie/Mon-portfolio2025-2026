@@ -261,7 +261,7 @@ button:focus-visible {
 
 .page-with-toolbar {
   min-height: 100vh;
-  padding-top: 80px;
+  padding-top: calc(var(--sidebar-top-offset) + var(--menu-height) + 5px);
   box-sizing: border-box;
 }
 
