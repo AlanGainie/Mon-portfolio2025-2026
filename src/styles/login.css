@@ -198,6 +198,7 @@
   transition: padding-top 0.3s ease;
 }
 
+<<<<<<< HEAD
 /* Preview bar ouverte */
 .login-route.login-page-preview-visible,
 .login-route.login-page-preview-top {
@@ -210,4 +211,46 @@
 .login-route.login-page-preview-collapsed {
   justify-content: center;
   padding-top: 40px;
+=======
+.login-header h1 {
+  margin-bottom: 8px;
+  color: white;
+}
+
+/* ===================================== */
+/* LOGIN PAGE LOAD                     */
+/* ===================================== */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 999999;
+}
+
+.loading-screen img {
+  display: block;
+  width: 200px;
+  height: auto;
+}
+
+.login-title-superadmin,
+.login-description-superadmin {
+  display: none;
+}
+
+body[data-role="superadmin"] .login-title-viewer,
+body[data-role="superadmin"] .login-description-viewer {
+  display: none;
+}
+
+body[data-role="superadmin"] .login-title-superadmin,
+body[data-role="superadmin"] .login-description-superadmin {
+  display: block;
+>>>>>>> test
 }
