@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import LogsSection from "../sections/LogsSection";
 import loaderGif from "../../assets/svg_declinaisons_dragon_egg/dragon_svg_loaders_variants_pack/loader_calm_1_breathe_muted_muted.gif";
 
 type LoginProps = {
@@ -9,7 +10,16 @@ type LoginProps = {
 
 export default function Login({ onLogUpdate }: LoginProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isBlocked } = useAuth();
+    const {
+    login,
+    isBlocked,
+    previewRole,
+    switchAccountRole,
+    getLogs,
+    clearLogs,
+  } = useAuth();
+
+  const logs = getLogs();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -33,8 +43,18 @@ export default function Login({ onLogUpdate }: LoginProps) {
 
     const savedUser = JSON.parse(localStorage.getItem("authUser") || "{}");
 
+    if (previewRole === "superadmin") {
+      switchAccountRole("superadmin");
+    }
+
+    onLogUpdate?.();
+
     setTimeout(() => {
-      navigate(savedUser.role === "admin" ? "/admin" : "/user");
+      navigate(
+        previewRole === "superadmin" || savedUser.role === "admin"
+          ? "/admin"
+          : "/user"
+      );
     }, 2000);
   };
 
@@ -47,6 +67,7 @@ export default function Login({ onLogUpdate }: LoginProps) {
 
     setError("");
     setIsLoading(true);
+    onLogUpdate?.();
 
     setTimeout(() => {
       navigate("/demo");
@@ -150,6 +171,7 @@ export default function Login({ onLogUpdate }: LoginProps) {
           </div>
         </form>
       </div>
+      <LogsSection logs={logs} onClearLogs={clearLogs} />
     </div>
   );
 }

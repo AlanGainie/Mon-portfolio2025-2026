@@ -18,6 +18,7 @@ export default function ProtectedRoute({
   const location = useLocation();
 
   const isSuperadmin = previewRole === "superadmin";
+  const effectiveRole: Role | undefined = isSuperadmin ? "admin" : user?.role;
 
   console.groupCollapsed("🛡️ [ProtectedRoute]");
   console.log("pathname =", location.pathname);
@@ -26,18 +27,15 @@ export default function ProtectedRoute({
   console.log("user.role =", user?.role);
   console.log("previewRole =", previewRole);
   console.log("isSuperadmin =", isSuperadmin);
+  console.log("effectiveRole =", effectiveRole);
   console.log("requiredRole =", requiredRole);
   console.groupEnd();
-
-  if (isSuperadmin) {
-    return <>{children}</>;
-  }
 
   if (isLoginPath(location.pathname)) {
     return <>{children}</>;
   }
 
-  if (!isAuthenticated || !user) {
+  if (!isSuperadmin && (!isAuthenticated || !user)) {
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
@@ -45,19 +43,19 @@ export default function ProtectedRoute({
     return <>{children}</>;
   }
 
-  if (user.role === "admin") {
+  if (effectiveRole === "admin") {
     return <>{children}</>;
   }
 
-  // demo a les mêmes permissions que user
   const hasUserAccess =
-    requiredRole === "user" && (user.role === "user" || user.role === "demo");
+    requiredRole === "user" &&
+    (effectiveRole === "user" || effectiveRole === "demo");
 
   if (hasUserAccess) {
     return <>{children}</>;
   }
 
-  if (user.role !== requiredRole) {
+  if (effectiveRole !== requiredRole) {
     return <Navigate to="/user" replace />;
   }
 

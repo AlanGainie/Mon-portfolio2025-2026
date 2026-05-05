@@ -41,7 +41,7 @@ body, #root {
   background: #111;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 
-  margin: 0 auto;
+  margin: 40px auto 0;
 }
 
 /* LEFT PANEL */
