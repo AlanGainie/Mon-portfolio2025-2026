@@ -35,8 +35,9 @@ function DemoRoute() {
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <p>Activation du mode démo...</p>
+    <div className="route-loading">
+      <div className="route-loader" />
+      <p className="route-loading-text">Activation du mode démo...</p>
     </div>
   );
 }

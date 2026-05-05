@@ -1,8 +1,7 @@
-// src/template/pages/Home.tsx
-
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 import Login from "./RouteLogin";
 import Page, { FooterPage } from "../pages/Page";
 import Menue from "../composants/navigations/Menue";
@@ -29,12 +28,10 @@ type HomeProps = {
 };
 
 function Home({ type }: HomeProps) {
-  const { getLogs, clearLogs, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const [actual_list_menue, setActuallistMenue] = useState(0);
-  const [logs, setLogs] = useState(getLogs());
-  const [isClearing, setIsClearing] = useState(false);
   const [, setSections] = useState<EditableSections>({
     e5: "",
     e6: "",
@@ -49,6 +46,7 @@ function Home({ type }: HomeProps) {
 
     try {
       const parsed = JSON.parse(saved) as Partial<EditableSections>;
+
       setSections({
         e5: parsed.e5 ?? "",
         e6: parsed.e6 ?? "",
@@ -64,50 +62,18 @@ function Home({ type }: HomeProps) {
     navigate("/", { replace: true });
   };
 
-  const handleClearLogs = () => {
-    setIsClearing(true);
-
-    setTimeout(() => {
-      clearLogs();
-      setLogs([]);
-      setIsClearing(false);
-    }, 600);
-  };
-
-  // =========================
-  // LOGIN PAGE
-  // =========================
   if (type === "login") {
     return (
-      <div className="login-page">
+      <div className="app-page">
         <AdminPreviewBar />
 
-        <Login onLogUpdate={() => setLogs(getLogs())} />
-
-        <div className="logs-section">
-          <h2>Historique</h2>
-
-          <button onClick={handleClearLogs}>
-            {isClearing ? "Vidage..." : "Vider"}
-          </button>
-
-          <ul>
-            {logs.map((log) => (
-              <li key={log.id}>
-                {log.username} - {log.action}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Login />
 
         <FooterPage />
       </div>
     );
   }
 
-  // =========================
-  // MAIN APP
-  // =========================
   return (
     <div className={`${PAGESGLOBAL} page-with-toolbar app-page`}>
       <AdminPreviewBar showLogout onLogout={handleLogout} />

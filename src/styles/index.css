@@ -13,6 +13,9 @@
 /* Admin Preview Bar */
 @import "./adminPreviewBar.css";
 
+/* Routes */
+@import "./route.css";
+
 /* Roles */
 @import "./role.css";
 
@@ -1153,6 +1156,9 @@ body[data-role="demo"] .hex-bg-wave {
 .page-with-toolbar,
 .page-main-content,
 .container,
+.font-box,
+.login-page,
+.login-logs,
 .logs-container,
 .ui-bar,
 footer,
@@ -1769,6 +1775,11 @@ footer {
   box-sizing: border-box;
   border-top: 1px solid var(--border);
   background: var(--bg-footer);
+}
+
+footer nav {
+  margin-top: 8px;
+}
 
 /* ===================================== */
 /* BASE + VARIABLES THEME               */
@@ -1969,8 +1980,7 @@ footer {
   margin-top: auto;
   padding: 20px;
   border-top: 1px solid var(--border);
-  background: rgba(0,0,0,0.7);
-}
+  background: rgba(0, 0, 0, 0.7);
   color: var(--text);
 }
 

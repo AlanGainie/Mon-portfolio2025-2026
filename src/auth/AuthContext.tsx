@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type LoginRole = "admin" | "user" | "demo";
 type PreviewRole = "viewer" | "superadmin";
@@ -42,6 +48,7 @@ type AuthContextType = {
   loginAsDemo: () => LoginResult;
   logout: () => void;
 
+  logs: AuthLog[];
   getLogs: () => AuthLog[];
   clearLogs: () => void;
 
@@ -54,10 +61,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/* =========================
-   USERS
-========================= */
-
 const FAKE_USERS: FakeUser[] = [
   { username: "alan", password: "admin_privilege", role: "admin" },
   { username: "gregory", password: "crespin", role: "admin" },
@@ -66,10 +69,6 @@ const FAKE_USERS: FakeUser[] = [
   { username: "yaouen", password: "ledanvic", role: "user" },
 ];
 
-/* =========================
-   STORAGE KEYS
-========================= */
-
 const AUTH_USER_KEY = "authUser";
 const AUTH_LOGS_KEY = "authLogs";
 const FAILED_ATTEMPTS_KEY = "failedAttempts";
@@ -77,41 +76,42 @@ const LOCKED_UNTIL_KEY = "lockedUntil";
 const IS_BLOCKED_KEY = "isBlocked";
 const PREVIEW_ROLE_KEY = "previewRole";
 
-/* =========================
-   PROVIDER
-========================= */
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [previewRole, setPreviewRoleState] = useState<PreviewRole>("viewer");
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-
-  /* =========================
-     INIT USER + PREVIEW
-  ========================= */
+  const [logs, setLogs] = useState<AuthLog[]>([]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem(AUTH_USER_KEY);
+
     if (savedUser) {
       try {
-        const parsedUser = JSON.parse(savedUser) as AuthUser;
-        setUser(parsedUser);
+        setUser(JSON.parse(savedUser) as AuthUser);
       } catch {
         localStorage.removeItem(AUTH_USER_KEY);
       }
     }
 
     const savedPreviewRole = localStorage.getItem(PREVIEW_ROLE_KEY);
+
     if (savedPreviewRole === "viewer" || savedPreviewRole === "superadmin") {
       setPreviewRoleState(savedPreviewRole);
     }
-  }, []);
 
-  /* =========================
-     INIT SECURITY
-  ========================= */
+    const savedLogs = localStorage.getItem(AUTH_LOGS_KEY);
+
+    if (savedLogs) {
+      try {
+        setLogs(JSON.parse(savedLogs) as AuthLog[]);
+      } catch {
+        localStorage.removeItem(AUTH_LOGS_KEY);
+        setLogs([]);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const savedAttempts = localStorage.getItem(FAILED_ATTEMPTS_KEY);
@@ -123,19 +123,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedBlocked === "true") setIsBlocked(true);
   }, []);
 
-  /* =========================
-     ROLE -> BODY
-  ========================= */
-
   useEffect(() => {
     let visualRole: PreviewRole | "demo" = "viewer";
 
     if (user?.role === "demo") {
       visualRole = "demo";
     } else if (user?.role === "admin") {
-      visualRole = previewRole; // "viewer" ou "superadmin"
-    } else {
-      visualRole = "viewer"; // user normal
+      visualRole = previewRole;
     }
 
     document.body.dataset.role = visualRole;
@@ -145,10 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [user, previewRole]);
 
-  /* =========================
-     LOG SYSTEM
-  ========================= */
-
   const addLog = (
     username: string,
     role: LoginRole | "unknown",
@@ -156,10 +146,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     severityPoints: number,
     message?: string
   ) => {
-    const logs: AuthLog[] = JSON.parse(localStorage.getItem(AUTH_LOGS_KEY) || "[]");
-
     const newLog: AuthLog = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${crypto.randomUUID()}`,
       username,
       role,
       action,
@@ -168,8 +156,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       message,
     };
 
-    logs.push(newLog);
-    localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(logs, null, 2));
+    setLogs((prevLogs) => {
+      const updatedLogs = [...prevLogs, newLog];
+      localStorage.setItem(AUTH_LOGS_KEY, JSON.stringify(updatedLogs, null, 2));
+      return updatedLogs;
+    });
   };
 
   const persistAuthenticatedUser = (authUser: AuthUser) => {
@@ -178,13 +169,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setFailedAttempts(0);
     setLockedUntil(null);
+
     localStorage.setItem(FAILED_ATTEMPTS_KEY, "0");
     localStorage.removeItem(LOCKED_UNTIL_KEY);
   };
-
-  /* =========================
-     PREVIEW ROLE
-  ========================= */
 
   const setPreviewRole = (role: PreviewRole) => {
     if (previewRole === role) return;
@@ -197,17 +185,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user?.role ?? "unknown",
       "login",
       0,
-      `Mode preview ${role === "superadmin" ? "superadmin activé" : "user activé"}`
+      `Mode preview ${
+        role === "superadmin" ? "superadmin activé" : "user activé"
+      }`
     );
   };
 
   const switchAccountRole = (role: PreviewRole) => {
     setPreviewRole(role);
   };
-
-  /* =========================
-     SECURITY
-  ========================= */
 
   const blockAccess = () => {
     if (previewRole !== "superadmin") return;
@@ -244,20 +230,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  /* =========================
-     LOGIN
-  ========================= */
-
   const login = (username: string, password: string): LoginResult => {
     const now = Date.now();
 
     if (isBlocked) {
-      addLog(username || "unknown", "unknown", "error", failedAttempts, "DDOS accès restricted");
+      addLog(
+        username || "unknown",
+        "unknown",
+        "error",
+        failedAttempts,
+        "DDOS accès restricted"
+      );
+
       return { success: false, message: "DDOS accès restricted" };
     }
 
     if (lockedUntil && now < lockedUntil) {
       const remaining = Math.ceil((lockedUntil - now) / 1000);
+
       return {
         success: false,
         message: `Trop de tentatives. Réessaie dans ${remaining} seconde(s).`,
@@ -270,33 +260,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!foundUser) {
       const newAttempts = failedAttempts + 1;
+
       setFailedAttempts(newAttempts);
       localStorage.setItem(FAILED_ATTEMPTS_KEY, String(newAttempts));
 
       if (newAttempts >= 10) {
         setIsBlocked(true);
         localStorage.setItem(IS_BLOCKED_KEY, "true");
-        addLog(username || "unknown", "unknown", "blocked", newAttempts, "DDOS accès restricted");
+
+        addLog(
+          username || "unknown",
+          "unknown",
+          "blocked",
+          newAttempts,
+          "DDOS accès restricted"
+        );
+
         return { success: false, message: "DDOS accès restricted" };
       }
 
       if (newAttempts >= 5) {
         const nextLock = now + 10000;
+
         setLockedUntil(nextLock);
         localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
-        addLog(username || "unknown", "unknown", "error", newAttempts, "Délai de 10 secondes appliqué");
-        return { success: false, message: "Trop d'erreurs. Attente de 10 secondes." };
+
+        addLog(
+          username || "unknown",
+          "unknown",
+          "error",
+          newAttempts,
+          "Délai de 10 secondes appliqué"
+        );
+
+        return {
+          success: false,
+          message: "Trop d'erreurs. Attente de 10 secondes.",
+        };
       }
 
       if (newAttempts >= 3) {
         const nextLock = now + 5000;
+
         setLockedUntil(nextLock);
         localStorage.setItem(LOCKED_UNTIL_KEY, String(nextLock));
-        addLog(username || "unknown", "unknown", "error", newAttempts, "Délai de 5 secondes appliqué");
-        return { success: false, message: "Trop d'erreurs. Attente de 5 secondes." };
+
+        addLog(
+          username || "unknown",
+          "unknown",
+          "error",
+          newAttempts,
+          "Délai de 5 secondes appliqué"
+        );
+
+        return {
+          success: false,
+          message: "Trop d'erreurs. Attente de 5 secondes.",
+        };
       }
 
-      addLog(username || "unknown", "unknown", "error", newAttempts, `Point de vigilance ${newAttempts}`);
+      addLog(
+        username || "unknown",
+        "unknown",
+        "error",
+        newAttempts,
+        `Point de vigilance ${newAttempts}`
+      );
 
       return {
         success: false,
@@ -318,6 +347,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginAsDemo = (): LoginResult => {
     if (isBlocked) {
       addLog("demo", "demo", "error", failedAttempts, "DDOS accès restricted");
+
       return { success: false, message: "DDOS accès restricted" };
     }
 
@@ -332,10 +362,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
-  /* =========================
-     LOGOUT
-  ========================= */
-
   const logout = () => {
     if (user) {
       addLog(user.username, user.role, "logout", 0, "Déconnexion réussie");
@@ -345,21 +371,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(AUTH_USER_KEY);
   };
 
-  /* =========================
-     LOG ACCESS
-  ========================= */
-
   const getLogs = (): AuthLog[] => {
-    return JSON.parse(localStorage.getItem(AUTH_LOGS_KEY) || "[]");
+    return logs;
   };
 
   const clearLogs = () => {
+    setLogs([]);
     localStorage.removeItem(AUTH_LOGS_KEY);
   };
-
-  /* =========================
-     VALUE
-  ========================= */
 
   const value = useMemo<AuthContextType>(
     () => ({
@@ -375,6 +394,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loginAsDemo,
       logout,
 
+      logs,
       getLogs,
       clearLogs,
 
@@ -384,15 +404,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       blockAccess,
       unblockAccess,
     }),
-    [user, previewRole, isBlocked, failedAttempts, lockedUntil]
+    [user, previewRole, isBlocked, failedAttempts, lockedUntil, logs]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-/* =========================
-   HOOK
-========================= */
 
 export function useAuth() {
   const context = useContext(AuthContext);

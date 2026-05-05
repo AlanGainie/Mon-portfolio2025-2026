@@ -1,0 +1,108 @@
+/* ===================================== */
+/* ROUTES                                */
+/* ===================================== */
+
+/* LOADING SCREEN (demo / redirect) */
+.route-loading {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  padding: calc(var(--sidebar-top-offset, 0px) + 40px) 20px 40px;
+  box-sizing: border-box;
+
+  color: var(--text);
+
+  transition: padding-top 0.3s ease;
+}
+
+/* Preview bar ouverte */
+.route-loading-preview-visible,
+.route-loading-preview-top {
+  justify-content: flex-start;
+  padding-top: calc(var(--sidebar-top-offset, 80px) + 40px);
+}
+
+/* Preview bar fermée / cachée */
+.route-loading-preview-hidden,
+.route-loading-preview-collapsed {
+  justify-content: center;
+  padding-top: 40px;
+}
+
+/* LOADING TEXT */
+.route-loading-text {
+  font-size: 1.2rem;
+  color: var(--text-soft);
+
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+
+  animation: routeFade 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes routeFade {
+  from {
+    opacity: 0.4;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.route-loader {
+  width: 32px;
+  height: 32px;
+
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-route {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 40px;
+
+  padding: calc(var(--sidebar-top-offset, 0px) + 20px) 20px 40px;
+  box-sizing: border-box;
+
+  transition: padding-top 0.3s ease;
+}
+
+/* Preview bar ouverte */
+.login-route.login-page-preview-visible,
+.login-route.login-page-preview-top {
+  justify-content: flex-start;
+  padding-top: calc(var(--sidebar-top-offset, 80px) + 20px);
+}
+
+/* Preview bar repliée / cachée */
+.login-route.login-page-preview-hidden,
+.login-route.login-page-preview-collapsed {
+  justify-content: center;
+  padding-top: 40px;
+}
