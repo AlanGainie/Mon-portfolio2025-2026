@@ -20,7 +20,7 @@ type AuthUser = {
   role: LoginRole;
 };
 
-type AuthLog = {
+export type AuthLog = {
   id: string;
   username: string;
   role: LoginRole | "unknown";

@@ -1,4 +1,4 @@
-import type { AuthLog } from "../routes/RouteLogin";
+import type { AuthLog } from "../../auth/AuthContext";
 
 type LogsSectionProps = {
   logs: AuthLog[];
