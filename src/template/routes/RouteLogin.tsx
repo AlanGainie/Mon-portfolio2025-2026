@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import loaderGif from "../../assets/svg_declinaisons_dragon_egg/dragon_svg_loaders_variants_pack/loader_calm_1_breathe_muted_muted.gif";
 
 type LoginProps = {
   onLogUpdate?: () => void;
@@ -14,19 +15,7 @@ export default function Login({ onLogUpdate }: LoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  // 🔹 Nouveau contenu dynamique
-  const infoText = {
-  title: "Bienvenue 👋",
-  description: (
-      <>
-        <br />
-        Connecte-toi pour accéder à ton espace personnel, depuis celui-ci tu peux consulter mon portfolio et explorer les fonctionnalités disponibles.
-        <br /><br />
-        Consulte le mode démo pour y accéder en tant que visiteur.
-      </>
-    )
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,8 +29,13 @@ export default function Login({ onLogUpdate }: LoginProps) {
       return;
     }
 
+    setIsLoading(true);
+
     const savedUser = JSON.parse(localStorage.getItem("authUser") || "{}");
-    navigate(savedUser.role === "admin" ? "/admin" : "/user");
+
+    setTimeout(() => {
+      navigate(savedUser.role === "admin" ? "/admin" : "/user");
+    }, 2000);
   };
 
   const handleDirectDemoAccess = () => {
@@ -52,75 +46,108 @@ export default function Login({ onLogUpdate }: LoginProps) {
     }
 
     setError("");
-    navigate("/demo");
+    setIsLoading(true);
+
+    setTimeout(() => {
+      navigate("/demo");
+    }, 2000);
   };
 
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <img src={loaderGif} alt="Chargement..." />
+        <p>Connexion en cours...</p>
+      </div>
+    );
+  }
+
   return (
-  <div className="font-box">
-
-    {/* 🔹 SECTION TEXTE */}
-    <div className="auth-info">
-      <button
-        type="button"
-        onClick={handleDirectDemoAccess}
-        disabled={isBlocked}
-        className="demo-button"
-      >
-        Mode démo
-      </button>
-
-      <h2>{infoText.title}</h2>
-      <p>{infoText.description}</p>
-    </div>
-
-    {/* 🔹 FORM */}
-    <form onSubmit={handleSubmit}>
-      <h2>Connexion</h2>
-
-      <div className="input-box">
-        <input
-          type="text"
-          placeholder="Nom d'utilisateur"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+    <div className="font-box">
+      <div className="auth-info">
+        <button
+          type="button"
+          onClick={handleDirectDemoAccess}
           disabled={isBlocked}
-        />
-        {isBlocked && <span className="lock-icon">🔒</span>}
-      </div>
-
-      <div className="input-box">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={isBlocked}
-        />
-
-        <span
-          className="password-toggle"
-          onClick={() => setShowPassword((prev) => !prev)}
+          className="demo-button"
         >
-          {showPassword ? "🙈" : "👁️"}
-        </span>
+          Mode démo
+        </button>
+
+        <h2 className="login-title login-title-viewer">Bienvenue 👋</h2>
+
+        <h2 className="login-title login-title-superadmin">
+          Mode Superadmin 🛡️
+        </h2>
+
+        <p className="login-description login-description-viewer">
+          <br />
+          Connecte-toi pour accéder à ton espace personnel, depuis celui-ci tu
+          peux consulter mon portfolio et explorer les fonctionnalités
+          disponibles.
+          <br />
+          <br />
+          Consulte le mode démo pour y accéder en tant que visiteur.
+        </p>
+
+        <p className="login-description login-description-superadmin">
+          <br />
+          Interface de prévisualisation administrateur avancée.
+          <br />
+          <br />
+          Tu peux tester l’affichage, la sécurité et les accès du portfolio.
+        </p>
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <h2>Connexion</h2>
 
-      <button
-        type="submit"
-        className={isBlocked ? "login-button blocked" : "login-button"}
-        disabled={isBlocked}
-      >
-        Se connecter
-      </button>
+        <div className="input-box">
+          <input
+            type="text"
+            placeholder="Nom d'utilisateur"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isBlocked}
+          />
+          {isBlocked && <span className="lock-icon">🔒</span>}
+        </div>
 
-      <div style={{ marginTop: "30px", fontSize: "12px" }}>
-        <p><b> Exemple de connexion : </b></p>
-        <p>admin / portfolio2025</p>
-        <p>demo / demo</p>
-      </div>
-    </form>
+        <div className="input-box">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isBlocked}
+          />
 
-  </div>
-)};
+          <span
+            className="password-toggle"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <button
+          type="submit"
+          className={isBlocked ? "login-button blocked" : "login-button"}
+          disabled={isBlocked}
+        >
+          Se connecter
+        </button>
+
+        <div style={{ marginTop: "30px", fontSize: "12px" }}>
+          <p>
+            <b> Exemple de connexion : </b>
+          </p>
+          <p>admin / portfolio2025</p>
+          <p>demo / demo</p>
+        </div>
+      </form>
+    </div>
+  );
+}
