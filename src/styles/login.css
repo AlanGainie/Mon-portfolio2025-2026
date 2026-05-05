@@ -1,17 +1,30 @@
 /* ===================================== */
-/* LOGIN PART                             */
+/* RESET IMPORTANT                       */
+/* ===================================== */
+
+body, #root {
+  margin: 0;
+  height: 100%;
+}
+
+/* ===================================== */
+/* LOGIN PART                            */
 /* ===================================== */
 
 /* GLOBAL CONTAINER */
-.container {
+.container,
+.login-page {
   min-height: 100vh;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  padding: clamp(40px, 6vh, 100px) 20px;
+  padding: 20px;
   box-sizing: border-box;
+
+  background: black;
+  color: white;
 }
 
 /* MAIN LOGIN WRAPPER */
@@ -27,6 +40,8 @@
 
   background: #111;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+
+  margin: 0 auto;
 }
 
 /* LEFT PANEL */
@@ -90,15 +105,15 @@
   outline: none;
 
   font-size: 16px;
-  color: var(--input-text);
+  color: var(--input-text, white);
   font-weight: 600;
 
-  border-bottom: 2px solid var(--input-border);
+  border-bottom: 2px solid var(--input-border, #555);
   transition: 0.3s;
 }
 
 .input-box input:focus {
-  border-bottom: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent, #ff7a18);
 }
 
 /* PASSWORD TOGGLE */
@@ -122,55 +137,35 @@
 }
 
 /* ===================================== */
-/* LOGIN PAGE LAYOUT                     */
+/* LOGIN HEADER (optionnel)              */
 /* ===================================== */
-
-.login-page {
-  background: black;
-  color: white;
-
-  min-height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  justify-content: flex-start;
-  
-  gap: 50px;
-  
-  padding: 60px 20px 40px;
-  box-sizing: border-box;
-}
 
 .login-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 60px;
+
+  margin-top: 0;
 
   color: white;
   z-index: 2;
 }
 
-.login-header h1 {
-  margin-bottom: 8px;
-  color: white;
-}
-
 /* ===================================== */
-/* LOGIN PAGE LOAD                     */
+/* LOADING SCREEN                        */
 /* ===================================== */
 
 .loading-screen {
   position: fixed;
   inset: 0;
   background: black;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   color: white;
   z-index: 999999;
 }
@@ -180,6 +175,10 @@
   width: 200px;
   height: auto;
 }
+
+/* ===================================== */
+/* PREVIEW ROLE CSS                      */
+/* ===================================== */
 
 .login-title-superadmin,
 .login-description-superadmin {
@@ -194,4 +193,26 @@ body[data-role="superadmin"] .login-description-viewer {
 body[data-role="superadmin"] .login-title-superadmin,
 body[data-role="superadmin"] .login-description-superadmin {
   display: block;
+}
+
+/* BONUS : style spécial superadmin */
+body[data-role="superadmin"] .font-box {
+  border: 2px solid crimson;
+}
+
+body[data-role="superadmin"] .auth-info {
+  background: linear-gradient(135deg, #8b0000, #ff0000);
+}
+
+.with-preview-bar {
+  padding-top: var(--previewbar-height);
+  box-sizing: border-box;
+}
+
+.login-route {
+  min-height: calc(100vh - var(--previewbar-height));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 20px;
 }

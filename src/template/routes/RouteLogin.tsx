@@ -63,91 +63,93 @@ export default function Login({ onLogUpdate }: LoginProps) {
   }
 
   return (
-    <div className="font-box">
-      <div className="auth-info">
-        <button
-          type="button"
-          onClick={handleDirectDemoAccess}
-          disabled={isBlocked}
-          className="demo-button"
-        >
-          Mode démo
-        </button>
-
-        <h2 className="login-title login-title-viewer">Bienvenue 👋</h2>
-
-        <h2 className="login-title login-title-superadmin">
-          Mode Superadmin 🛡️
-        </h2>
-
-        <p className="login-description login-description-viewer">
-          <br />
-          Connecte-toi pour accéder à ton espace personnel, depuis celui-ci tu
-          peux consulter mon portfolio et explorer les fonctionnalités
-          disponibles.
-          <br />
-          <br />
-          Consulte le mode démo pour y accéder en tant que visiteur.
-        </p>
-
-        <p className="login-description login-description-superadmin">
-          <br />
-          Interface de prévisualisation administrateur avancée.
-          <br />
-          <br />
-          Tu peux tester l’affichage, la sécurité et les accès du portfolio.
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        <h2>Connexion</h2>
-
-        <div className="input-box">
-          <input
-            type="text"
-            placeholder="Nom d'utilisateur"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+    <div className="login-route with-preview-bar">
+      <div className="font-box">
+        <div className="auth-info">
+          <button
+            type="button"
+            onClick={handleDirectDemoAccess}
             disabled={isBlocked}
-          />
-          {isBlocked && <span className="lock-icon">🔒</span>}
-        </div>
-
-        <div className="input-box">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Mot de passe"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={isBlocked}
-          />
-
-          <span
-            className="password-toggle"
-            onClick={() => setShowPassword((prev) => !prev)}
+            className="demo-button"
           >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
-        </div>
+            Mode démo
+          </button>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          <h2 className="login-title login-title-viewer">Bienvenue 👋</h2>
 
-        <button
-          type="submit"
-          className={isBlocked ? "login-button blocked" : "login-button"}
-          disabled={isBlocked}
-        >
-          Se connecter
-        </button>
+          <h2 className="login-title login-title-superadmin">
+            Mode Superadmin 🛡️
+          </h2>
 
-        <div style={{ marginTop: "30px", fontSize: "12px" }}>
-          <p>
-            <b> Exemple de connexion : </b>
+          <p className="login-description login-description-viewer">
+            <br />
+            Connecte-toi pour accéder à ton espace personnel, depuis celui-ci tu
+            peux consulter mon portfolio et explorer les fonctionnalités
+            disponibles.
+            <br />
+            <br />
+            Consulte le mode démo pour y accéder en tant que visiteur.
           </p>
-          <p>admin / portfolio2025</p>
-          <p>demo / demo</p>
+
+          <p className="login-description login-description-superadmin">
+            <br />
+            Interface de prévisualisation administrateur avancée.
+            <br />
+            <br />
+            Tu peux tester l’affichage, la sécurité et les accès du portfolio.
+          </p>
         </div>
-      </form>
+
+        <form onSubmit={handleSubmit}>
+          <h2>Connexion</h2>
+
+          <div className="input-box">
+            <input
+              type="text"
+              placeholder="Nom d'utilisateur"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isBlocked}
+            />
+            {isBlocked && <span className="lock-icon">🔒</span>}
+          </div>
+
+          <div className="input-box">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isBlocked}
+            />
+
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <button
+            type="submit"
+            className={isBlocked ? "login-button blocked" : "login-button"}
+            disabled={isBlocked}
+          >
+            Se connecter
+          </button>
+
+          <div style={{ marginTop: "30px", fontSize: "12px" }}>
+            <p>
+              <b> Exemple de connexion : </b>
+            </p>
+            <p>admin / portfolio2025</p>
+            <p>demo / demo</p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
