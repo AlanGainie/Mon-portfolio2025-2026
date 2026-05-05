@@ -1,77 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import loaderGif from "../../assets/svg_declinaisons_dragon_egg/dragon_svg_loaders_variants_pack/loader_calm_1_breathe_muted_muted.gif";
-
-import AuthSection from "../sections/AuthSection";
-import LogsSection from "../sections/LogsSection";
 
 type LoginProps = {
   onLogUpdate?: () => void;
 };
 
-export type AuthLog = {
-  id: string;
-  username: string;
-  role: "admin" | "user" | "demo" | "unknown";
-  action: "login" | "logout" | "error" | "blocked" | "unblocked";
-  timestamp: string;
-  severityPoints: number;
-  message?: string;
-};
-
-const readStoredLogs = (): AuthLog[] => {
-  return JSON.parse(localStorage.getItem("authLogs") || "[]");
-};
-
 export default function Login({ onLogUpdate }: LoginProps) {
-  const [previewBarState, setPreviewBarState] = useState(
-    document.body.dataset.previewBar ?? "hidden"
-  );
-
-  const { login, loginAsDemo, isBlocked, clearLogs } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, isBlocked } = useAuth();
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  const [visibleLogs, setVisibleLogs] = useState<AuthLog[]>(readStoredLogs);
-
-  const refreshLogs = () => {
-    setVisibleLogs(readStoredLogs());
-  };
-=======
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
->>>>>>> test
 
-  useEffect(() => {
-    refreshLogs();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
-    const updatePreviewBarState = () => {
-      setPreviewBarState(document.body.dataset.previewBar ?? "hidden");
-    };
+    const result = login(username, password);
 
-    updatePreviewBarState();
+    if (!result.success) {
+      setError(result.message || "Identifiants incorrects.");
+      onLogUpdate?.();
+      return;
+    }
 
-<<<<<<< HEAD
-    const observer = new MutationObserver(updatePreviewBarState);
-
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["data-preview-bar"],
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const handleLoginSuccess = () => {
-=======
     setIsLoading(true);
 
->>>>>>> test
     const savedUser = JSON.parse(localStorage.getItem("authUser") || "{}");
 
     setTimeout(() => {
@@ -79,32 +38,6 @@ export default function Login({ onLogUpdate }: LoginProps) {
     }, 2000);
   };
 
-<<<<<<< HEAD
-  const handleDemoSuccess = () => {
-    navigate("/demo");
-  };
-
-  const handleClearLogs = () => {
-    clearLogs();
-    refreshLogs();
-    onLogUpdate?.();
-  };
-
-  return (
-    <main className={`login-route login-page-preview-${previewBarState}`}>
-      <AuthSection
-        login={login}
-        loginAsDemo={loginAsDemo}
-        isBlocked={isBlocked}
-        refreshLogs={refreshLogs}
-        onLogUpdate={onLogUpdate}
-        onLoginSuccess={handleLoginSuccess}
-        onDemoSuccess={handleDemoSuccess}
-      />
-
-      <LogsSection logs={visibleLogs} onClearLogs={handleClearLogs} />
-    </main>
-=======
   const handleDirectDemoAccess = () => {
     if (isBlocked) {
       setError("DDOS accès restricted");
@@ -216,6 +149,5 @@ export default function Login({ onLogUpdate }: LoginProps) {
         </div>
       </form>
     </div>
->>>>>>> test
   );
 }
