@@ -10,11 +10,14 @@ import HeaderLayout from "../layouts/HeaderLayout";
 import BodyLayout from "../layouts/BodyLayout";
 // import FooterLayout from "../layouts/FooterLayout";
 
+import DemoPopupSection from "../sections/DemoPopupSection";
+
 import { PAGESCROLLDOWN, FOOTER, FLEXCOL } from "../../styles/tw.ts";
 
 import type { DisplaysInf, PageData, PageProps } from "../../types/pageTypes";
 
 const pageModules = import.meta.glob("../../../datas/Pages/*.json");
+
 
 export const HeaderPage = ({
   content,
@@ -111,6 +114,9 @@ function PortfolioContent({ data }: { data: PageData }): JSX.Element {
       }`}
     >
       <HeaderLayout data={data} />
+
+      {isDemo && <DemoPopupSection />}
+
       <BodyLayout data={data} />
       {/* <FooterLayout data={data} /> */}
     </div>
