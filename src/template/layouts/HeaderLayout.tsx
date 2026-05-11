@@ -2,7 +2,7 @@ import { useAuth } from "../../auth/AuthContext";
 
 import type { PageData } from "../../types/pageTypes";
 
-import DemoBannerSection from "../sections/DemoBannerSection";
+import DemoPopupSection from "../sections/DemoPopupSection";
 import HeroSection from "../sections/HeroSection";
 
 type HeaderLayoutProps = {
@@ -15,7 +15,7 @@ function HeaderLayout({ data }: HeaderLayoutProps) {
 
   return (
     <div>
-      {isDemo && <DemoBannerSection />}
+      {isDemo && <DemoPopupSection />}
 
       <HeroSection hero={data.hero} />
     </div>
